@@ -1,0 +1,18 @@
+.homePage__container {
+ background-color: var(--Gray1);
+}
+
+.homePage__title {
+ color: var(--MainColor2);
+ font: var(--HeadLineSMedium);
+}
+
+.homePage__subTitle {
+ color: var(--102047);
+ font: var(--TitleMBold);
+}
+
+.homePage__subTitle2 {
+ color: var(--MainColor2);
+ font: var(--TitleMBold);
+}

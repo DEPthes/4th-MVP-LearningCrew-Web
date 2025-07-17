@@ -1,0 +1,32 @@
+@font-face {
+ font-family: "S-CoreDream";
+ src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/S-CoreDream-3Light.woff")
+  format("woff");
+ font-weight: normal;
+ font-style: normal;
+}
+
+:root {
+ --MainColor1: #ffffff;
+ --MainColor2: #ff552c;
+ --SubColor1: #020202;
+ --PointColor: #102047;
+ --Gray0: #535558;
+ --Gray1: #707276;
+ --Gray2: #929498;
+ --Gray3: #c9c9c9;
+ --Gray4: #ededed;
+
+ --HeadLineSMedium: 500 20px / normal S-CoreDream;
+ --HeadlineLMedium: 500 36px / normal S-CoreDream;
+ --BodySRegular: 400 13px / normal S-CoreDream;
+ --BodyMRegular: 400 16px / normal S-CoreDream;
+ --BodyLRegular: 400 22px / normal S-CoreDream;
+ --BodyXLRegular: 500 22px / normal S-CoreDream;
+ --ButtonSMedium: 500 14px / normal S-CoreDream;
+ --BottonMMedium: 500 16px / normal S-CoreDream;
+ --ButtonLMedium: 500 22px / normal S-CoreDream;
+ --ButtonXLMedium: 500 30px / normal S-CoreDream;
+ --TitleMBold: 600 24px / normal S-CoreDream;
+ --TitleXLMedium: 500 40px / normal S-CoreDream;
+}
