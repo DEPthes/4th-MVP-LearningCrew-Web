@@ -1,0 +1,22 @@
+.div__container {
+  box-sizing: border-box;
+  width: 100%;             
+  display: flex;           
+  justify-content: center; 
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.logo__container {
+  display: flex;
+  align-items: center;
+  width: 75%;   
+  padding: 31px;
+}
+
+.learn__it__logo {
+    width: 102px;
+    height: 56px;
+}
+
+
+
