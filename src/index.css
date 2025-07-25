@@ -66,6 +66,7 @@
  --BodyMRegular: 400 20px / normal S-CoreDream;
  --BodyLRegular: 400 22px / normal S-CoreDream;
  --BodyXLRegular: 400 24px / normal S-CoreDream;
+ --BodyXSMedium: 500 13px / normal S-CoreDream;
  --BodyLMedium: 500 22px / normal S-CoreDream;
  --BodyXLMedium: 500 24px / normal S-CoreDream;
  --ButtonSMedium: 500 14px / normal S-CoreDream;
@@ -78,4 +79,5 @@
  --TitleMBold: 600 24px / normal S-CoreDream;
  --TitleXLMedium: 500 40px / normal S-CoreDream;
  --Content: 400 16px / 150% S-CoreDream;
+ --ButtonAddsizeMedium: 500 18px / normal S-CoreDream;
 }
