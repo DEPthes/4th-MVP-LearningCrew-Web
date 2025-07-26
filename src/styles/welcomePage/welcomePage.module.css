@@ -18,10 +18,22 @@
 }
 
 .search__study {
-    font: var(--ButtonXLMedium);
+    box-sizing: border-box;
+    font: var(--ButtonXXLMedium);
     color: var(--MainColor1);
     background-color: var(--MainColor2);
     text-decoration: none;
-    padding: 19px 31px;
     border-radius: 50px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 22px 40px;
+    width: 380px;
+    height: 80px;
+    margin-top: 10px;
+}
+
+.arrow__icon {
+  width: 16px;
+  height: 26px;
 }

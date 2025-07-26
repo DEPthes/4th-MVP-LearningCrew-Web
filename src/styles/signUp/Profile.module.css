@@ -1,0 +1,27 @@
+.label {
+    font: var(--BodyMRegular);
+    color: var(--PointColor);
+    height: 24px;
+    display: flex;
+    align-items: center;
+}
+
+.info {
+    font: var(--BodyXSRegular);
+    color: var(--Gray2);
+    height: 37px;
+    display: flex;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+
+
+.msg {
+    margin-top: 30px;
+    font: var(--BodyXSRegular);
+    color: var(--Gray2);
+    height: 37px;
+    display: flex;
+    align-items: center;
+}
