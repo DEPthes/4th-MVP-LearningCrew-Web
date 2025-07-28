@@ -5,13 +5,13 @@
   display: flex;
   justify-content: center;
   align-items: center;
-
 }
 
 .container {
   color: var(--Gray2);
   width: 78.5rem;
 }
+
 .container hr {
   height: 1px;
   background-color: var(--Gray2);
@@ -28,7 +28,6 @@
 
 .logo {
   height: 1.8rem;
-  /* ?? */
 }
 
 .bar {

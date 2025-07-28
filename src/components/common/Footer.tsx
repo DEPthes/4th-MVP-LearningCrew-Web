@@ -12,7 +12,6 @@ export default function Footer(){
           </div>
         </div>
         <hr></hr>
-
         <div className={styles.bottom}>
           <div>
             <p>(주)런잇 | 대표: 러닝크루</p>
@@ -22,9 +21,7 @@ export default function Footer(){
           </div>
           <div>@2025 LearnIt</div>
         </div >
-
       </div>
     </footer>
-
     );
 }
