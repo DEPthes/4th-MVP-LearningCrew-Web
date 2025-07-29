@@ -1,0 +1,90 @@
+export const ShareNoteListDummy = [
+ {
+  id: 1,
+  writer: "합격하고 싶은 사람",
+  title: "2주차 스터디",
+  content:
+   "안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 ",
+  createdAt: "2025-01-01",
+ },
+ {
+  id: 2,
+  writer: "합격하고 싶은 사람2",
+  title: "3주차 스터디",
+  content: `
+    <h2>TypeScript 기초</h2>
+    
+    <p>이번 주에는 TypeScript의 기본 문법을 학습했습니다.</p>
+    
+    <h3>주요 개념</h3>
+    <ul>
+      <li>타입 정의</li>
+      <li>인터페이스</li>
+      <li>제네릭</li>
+    </ul>
+    
+    <p>TypeScript는 JavaScript의 <em>상위 집합</em>입니다.</p>
+    
+    <h3>예시 코드</h3>
+    <pre><code>interface User {
+  name: string;
+  age: number;
+}
+
+function greet(user: User): string {
+  return \`Hello, \${user.name}!\`;
+}</code></pre>
+  `,
+  createdAt: "2025-01-01",
+ },
+ {
+  id: 3,
+  writer: "합격하고 싶은 사람3",
+  title: "4주차 스터디",
+  content: `
+    <h2>CSS 모듈과 스타일링</h2>
+    
+    <p>CSS 모듈을 사용한 컴포넌트 스타일링을 학습했습니다.</p>
+    
+    <h3>장점</h3>
+    <ul>
+      <li>스타일 충돌 방지</li>
+      <li>컴포넌트별 스타일 관리</li>
+      <li>TypeScript 지원</li>
+    </ul>
+    
+    <blockquote>
+      CSS 모듈은 로컬 스코프를 제공하여 스타일 충돌을 방지합니다.
+    </blockquote>
+    
+    <p>다음 주에는 <strong>Styled Components</strong>를 학습할 예정입니다.</p>
+  `,
+  createdAt: "2025-01-01",
+ },
+ {
+  id: 4,
+  writer: "합격하고 싶은 사람4",
+  title: "5주차 스터디",
+  content: `
+    <h2>상태 관리</h2>
+    
+    <p>React에서 상태 관리를 위한 다양한 방법들을 학습했습니다.</p>
+    
+    <h3>학습 내용</h3>
+    <ul>
+      <li>useState Hook</li>
+      <li>useReducer Hook</li>
+      <li>Context API</li>
+      <li>Redux 기초</li>
+    </ul>
+    
+    <h3>상태 관리의 중요성</h3>
+    <p>효율적인 상태 관리는 애플리케이션의 성능과 유지보수성에 큰 영향을 미칩니다.</p>
+    
+    <blockquote>
+      상태는 애플리케이션의 데이터를 나타내며, UI는 상태의 함수입니다.
+    </blockquote>
+  `,
+  createdAt: "2025-01-01",
+ },
+];

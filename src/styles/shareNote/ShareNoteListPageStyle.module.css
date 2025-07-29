@@ -1,0 +1,80 @@
+.note__container {
+ width: 100%;
+}
+
+.note__sort {
+ display: flex;
+ justify-content: flex-end;
+}
+
+.notelist_container {
+ display: flex;
+ flex-direction: column;
+ background-color: white;
+ border-top: 1px solid var(--Gray2);
+}
+
+.notelist_header {
+ display: flex;
+ flex-direction: row;
+ font: var(--BodyXLMedium);
+ font-size: 20px;
+ color: var(--Gray0);
+ padding: 20px 0;
+ padding-left: 5%;
+ border-bottom: 1px solid var(--Gray2);
+ background-color: var(--Gray5);
+}
+
+.notelist_header_title {
+ flex: 3;
+ text-align: center;
+ margin: 0;
+}
+
+.notelist_header_writer {
+ flex: 1;
+ text-align: center;
+ margin: 0;
+}
+
+.notelist_header_date {
+ flex: 1;
+ text-align: center;
+ margin: 0;
+}
+
+.notelist_body {
+ display: flex;
+ flex-direction: column;
+}
+
+.notelist_row {
+ display: flex;
+ flex-direction: row;
+ padding: 10px 0;
+ padding-left: 5%;
+ border-bottom: 1px solid var(--Gray3);
+ background-color: white;
+ font: var(--BodySRegular);
+ color: var(--Gray1);
+}
+
+.notelist_title {
+ flex: 3;
+ text-align: left;
+ margin: 0;
+ cursor: pointer;
+}
+
+.notelist_writer {
+ flex: 1;
+ text-align: center;
+ margin: 0;
+}
+
+.notelist_createdAt {
+ flex: 1;
+ text-align: center;
+ margin: 0;
+}
