@@ -1,0 +1,10 @@
+.creategroup__container {
+ max-width: 500px;
+ margin: 0 auto;
+}
+
+.container__title {
+ color: var(--PointColor);
+ font: var(--HeadlineLMedium);
+ margin-bottom: 60px;
+}

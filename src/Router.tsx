@@ -4,6 +4,7 @@ import Layout from "./components/layout/Layout"
 import Login from "./components/login/Login"
 import WelcomePage from "./components/welcomePage/WelcomePage"
 import SignUp from "./components/signUp/SignUp"
+import { CreateGroup } from "./pages/createGroup/CreateGroup"
 
 export const Router = () => {
   return (
@@ -11,8 +12,9 @@ export const Router = () => {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
-        <Route path="/welcomePage" element={<WelcomePage />} /> 
-        <Route path="/" element={<Layout> <Home /> </Layout> } />
+        <Route path="/welcomePage" element={<WelcomePage />} />
+        <Route path="/" element={<Layout> <Home /> </Layout>} />
+        <Route path="/createGroup" element={<CreateGroup />} />
       </Routes>
     </BrowserRouter>
   )

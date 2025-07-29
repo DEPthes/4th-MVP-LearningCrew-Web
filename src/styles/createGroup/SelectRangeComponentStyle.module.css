@@ -1,0 +1,62 @@
+.picker__container {
+ display: flex;
+ flex-direction: column;
+ width: 100%;
+}
+
+.picker__arrow {
+ width: 24px;
+ margin: 0 auto;
+ cursor: pointer;
+}
+
+.picker__counter__container {
+ display: flex;
+ flex-direction: column;
+ width: 100%;
+ margin: 10px 0;
+}
+
+.picker__upnum {
+ display: flex;
+ justify-content: center;
+ font: var(--ButtonXLMedium);
+ color: var(--Gray2);
+ margin: 0;
+}
+
+.picker__counter {
+ display: flex;
+ flex-direction: row;
+ border: 1px solid var(--Gray3);
+ background: var(--Gray4);
+ font: var(--BodySRegular);
+ color: var(--PointColor);
+ margin: 10px 0;
+}
+
+.picker__counter div {
+ display: flex;
+ width: 150px;
+ margin: 7px auto;
+ align-items: center;
+}
+.picker__counter div > * {
+ flex: 1;
+ text-align: center;
+}
+
+.picker__counter__num {
+ font: var(--ButtonXLMedium);
+ margin: 0;
+}
+
+.message__container {
+ margin: 10px 0;
+}
+
+.message__container p {
+ font: var(--BodyXSRegular);
+ color: var(--Gray2);
+ margin: 0;
+}
