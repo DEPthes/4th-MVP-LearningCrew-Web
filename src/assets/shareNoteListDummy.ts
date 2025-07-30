@@ -1,16 +1,38 @@
+import profile from "../assets/learn-it-logo.svg";
+
 export const ShareNoteListDummy = [
  {
   id: 1,
   writer: "합격하고 싶은 사람",
-  title: "2주차 스터디",
+  title: "가2주차 스터디",
   content:
    "안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 ",
   createdAt: "2025-01-01",
+  comments: [
+   {
+    id: 1,
+    profile: profile,
+    writer: "합격하고 싶은 사람1",
+    content:
+     "안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 ",
+    createdAt: "2025-01-01",
+    image: null,
+   },
+   {
+    id: 2,
+    profile: profile,
+    writer: "합격하고 싶은 사람2",
+    content:
+     "안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 ",
+    createdAt: "2025-01-01",
+    image: null,
+   },
+  ],
  },
  {
   id: 2,
   writer: "합격하고 싶은 사람2",
-  title: "3주차 스터디",
+  title: "다3주차 스터디",
   content: `
     <h2>TypeScript 기초</h2>
     
@@ -36,11 +58,31 @@ function greet(user: User): string {
 }</code></pre>
   `,
   createdAt: "2025-01-01",
+  comments: [
+   {
+    id: 1,
+    profile: profile,
+    writer: "합격하고 싶은 사람1",
+    content:
+     "안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 ",
+    createdAt: "2025-01-01",
+    image: null,
+   },
+   {
+    id: 2,
+    profile: "https://via.placeholder.com/150",
+    writer: "합격하고 싶은 사람2",
+    content:
+     "안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 ",
+    createdAt: "2025-01-01",
+    image: null,
+   },
+  ],
  },
  {
   id: 3,
   writer: "합격하고 싶은 사람3",
-  title: "4주차 스터디",
+  title: "나4주차 스터디",
   content: `
     <h2>CSS 모듈과 스타일링</h2>
     
@@ -60,6 +102,17 @@ function greet(user: User): string {
     <p>다음 주에는 <strong>Styled Components</strong>를 학습할 예정입니다.</p>
   `,
   createdAt: "2025-01-01",
+  comments: [
+   {
+    id: 1,
+    profile: profile,
+    writer: "합격하고 싶은 사람1",
+    content:
+     "안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 ",
+    createdAt: "2025-01-01",
+    image: null,
+   },
+  ],
  },
  {
   id: 4,
@@ -86,6 +139,26 @@ function greet(user: User): string {
     </blockquote>
   `,
   createdAt: "2025-01-01",
+  comments: [
+   {
+    id: 1,
+    profile: "https://via.placeholder.com/150",
+    writer: "합격하고 싶은 사람44",
+    content:
+     "안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 ",
+    createdAt: "2025-01-01",
+    image: null,
+   },
+   {
+    id: 2,
+    profile: profile,
+    writer: "합격하고 싶은",
+    content:
+     "안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 ",
+    createdAt: "2025-01-01",
+    image: null,
+   },
+  ],
  },
  {
   id: 5,
@@ -134,6 +207,26 @@ function greet(user: User): string {
   content:
    "안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 ",
   createdAt: "2025-01-01",
+  comments: [
+   {
+    id: 1,
+    profile: profile,
+    writer: "합격하고 싶은 사람10",
+    content:
+     "안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 ",
+    createdAt: "2025-01-01",
+    image: null,
+   },
+   {
+    id: 2,
+    profile: profile,
+    writer: "합격하고 싶은 사람10",
+    content:
+     "안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 ",
+    createdAt: "2025-01-01",
+    image: null,
+   },
+  ],
  },
  {
   id: 11,
@@ -246,5 +339,25 @@ function greet(user: User): string {
   content:
    "안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 ",
   createdAt: "2025-01-01",
+  comments: [
+   {
+    id: 1,
+    profile: profile,
+    writer: "hello",
+    content:
+     "안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 ",
+    createdAt: "2025-01-01 11:00",
+    image: null,
+   },
+   {
+    id: 2,
+    profile: "",
+    writer: "it'sme",
+    content:
+     "안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 ",
+    createdAt: "2025-01-01 12:00",
+    image: profile,
+   },
+  ],
  },
 ];
