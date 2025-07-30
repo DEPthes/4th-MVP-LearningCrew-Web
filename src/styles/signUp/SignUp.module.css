@@ -1,0 +1,30 @@
+.page__wrapper {
+    display: flex;
+    justify-content: center;
+}
+
+.div__container {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    padding-top: 100px;
+    padding-bottom: 100px;
+}
+
+.signUp__title {
+    font: var(--HeadlineLMedium);
+    color: var(--PointColor);
+    align-self: flex-start;
+    margin-bottom: 36px;
+}
+
+.button {
+    height: 80px;
+    background-color: var(--MainColor2);
+    font: var(--ButtonXLMedium);
+    color: #FFFFFF;
+    border-style: none;
+    border-radius: 14px;
+    margin-top: 10px;
+    cursor: pointer;
+}

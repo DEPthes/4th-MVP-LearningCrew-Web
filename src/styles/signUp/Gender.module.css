@@ -1,0 +1,39 @@
+.label {
+    font: var(--BodyMRegular);
+    color: var(--PointColor);
+    height: 24px;
+    display: flex;
+    align-items: center;
+}
+
+.info {
+    font: var(--BodyXSRegular);
+    color: var(--Gray2);
+    display: flex;
+    height: 37px;
+    align-items: center;
+}
+
+.button__container {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    gap: 22px;
+    height: 68px;
+    align-items: center;
+}
+
+.button {
+    width: 100%;
+    padding: 10px 20px;
+    font: var(--ButtonLRegular);
+    color: var(--SubColor1);
+    background-color: white;
+    border: 1.4px solid var(--MainColor2);
+    border-radius: 24px;
+}
+
+.active {
+    background-color: var(--MainColor2);
+    color: white;
+}
