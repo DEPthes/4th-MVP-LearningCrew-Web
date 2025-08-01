@@ -5,9 +5,12 @@ import UpArrow from "../../assets/UpArrow.svg";
 import Click from "../../assets/SortClick.svg";
 import UnClick from "../../assets/SortNonClick.svg";
 
-export const Sort = () => {
-  const [sort, setSort] = useState<
-    "최신순" | "오래된순" | "관련도순" | "가나다순">("최신순");
+interface SortProps {
+  sort: string,
+  setSort: (sort: string) => void
+}
+
+export const Sort = ({ sort, setSort }: SortProps) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const handleBtnClick = () => {
