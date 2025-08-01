@@ -1,0 +1,267 @@
+.editorContainer {
+ display: flex;
+ flex-direction: column;
+ width: 100%;
+ height: 100%;
+}
+
+.write__title {
+ margin: 0 0 35px 0;
+ font: var(--HeadlineMMedium);
+}
+
+.titleSection {
+ margin-bottom: 36px;
+ width: 100%;
+ flex-shrink: 0;
+}
+
+.label {
+ display: block;
+ font: var(--BodyLRegular);
+}
+
+.titleField {
+ padding: 16px 24px;
+ border: 1px solid var(--Gray3);
+ font: var(--BodySRegular);
+ border-radius: 8px;
+ outline: none;
+ transition: border-color 0.2s ease;
+ width: calc(100% - 48px);
+ margin-top: 16px;
+}
+
+.titleField:focus {
+ border-color: var(--MainColor2);
+}
+
+.titleField::placeholder {
+ color: var(--Gray3);
+ font: var(--BodySRegular);
+}
+
+.topSection {
+ display: flex;
+ flex-direction: row;
+ justify-content: space-between;
+ width: 100%;
+ align-items: center;
+ height: 26px;
+ margin-bottom: 16px;
+}
+
+.contentSection {
+ display: flex;
+ flex-direction: column;
+ flex: 1;
+ min-height: 0;
+}
+
+.toolbar {
+ display: flex;
+ align-items: center;
+ height: 26px;
+ gap: 14px;
+}
+
+.toolbarLeft {
+ display: flex;
+ align-items: center;
+}
+
+.toolbarButton {
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ width: 26px;
+ height: 26px;
+ border: none;
+ background: transparent;
+ border-radius: 6px;
+ cursor: pointer;
+ transition: all 0.2s ease;
+}
+
+.toolbarButton img {
+ width: 20px;
+ height: 20px;
+}
+
+.toolbarButton:hover {
+ background: var(--Gray4);
+}
+
+.toolbarButton.active {
+ background: var(--Gray4);
+}
+
+.fileUploadButton {
+ display: flex;
+ align-items: center;
+ gap: 10px;
+ padding: 2px 4px;
+ border: none;
+ background: transparent;
+ border-radius: 6px;
+ cursor: pointer;
+ transition: background-color 0.2s ease;
+ font: var(--BottonMMedium);
+ color: var(--Gray1);
+}
+
+.fileUploadButton:hover {
+ background: var(--Gray4);
+}
+
+.fileUploadButton img {
+ width: 16px;
+ height: 16px;
+}
+
+/* editor */
+.editorWrapper {
+ border: 1px solid var(--Gray3);
+ font: var(--BodySRegular);
+ border-radius: 8px;
+ overflow-y: scroll;
+ overflow-x: hidden;
+ transition: border-color 0.2s ease;
+ background: var(--MainColor1);
+ flex: 1;
+ min-height: 0;
+ display: flex;
+ flex-direction: column;
+}
+
+.editorWrapper:focus-within {
+ border-color: var(--MainColor2);
+}
+
+.editorWrapper::placeholder {
+ color: var(--Gray3);
+}
+
+/* ProseMirror 스타일 */
+.editorWrapper :global(.ProseMirror) {
+ display: block;
+ padding: 24px;
+ flex: 1;
+ border: none;
+ overflow-y: auto;
+ overflow-x: hidden;
+ outline: none;
+ min-height: 200px;
+ max-height: 100%;
+}
+
+.editorWrapper :global(.ProseMirror:focus) {
+ outline: none;
+}
+
+.editorWrapper :global(.ProseMirror:focus:last-child:has(br)) {
+ font-size: var(--editor-font-size, 16px);
+}
+
+/* Placeholder 스타일 - 첫 번째 빈 단락에만 표시 */
+.editorWrapper :global(.ProseMirror p:first-child.is-empty::before) {
+ color: var(--Gray3);
+ content: attr(data-placeholder);
+ float: left;
+ height: 0;
+ pointer-events: none;
+}
+
+.editorWrapper :global(.ProseMirror p) {
+ margin: 0;
+}
+
+.editorWrapper :global(.ProseMirror ol) {
+ padding-left: 30px;
+}
+
+.editorWrapper :global(.ProseMirror ul) {
+ padding-left: 30px;
+}
+
+/* 이미지 스타일 */
+.editorWrapper :global(.ProseMirror img) {
+ max-width: 100%;
+ height: auto;
+ border-radius: 8px;
+ margin: 8px 0;
+}
+
+/* 첨부 파일 목록 */
+.attachedFiles {
+ margin-top: 16px;
+ padding: 16px;
+ background: var(--Gray4);
+ border-radius: 8px;
+ border: 1px solid var(--Gray3);
+}
+
+.attachedFiles h4 {
+ margin: 0 0 12px 0;
+ font: var(--BodySRegular);
+ color: var(--Gray1);
+}
+
+.attachedFiles ul {
+ margin: 0;
+ padding: 0;
+ list-style: none;
+}
+
+.attachedFile {
+ display: flex;
+ align-items: center;
+ justify-content: space-between;
+ padding: 8px 12px;
+ background: var(--MainColor1);
+ border-radius: 6px;
+ margin-bottom: 8px;
+ border: 1px solid var(--Gray3);
+}
+
+.attachedFile:last-child {
+ margin-bottom: 0;
+}
+
+.attachedFile span {
+ font: var(--BodySRegular);
+ color: var(--Gray1);
+}
+
+.fileSize {
+ color: var(--Gray2) !important;
+ font-size: 12px;
+}
+
+.removeFile {
+ background: none;
+ border: none;
+ color: var(--Gray2);
+ font-size: 18px;
+ cursor: pointer;
+ padding: 0;
+ width: 20px;
+ height: 20px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ border-radius: 50%;
+ transition: all 0.2s ease;
+}
+
+.removeFile:hover {
+ background: var(--Gray3);
+ color: var(--Gray1);
+}
+
+/* submit */
+.submitSection {
+ display: flex;
+ width: 100%;
+ margin-top: 50px;
+}

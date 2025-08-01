@@ -17,6 +17,10 @@
  justify-content: center;
 }
 
+.pagenation__arrow:hover {
+ background-color: var(--Gray4);
+}
+
 .pagenation__arrow p {
  margin: 0;
  white-space: nowrap;
