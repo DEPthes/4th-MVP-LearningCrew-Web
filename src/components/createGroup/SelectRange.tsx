@@ -1,6 +1,6 @@
 import styles from "../../styles/createGroup/SelectRangeComponentStyle.module.css";
 import high from "../../assets/HighArrow.svg";
-import down from "../../assets/DownArrow.svg";
+import down from "../../assets/CreateGroupDownArrow.svg";
 import { useState } from "react";
 import type { UseFormSetValue } from "react-hook-form";
 

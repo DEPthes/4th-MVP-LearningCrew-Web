@@ -8,62 +8,64 @@
  color: var(--MainColor2);
 }
 
-:global(.calendarWrapper) {
- border: 1px solid #e0e0e0;
+.calendarWrapper {
  border-radius: 8px;
- padding: 16px;
  background: #fff;
- box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
  margin: 0 auto;
 }
 
-:global(.react-calendar) {
+.calendarWrapper :global(.react-calendar) {
  width: 500px;
- padding: 50px 40px 20px 40px;
+ padding: 20px 40px;
  border: 1px solid var(--Gray1);
  border-radius: 4px;
 }
 
-:global(.react-calendar abbr) {
+.calendarWrapper :global(.react-calendar abbr) {
  text-decoration: none;
  border-bottom: none;
 }
 
-:global(.react-calendar__navigation) {
+.calendarWrapper :global(.react-calendar__navigation) {
  display: flex;
  align-items: center;
  justify-content: center;
  margin-bottom: 50px;
 }
 
-:global(.react-calendar__navigation__prev-button) {
+.calendarWrapper :global(.react-calendar__navigation__prev-button) {
  display: block;
  background: url("../../assets/leftArrow.svg") no-repeat center center !important;
  color: transparent;
  margin-right: 24px !important;
 }
 
-:global(.react-calendar__navigation__next-button) {
+.calendarWrapper :global(.react-calendar__navigation__next-button) {
  display: block;
  background: url("../../assets/rightArrow.svg") no-repeat center center !important;
  color: transparent;
  margin-left: 24px !important;
 }
 
-:global(.react-calendar__navigation__label) {
+.calendarWrapper :global(.react-calendar__navigation__label) {
+ display: flex;
+ flex-direction: row;
  background: transparent;
  border: none;
- pointer-events: none !important; /* 클릭 막기 */
+ pointer-events: none !important;
  all: unset;
  flex-grow: 0 !important;
+ white-space: nowrap;
 }
 
-:global(.react-calendar__navigation__label > span) {
+.calendarWrapper :global(.react-calendar__navigation__label > span) {
  font: var(--TitleMBold);
  color: var(--PointColor);
+ width: auto;
+ white-space: nowrap;
 }
 
-:global(.react-calendar__month-view__weekdays) {
+.calendarWrapper :global(.react-calendar__month-view__weekdays) {
  display: flex;
  text-transform: lowercase;
  color: var(--PointColor);
@@ -71,7 +73,7 @@
  margin-bottom: 50px;
 }
 
-:global(.react-calendar__month-view__weekdays__weekday) {
+.calendarWrapper :global(.react-calendar__month-view__weekdays__weekday) {
  display: flex;
  justify-content: center;
  padding: 0 !important;
@@ -79,24 +81,23 @@
  margin: 0 auto !important;
 }
 
-:global(.react-calendar__month-view__days) {
+.calendarWrapper :global(.react-calendar__month-view__days) {
  display: flex;
 }
 
-:global(.react-calendar__month-view__days__day) {
+.calendarWrapper :global(.react-calendar__month-view__days__day) {
  display: flex;
  justify-content: center;
  align-items: center;
  transition: background 0.2s, color 0.2s;
  font: var(--BodySRegular);
  color: var(--PointColor);
- /* margin: 14px 16px 16px 16px; */
  padding: 0 !important;
  margin: 0 auto !important;
  margin-bottom: 45px !important;
 }
 
-:global(.react-calendar__month-view__days__day abbr) {
+.calendarWrapper :global(.react-calendar__month-view__days__day abbr) {
  display: flex;
  width: 38px;
  height: 38px;
@@ -105,41 +106,40 @@
  border-radius: 100%;
 }
 
-:global(.react-calendar__tile--now) {
+.calendarWrapper :global(.react-calendar__tile--now) {
  background: transparent;
- /* color: #ff7043; */
 }
 
-:global(.react-calendar__tile:enabled:hover),
-:global(.react-calendar--selectRange .react-calendar__tile--hover) {
+.calendarWrapper :global(.react-calendar__tile:enabled:hover),
+.calendarWrapper
+ :global(.react-calendar--selectRange .react-calendar__tile--hover) {
  background-color: transparent;
  box-shadow: none !important;
  color: inherit !important;
  border-radius: inherit !important;
 }
 
-:global(.react-calendar__tile--rangeStart abbr) {
+.calendarWrapper :global(.react-calendar__tile--rangeStart abbr) {
  background: var(--MainColor2) !important;
- color: var(--MainColor1);
+ color: #ffbbab;
  border-radius: 50% !important;
  box-shadow: 0 0 6px var(--MainColor2);
- color: #ffbbab;
 }
 
-:global(.react-calendar__tile--rangeEnd abbr) {
+.calendarWrapper :global(.react-calendar__tile--rangeEnd abbr) {
  background: var(--MainColor2) !important;
  color: var(--MainColor1);
  border-radius: 50% !important;
 }
 
 /* 범위 안 날짜 (직사각형 배경, 텍스트만) */
-:global(.react-calendar__tile--range),
-:global(.react-calendar__title--range:hover) {
+.calendarWrapper :global(.react-calendar__tile--range),
+.calendarWrapper :global(.react-calendar__tile--range:hover) {
  background: var(--MainColor2_40) !important;
- /* box-shadow: none !important; */
 }
 
-:global(.react-calendar__tile--rangeStart) {
+.calendarWrapper :global(.react-calendar__tile--rangeStart:hover),
+.calendarWrapper :global(.react-calendar__tile--rangeStart) {
  background: linear-gradient(
   to right,
   transparent 0%,
@@ -151,7 +151,8 @@
  border-bottom-left-radius: 50%;
 }
 
-:global(.react-calendar__tile--rangeEnd) {
+.calendarWrapper :global(.react-calendar__tile--rangeEnd:enabled:hover),
+.calendarWrapper :global(.react-calendar__tile--rangeEnd) {
  background: linear-gradient(
   to left,
   transparent 0%,
@@ -163,18 +164,34 @@
  border-bottom-right-radius: 50%;
 }
 
-:global(.react-calendar__tile--rangeBothEnds) {
+.calendarWrapper :global(.react-calendar__tile--rangeBothEnds:enabled:hover),
+.calendarWrapper :global(.react-calendar__tile--rangeBothEnds) {
  background: none !important;
 }
 
-:global(.react-calendar__tile--rangeBothEnds abbr) {
+.calendarWrapper :global(.react-calendar__tile--rangeBothEnds abbr) {
  box-shadow: none;
+ color: var(--MainColor1);
 }
 
-:global(.react-calendar__month-view__days__day--neighboringMonth) {
+.calendarWrapper
+ :global(.react-calendar__month-view__days__day--neighboringMonth) {
  color: var(--Gray3) !important;
 }
 
-:global(.react-calendar__month-view__weekdays__weekday abbr[title="일요일"]) {
+.calendarWrapper
+ :global(.react-calendar__month-view__weekdays__weekday abbr[title="일요일"]) {
  color: var(--MainColor2);
+}
+
+.calendarWrapper :global(.react-calendar__tile--active abbr::before) {
+ background: none;
+}
+
+.calendarWrapper :global(.react-calendar__tile--active abbr) {
+ color: var(--PointColor) !important;
+}
+
+.calendarWrapper :global(.react-calendar__tile--rangeBothEnds abbr) {
+ color: var(--MainColor1) !important;
 }
