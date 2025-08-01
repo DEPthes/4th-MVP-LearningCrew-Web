@@ -106,7 +106,7 @@
  border-radius: 6px;
  cursor: pointer;
  transition: background-color 0.2s ease;
- font: var(--BottonMMedium);
+ font: var(--ButtonMMedium);
  color: var(--Gray1);
 }
 
