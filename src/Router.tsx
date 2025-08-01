@@ -5,6 +5,8 @@ import Login from "./components/login/Login"
 import WelcomePage from "./components/welcomePage/WelcomePage"
 import SignUp from "./components/signUp/SignUp"
 import { CreateGroup } from "./pages/createGroup/CreateGroup"
+import { ShareNoteList } from "./pages/shareNote/ShareNoteList"
+import { ShareNoteDetail } from "./pages/shareNote/ShareNoteDetail"
 
 export const Router = () => {
   return (
@@ -15,6 +17,8 @@ export const Router = () => {
         <Route path="/welcomePage" element={<WelcomePage />} />
         <Route path="/" element={<Layout> <Home /> </Layout>} />
         <Route path="/createGroup" element={<CreateGroup />} />
+        <Route path="/shareNoteList" element={<ShareNoteList />} />
+        <Route path="/shareNoteDetail/:id" element={<ShareNoteDetail />} />
       </Routes>
     </BrowserRouter>
   )
