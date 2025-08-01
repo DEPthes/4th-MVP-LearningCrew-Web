@@ -161,6 +161,6 @@
  border: 1px solid var(--MainColor2);
  color: var(--Gray0);
  border-radius: 6px;
- font: var(--BottonMMedium);
+ font: var(--ButtonMMedium);
  cursor: pointer;
 }

@@ -1,0 +1,30 @@
+.lock__container {
+ display: flex;
+ flex-direction: column;
+ align-items: center;
+ justify-content: center;
+ width: 100%;
+ height: 100%;
+ gap: 46px;
+}
+
+.lock__text {
+ margin: 0;
+ font: var(--HeadlineMMedium);
+ color: var(--SubColor1);
+}
+
+.lock__img__container {
+ display: flex;
+ flex-direction: column;
+ align-items: center;
+ justify-content: center;
+ width: 100%;
+ gap: 8px;
+ font: var(--ButtonMMedium);
+ color: var(--Gray0);
+}
+
+.lock__img__container p {
+ margin: 0;
+}

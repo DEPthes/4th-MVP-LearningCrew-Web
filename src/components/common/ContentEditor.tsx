@@ -412,7 +412,8 @@ export const ContentEditor = ({ contentText, wholeTitle, onSubmit }: EditorProps
         <Submit
           canSubmit={canSubmit()}
           isSubmitting={isSubmitting}
-          onClick={handleSubmit} />
+          onClick={handleSubmit}
+          text={isSubmitting ? "제출중..." : "완료"} />
       </div>
     </div>
   );
