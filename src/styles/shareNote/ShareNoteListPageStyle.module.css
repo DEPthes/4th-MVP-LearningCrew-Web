@@ -1,0 +1,8 @@
+.note__container {
+ width: 100%;
+}
+
+.note__sort {
+ display: flex;
+ justify-content: flex-end;
+}

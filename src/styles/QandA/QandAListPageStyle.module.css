@@ -1,0 +1,10 @@
+.qanda__container {
+ display: flex;
+ flex-direction: column;
+ width: 100%;
+}
+
+.qanda__sort {
+ display: flex;
+ justify-content: flex-end;
+}

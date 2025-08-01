@@ -1,0 +1,122 @@
+.label {
+    font: var(--BodyMRegular);
+    color: var(--PointColor);
+    display: flex;
+    align-items: center;
+    height: 35px;
+}
+
+.input__require {
+    padding: 10px 0px 10px 0px;
+    font: var(--BodyXSRegular);
+    color: var(--Gray2);
+}
+
+.calendar {
+  width: 500px;
+  padding-left: 25px;
+  padding-right: 44px;
+  padding-bottom: 46px;
+  box-sizing: border-box;
+  border-radius: 4px;
+  border: 1px solid var(--Gray1);
+}
+
+:global(.react-calendar__navigation) {
+  width: 234px;
+  height: 29px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 59px auto 48px;
+}
+
+:global(.react-calendar__navigation__label) {
+  font: var(--TitleMBold);  /* 원하는 폰트로 */
+  color: var(--PointColor);   /* 예: 검정 계열 */
+}
+
+:global(.react-calendar__month-view__weekdays) {
+  display: flex;
+  justify-content: space-between;
+  font-family: "S-CoreDream";
+  font-size: 16px;
+  font-weight: 400;
+  margin-bottom: 38px;
+}
+
+/* 요일 각각의 박스에 flex: 1로 균등 분배 */
+:global(.react-calendar__month-view__weekdays__weekday) {
+  flex: 1;
+  text-align: center;
+}
+
+/* 모든 요일 abbr 스타일 */
+:global(.react-calendar__month-view__weekdays__weekday abbr) {
+  text-decoration: none;
+  color: var(--PointColor); /* 기본 요일 색상 (검정 계열) */
+  font: var(--BodySRegular);
+}
+
+/* 일요일만 오렌지색 */
+:global(.react-calendar__month-view__weekdays__weekday:nth-child(1) abbr) {
+  color: #FF552C; /* 오렌지색 */
+}
+
+.tile {
+  display: flex;
+  justify-content: center;
+  align-items: start;
+  padding: 0;
+  box-sizing: border-box;
+  background: transparent;
+  border: none;
+}
+
+.tile abbr {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 38px;
+  height: 39px;
+  font: var(--BodySRegular);
+  color: var(--PointColor);
+  padding: 10px;
+  margin: 14px 9.5px 44px 9.5px;
+  box-sizing: border-box;
+}
+
+:global(.react-calendar__tile--active abbr) {
+  color: white !important;
+}
+
+:global(.react-calendar__tile--active abbr) {
+  position: relative;
+  z-index: 1;
+  color: white;
+}
+
+:global(.react-calendar__tile--active abbr)::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 38px;
+  height: 38px;
+  background-color: var(--MainColor2);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  z-index: -1;
+}
+
+:global(.react-calendar__tile:focus) {
+  background: transparent !important;
+}
+
+:global(.react-calendar__tile:hover) {
+  background: transparent !important;
+}
+
+.notCurrentMonth abbr {
+  color: var(--Gray2);
+}

@@ -1,0 +1,18 @@
+/* submit */
+.submit__container {
+ display: flex;
+ width: 100%;
+ justify-content: flex-end;
+ flex-shrink: 0;
+}
+
+.submit__button {
+ padding: 16px 26px;
+ color: var(--MainColor1);
+ background: var(--MainColor2);
+ font: var(--ButtonXLMedium);
+ border: none;
+ border-radius: 15px;
+ cursor: pointer;
+ transition: background-color 0.2s ease;
+}

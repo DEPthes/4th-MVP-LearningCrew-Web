@@ -36,14 +36,14 @@
 }
 
 .input::placeholder {
-    font: var(--BodyMRegular);
+    font: var(--BodySRegular);
     color: var(--Gray3);
     padding: 18px 0px;
 }
 
 .input__require {
     padding: 10px 0px 10px 0px;
-    font: var(--BodySRegular);
+    font: var(--BodyXSRegular);
     color: var(--Gray2);
     margin-bottom: 26px;
 }
@@ -52,7 +52,7 @@
     width: 500px;
     border-radius: 14px;
     color: var(--MainColor1);
-    font: var(--ButtonLMedium);
+    font: var(--ButtonXLMedium);
     background-color: var(--MainColor2);
     padding-top: 21px;
     padding-bottom: 21px;
@@ -66,7 +66,7 @@
 .warning__msg {
     padding-top: 10px;
     padding-bottom: 10px;
-    font: var(--BodySRegular);
+    font: var(--BodyXSRegular);
     color: var(--MainColor2);
 }
 

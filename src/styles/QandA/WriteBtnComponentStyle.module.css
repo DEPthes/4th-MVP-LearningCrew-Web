@@ -1,0 +1,22 @@
+.writeBtn__button {
+ display: flex;
+ padding: 12px 24px;
+ border-radius: 50px;
+ background-color: var(--MainColor2);
+ border: none;
+ box-shadow: 0px 4px 5px 0px rgba(0, 0, 0, 0.14),
+  0px 2px 4px 0px rgba(0, 0, 0, 0.2);
+ cursor: pointer;
+ position: fixed;
+ bottom: 20%;
+ right: 20%;
+ z-index: 1000;
+}
+
+.writeBtn__button p {
+ font: var(--BodyLMedium);
+ color: var(--MainColor1);
+ font-size: 20px;
+ margin: 0;
+ margin-left: 5px;
+}
