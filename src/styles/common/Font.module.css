@@ -1,0 +1,97 @@
+.toolbar {
+ display: flex;
+ position: relative;
+ flex-direction: column;
+ font: var(--ButtonSMedium);
+}
+
+.top {
+ display: flex;
+ flex-direction: row;
+ background-color: var(--MainColor1);
+ height: 100%;
+ color: var(--Gray1);
+ border-radius: 6px;
+ cursor: pointer;
+}
+
+.top p {
+ margin: 0;
+}
+
+.top__current {
+ display: flex;
+ justify-content: flex-start;
+ align-items: center;
+ border-top-left-radius: 6px;
+ border-bottom-left-radius: 6px;
+ padding: 4px 10px;
+ width: 50px;
+ margin-right: 2px;
+ background-color: var(--Gray4);
+}
+
+.top__arrow {
+ display: flex;
+ justify-content: center;
+ align-items: center;
+ width: 26px;
+ border-top-right-radius: 6px;
+ border-bottom-right-radius: 6px;
+ background-color: var(--Gray4);
+}
+
+.bottom {
+ display: flex;
+ flex-direction: column;
+ position: absolute;
+ top: 43px;
+ background-color: var(--Gray4);
+ color: var(--Gray1);
+ border-radius: 6px;
+ padding: 7px;
+ width: 90px;
+}
+
+.bottom__current {
+ display: flex;
+ justify-content: center;
+ align-items: center;
+ position: relative;
+ flex-direction: row;
+ border-bottom: 1px solid var(--Gray2);
+ padding: 7px 0;
+}
+
+.bottom__current img {
+ position: absolute;
+ top: 3px;
+ left: 0;
+}
+
+.bottom__current p {
+ margin: 0;
+}
+
+.bottom__list {
+ display: flex;
+ flex-direction: column;
+ justify-content: center;
+ align-items: center;
+ gap: 7px;
+ margin: 7px 0;
+}
+
+.bottom__item {
+ display: flex;
+ justify-content: center;
+ padding: 0;
+ cursor: pointer;
+ width: 100%;
+ border-radius: 4px;
+}
+
+.bottom__item:hover {
+ background-color: var(--Gray2);
+ color: var(--MainColor1);
+}

@@ -1,0 +1,48 @@
+.pagenation__container {
+ display: flex;
+ flex-direction: row;
+ width: 100%;
+ justify-content: center;
+ gap: 30px;
+ margin-top: 80px;
+ margin-bottom: 100px;
+}
+
+.pagenation__arrow {
+ display: flex;
+ flex-direction: row;
+ align-items: center;
+ cursor: pointer;
+ width: 80px;
+ justify-content: center;
+}
+
+.pagenation__arrow:hover {
+ background-color: var(--Gray4);
+}
+
+.pagenation__arrow p {
+ margin: 0;
+ white-space: nowrap;
+ font: var(--ButtonAddsizeMedium);
+ color: var(--Gray0);
+}
+
+.pagenation__number {
+ background-color: white;
+ display: flex;
+ border: 1px solid var(--Gray2);
+ border-radius: 8px;
+ padding: 5px 15px;
+ font: var(--ButtonAddsizeMedium);
+}
+
+.pagenation__current {
+ margin: 0 5px 0 0;
+ color: var(--MainColor2);
+}
+
+.pagenation__total {
+ margin: 0;
+ color: var(--Gray0);
+}

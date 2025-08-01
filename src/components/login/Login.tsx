@@ -1,6 +1,6 @@
-import logo from "../../assets/learn-it-logo.svg"
 import Header from "../header/Header"
 import styles from "../../styles/login/Login.module.css"
+import { Link } from "react-router-dom"
 
 export default function Login() {
     return (
@@ -27,7 +27,7 @@ export default function Login() {
             </form>
             <div className={styles.signUp__div__container}>
                 <div className={styles.signUp__info}>아직 회원이 아니신가요?</div>
-                <a href="#" className={styles.signUp__button}>회원가입</a>
+                <Link to="/signUp" className={styles.signUp__button}>회원가입</Link>
             </div>
         </div>
         </>

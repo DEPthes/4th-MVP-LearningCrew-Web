@@ -4,6 +4,12 @@ import Layout from "./components/layout/Layout"
 import Login from "./components/login/Login"
 import WelcomePage from "./components/welcomePage/WelcomePage"
 import SignUp from "./components/signUp/SignUp"
+import { CreateGroup } from "./pages/createGroup/CreateGroup"
+import { ShareNoteList } from "./pages/shareNote/ShareNoteList"
+import { ShareNoteDetail } from "./pages/shareNote/ShareNoteDetail"
+import { QandAWrite } from "./pages/QandA/QandAWrite"
+import { QandAList } from "./pages/QandA/QandAList"
+import { QandADetail } from "./pages/QandA/QandADetail"
 
 export const Router = () => {
   return (
@@ -11,8 +17,14 @@ export const Router = () => {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
-        <Route path="/welcomePage" element={<WelcomePage />} /> 
-        <Route path="/" element={<Layout> <Home /> </Layout> } />
+        <Route path="/welcomePage" element={<WelcomePage />} />
+        <Route path="/" element={<Layout> <Home /> </Layout>} />
+        <Route path="/createGroup" element={<CreateGroup />} />
+        <Route path="/shareNoteList" element={<ShareNoteList />} />
+        <Route path="/shareNoteDetail/:id" element={<ShareNoteDetail />} />
+        <Route path="/QandAList" element={<QandAList />} />
+        <Route path="/QandAWrite" element={<QandAWrite />} />
+        <Route path="/QandADetail/:id" element={<QandADetail />} />
       </Routes>
     </BrowserRouter>
   )
