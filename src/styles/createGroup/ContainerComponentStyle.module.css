@@ -1,0 +1,9 @@
+.container__container {
+ margin-bottom: 50px;
+}
+
+.container__title {
+ color: var(--PointColor);
+ font: var(--BodyMRegular);
+ margin-bottom: 15px;
+}

@@ -1,0 +1,10 @@
+.create__button {
+ width: 100%;
+ background-color: var(--MainColor2);
+ border-radius: 14px;
+ color: var(--MainColor1);
+ font: var(--ButtonXLMedium);
+ padding: 20px;
+ border: none;
+ cursor: pointer;
+}

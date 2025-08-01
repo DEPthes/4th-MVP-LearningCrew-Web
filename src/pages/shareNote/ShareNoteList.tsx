@@ -5,7 +5,7 @@ import styles from "../../styles/shareNote/ShareNoteListPageStyle.module.css"
 import { List } from "../../components/common/List"
 import { useState } from "react"
 
-export default () => {
+export const ShareNoteList = () => {
   const navigate = useNavigate()
   const noteData = ShareNoteListDummy
   const [snSort, setSnSort] = useState<string>("최신순")

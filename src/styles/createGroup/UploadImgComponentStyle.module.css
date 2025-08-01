@@ -1,0 +1,42 @@
+.upload__image {
+ width: 240px;
+ height: 180px;
+ border-radius: 8px;
+ position: relative;
+ overflow: visible;
+ background-color: #f0f0f0;
+}
+
+/* 오른쪽 아래 고정 */
+.camera__icon {
+ position: absolute;
+ bottom: -15px;
+ right: -15px;
+ width: 48px;
+ height: 48px;
+ cursor: pointer;
+}
+
+.upload__message {
+ color: var(--Gray2);
+ font: var(--BodyXSRegular);
+ margin-bottom: 20px;
+}
+
+.upload__errormessage {
+ color: var(--MainColor2);
+ font: var(--BodyXSRegular);
+ margin-bottom: 20px;
+}
+
+.upload__message2 {
+ color: var(--Gray2);
+ font: var(--BodyXSRegular);
+ margin-bottom: 20px;
+}
+
+.upload__errormessage2 {
+ color: var(--MainColor2);
+ font: var(--BodyXSRegular);
+ margin-top: 40px;
+}

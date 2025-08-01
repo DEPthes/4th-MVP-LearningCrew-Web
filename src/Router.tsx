@@ -4,7 +4,8 @@ import Layout from "./components/layout/Layout"
 import Login from "./components/login/Login"
 import WelcomePage from "./components/welcomePage/WelcomePage"
 import SignUp from "./components/signUp/SignUp"
-import ShareNoteList from "./pages/shareNote/ShareNoteList"
+import { CreateGroup } from "./pages/createGroup/CreateGroup"
+import { ShareNoteList } from "./pages/shareNote/ShareNoteList"
 import { ShareNoteDetail } from "./pages/shareNote/ShareNoteDetail"
 import { QandAWrite } from "./pages/QandA/QandAWrite"
 import { QandAList } from "./pages/QandA/QandAList"
@@ -18,6 +19,7 @@ export const Router = () => {
         <Route path="/signup" element={<SignUp />} />
         <Route path="/welcomePage" element={<WelcomePage />} />
         <Route path="/" element={<Layout> <Home /> </Layout>} />
+        <Route path="/createGroup" element={<CreateGroup />} />
         <Route path="/shareNoteList" element={<ShareNoteList />} />
         <Route path="/shareNoteDetail/:id" element={<ShareNoteDetail />} />
         <Route path="/QandAList" element={<QandAList />} />

@@ -1,0 +1,42 @@
+.input__container {
+ width: 100%;
+}
+
+.input__input {
+ border: 1px solid var(--Gray1);
+ border-radius: 4px;
+ height: 50px;
+ font: var(--BodySRegular);
+ color: black;
+ padding: 0 16px;
+ width: calc(100% - 32px);
+}
+
+.input__input::placeholder {
+ font: var(--BodySRegular);
+ color: var(--Gray3);
+}
+
+.input__input:focus {
+ outline: none;
+ border: 1px solid var(--MainColor2);
+}
+
+.input__message {
+ color: var(--Gray2);
+ font: var(--BodyXSRegular);
+ margin: 10px 0 0 0;
+}
+
+.input__errormessage {
+ color: var(--MainColor2);
+ font: var(--BodyXSRegular);
+ margin: 10px 0 0 0;
+ transition: all 0.5s ease-in-out;
+}
+
+.input__addimessage {
+ color: var(--Gray2);
+ font: var(--BodyXSRegular);
+ margin: 0;
+}
