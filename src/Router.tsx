@@ -12,6 +12,8 @@ import { QandAList } from "./pages/QandA/QandAList"
 import { QandADetail } from "./pages/QandA/QandADetail"
 import { MyNote } from "./pages/myNote/MyNote"
 import { MyNoteWrite } from "./pages/myNote/MyNoteWrite"
+import { Quiz } from "./pages/quiz/Quiz"
+import { QuizQ } from "./pages/quiz/QuizQ"
 
 export const Router = () => {
   return (
@@ -29,6 +31,8 @@ export const Router = () => {
         <Route path="/QandADetail/:id" element={<QandADetail />} />
         <Route path="/myNote" element={<MyNote />} />
         <Route path="/myNote/write" element={<MyNoteWrite />} />
+        <Route path="/quiz" element={<Quiz />} />
+        <Route path="/quiz/questions" element={<QuizQ />} />
       </Routes>
     </BrowserRouter>
   )

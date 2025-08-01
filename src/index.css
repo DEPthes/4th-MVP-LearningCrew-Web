@@ -30,6 +30,14 @@
  font-style: normal;
 }
 
+@font-face {
+ font-family: "S-CoreDream";
+ src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/S-CoreDream-6Bold.woff")
+  format("woff");
+ font-weight: 700;
+ font-style: normal;
+}
+
 :root {
  --MainColor1: #ffffff;
  --MainColor2: #ff552c;
@@ -80,4 +88,5 @@
  --TitleXLMedium: 500 40px / normal S-CoreDream;
  --Content: 400 16px / 150% S-CoreDream;
  --ButtonAddsizeMedium: 500 18px / normal S-CoreDream;
+ --ScoreBold: 700 100px / normal S-CoreDream;
 }
