@@ -10,6 +10,8 @@ import { ShareNoteDetail } from "./pages/shareNote/ShareNoteDetail"
 import { QandAWrite } from "./pages/QandA/QandAWrite"
 import { QandAList } from "./pages/QandA/QandAList"
 import { QandADetail } from "./pages/QandA/QandADetail"
+import { MyNote } from "./pages/myNote/MyNote"
+import { MyNoteWrite } from "./pages/myNote/MyNoteWrite"
 
 export const Router = () => {
   return (
@@ -20,11 +22,13 @@ export const Router = () => {
         <Route path="/welcomePage" element={<WelcomePage />} />
         <Route path="/" element={<Layout> <Home /> </Layout>} />
         <Route path="/createGroup" element={<CreateGroup />} />
-        <Route path="/shareNoteList" element={<ShareNoteList />} />
+        <Route path="/shareNote" element={<ShareNoteList />} />
         <Route path="/shareNoteDetail/:id" element={<ShareNoteDetail />} />
-        <Route path="/QandAList" element={<QandAList />} />
-        <Route path="/QandAWrite" element={<QandAWrite />} />
+        <Route path="/QandA" element={<QandAList />} />
+        <Route path="/QandA/write" element={<QandAWrite />} />
         <Route path="/QandADetail/:id" element={<QandADetail />} />
+        <Route path="/myNote" element={<MyNote />} />
+        <Route path="/myNote/write" element={<MyNoteWrite />} />
       </Routes>
     </BrowserRouter>
   )
