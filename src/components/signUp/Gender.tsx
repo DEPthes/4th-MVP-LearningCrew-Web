@@ -1,5 +1,5 @@
 import { useState } from "react"
-import styles from "../../../styles/signUp/Gender.module.css"
+import styles from "../../styles/signUp/Gender.module.css"
 
 export default function Gender() {
   const [selected, setSelected] = useState<string | null>(null)

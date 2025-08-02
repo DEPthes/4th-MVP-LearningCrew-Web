@@ -43,6 +43,7 @@
   font-size: 16px;
   font-weight: 400;
   margin-bottom: 38px;
+  text-transform: lowercase;
 }
 
 /* 요일 각각의 박스에 flex: 1로 균등 분배 */
