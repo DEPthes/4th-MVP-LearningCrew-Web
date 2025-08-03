@@ -1,0 +1,41 @@
+.mynote__container {
+ display: flex;
+ flex-direction: column;
+ height: 100%;
+}
+
+.mynote__content__container {
+ display: flex;
+ flex-direction: column;
+ border: 1px solid var(--Gray3);
+ border-radius: 8px;
+ padding: 49px 45px;
+}
+
+.mynote__title {
+ display: flex;
+ flex-direction: column;
+ padding-bottom: 30px;
+ border-bottom: 1px solid var(--Gray3);
+ color: var(--PointColor);
+ font: var(--HeadlineSMedium);
+}
+
+.mynote__content {
+ display: flex;
+ padding-top: 10px;
+ font: var(--Content);
+ color: var(--PointColor);
+}
+
+.mynote__content div {
+ display: flex;
+ flex-direction: column;
+ width: 100%;
+}
+
+.mynote__submit__container {
+ display: flex;
+ justify-content: flex-end;
+ margin-top: 45px;
+}

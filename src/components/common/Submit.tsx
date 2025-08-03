@@ -1,12 +1,13 @@
 import styles from '../../styles/common/Submit.module.css';
 
 interface SubmitProps {
-  isSubmitting: boolean;
+  isSubmitting?: boolean;
   onClick: () => void;
   canSubmit: boolean;
+  text: string;
 }
 
-export const Submit = ({ isSubmitting, onClick, canSubmit }: SubmitProps) => {
+export const Submit = ({ isSubmitting, onClick, canSubmit, text }: SubmitProps) => {
   return (
     <div className={styles.submit__container}>
       <button
@@ -19,7 +20,7 @@ export const Submit = ({ isSubmitting, onClick, canSubmit }: SubmitProps) => {
         }}
         disabled={isSubmitting || !canSubmit}
       >
-        {isSubmitting ? '업로드 중...' : '완료'}
+        {text}
       </button>
     </div>
   )
