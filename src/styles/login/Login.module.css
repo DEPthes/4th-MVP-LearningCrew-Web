@@ -21,7 +21,8 @@
 
 .label {
     font: var(--BodyLRegular);
-    color: var(--Gray1);
+    color: var(--PointColor);
+
 }
 
 .input {

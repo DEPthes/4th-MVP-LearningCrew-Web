@@ -1,9 +1,9 @@
 import { useState } from "react"
 import Calendar from "react-calendar"
 import "react-calendar/dist/Calendar.css"
-import styles from "../../../styles/signUp/Date.module.css"
-import ArrowLeft from "../../../assets/arrow_left.svg"
-import ArrowRight from "../../../assets/arrow_right.svg"
+import styles from "../../styles/signUp/Date.module.css"
+import ArrowLeft from "../../assets/arrow_left.svg"
+import ArrowRight from "../../assets/arrow_right.svg"
 
 export default function BirthCalendar() {
   const [birth, setBirth] = useState<Date | null>(null)

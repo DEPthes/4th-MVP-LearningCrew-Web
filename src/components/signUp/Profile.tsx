@@ -1,6 +1,6 @@
 import { useState } from "react"
-import styles from "../../../styles/signUp/Profile.module.css"
-import ProfileIcon from "../../../assets/ProfileIcon.svg"
+import styles from "../../styles/signUp/Profile.module.css"
+import ProfileIcon from "../../assets/ProfileIcon.svg"
 
 export default function Profile() {
   const [preview, setPreview] = useState<string | null>(null)
@@ -22,13 +22,11 @@ export default function Profile() {
       <div className={styles.info}>*프로필 사진은 최대 50mb까지 업로드 가능합니다.</div>
 
       <label htmlFor="fileInput" className={styles.upload__area}>
-        {preview ? (
-          <img src={preview} alt="preview" className={styles.preview} />
-        ) : (
-          <>
-            <img src={ProfileIcon} alt="기본 아이콘" className={styles.icon} />
-          </>
-        )}
+        <img
+            src={preview ? preview : ProfileIcon}
+            alt="프로필 이미지"
+            className={styles.icon}
+          />
       </label>
       <input
         id="fileInput"

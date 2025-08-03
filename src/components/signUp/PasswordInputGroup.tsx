@@ -1,4 +1,4 @@
-import styles from "../../../styles/signUp/PasswordInputGroup.module.css"
+import styles from "../../styles/signUp/PasswordInputGroup.module.css"
 
 type PasswordInputGroupProps = {
   label: string
@@ -23,7 +23,6 @@ export default function PasswordInputGroup({
             placeholder={placeholder}
             className={styles.input}
           />
-          <button className={styles.toggle__btn}></button>
         </div>
         <div className={styles.input__require}>{message}</div>
         <div className={styles.input__require2}>{message2}</div>

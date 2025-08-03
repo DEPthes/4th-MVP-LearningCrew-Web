@@ -1,4 +1,4 @@
-import styles from "../../../styles/signUp/IdInputGroup.module.css"
+import styles from "../../styles/signUp/IdInputGroup.module.css"
 import { use, useState } from "react"
 
 type IdInputGroupProps = {

@@ -1,10 +1,10 @@
 import Header from "../../components/header/Header"
 import styles from "../../styles/signUp/SignUp.module.css"
-import IdInputGroup from "./components/IdInputGroup"
-import PasswordInputGroup from "./components/PasswordInputGroup"
-import Date from "./components/date"
-import Profile from "./components/Profile"
-import Gender from "./components/Gender"
+import IdInputGroup from "../../components/signUp/IdInputGroup"
+import PasswordInputGroup from "../../components/signUp/PasswordInputGroup"
+import Date from "../../components/signUp/Date"
+import Profile from "../../components/signUp/Profile"
+import Gender from "../../components/signUp/Gender"
 
 
 export default function SignUp() {
