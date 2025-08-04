@@ -9,7 +9,9 @@ import HostGroupStudyWriting from "./components/hostGroupStudyWriting/HostGroupS
 import HostGroupStudy from "./components/hostGroupStudy/HostGroupStudy"
 import HostGroupParticipants from "./components/hostGroupParticipants/HostGroupParticipants"
 import HostGroupApplicant from "./components/hostGroupApplicant/HostGroupApplicant"
+
 import FixedBanner from "./components/fixedGroupHeader/FixedBanner"
+
 import { CreateGroup } from "./pages/createGroup/CreateGroup"
 import { ShareNoteList } from "./pages/shareNote/ShareNoteList"
 import { ShareNoteDetail } from "./pages/shareNote/ShareNoteDetail"

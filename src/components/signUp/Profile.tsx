@@ -3,6 +3,7 @@ import styles from "../../styles/signUp/Profile.module.css"
 import ProfileIcon from "../../assets/ProfileIcon.svg"
 import PhotoCamera from "../../assets/PhotoCamera.svg"
 
+
 export default function Profile() {
   const [preview, setPreview] = useState<string | null>(null)
 
@@ -22,13 +23,14 @@ export default function Profile() {
       <div className={styles.label}>프로필 이미지 설정</div>
       <div className={styles.info}>*프로필 사진은 최대 50mb까지 업로드 가능합니다.</div>
 
-      <div className={styles.profile__wrapper}>
-        <label htmlFor="fileInput" className={styles.upload__area}>
-          <img
-            src={preview ? preview : ProfileIcon}
-            alt="프로필 이미지"
-            className={styles.icon}
-          />
+    <div className={styles.profile__wrapper}>
+      <label htmlFor="fileInput" className={styles.upload__area}>
+        <img
+          src={preview ? preview : ProfileIcon}
+          alt="프로필 이미지"
+          className={styles.icon}
+        />
+      </label>
         </label>
 
         <label htmlFor="fileInput" className={styles.cameraImg}>
@@ -43,6 +45,7 @@ export default function Profile() {
           style={{ display: "none" }}
         />
       </div>
+
 
       <div className={styles.msg}>*프로필 사진을 업로드 하세요.</div>
     </div>
