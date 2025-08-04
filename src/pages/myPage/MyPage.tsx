@@ -1,8 +1,9 @@
 import styles from "../../styles/pages/myPage/myPageStyle.module.css";
 import { MdNavigateNext } from "react-icons/md";
 import profile from '../../assets/profile.svg';
+import { Link } from "react-router-dom";
 
-const MyPage = () => {
+const MyPageHome = () => {
   return (
     <main className={styles.container}>
       {/* 찜 그룹 */}
@@ -61,7 +62,7 @@ const MyPage = () => {
             </div>
 
             <div className={styles.buttonRow}>
-                <button className={styles.save}>수정</button>
+              <Link to="/myPage/edit" className={styles.save}>수정</Link>
             </div>
           </div>
       </section>
@@ -70,4 +71,4 @@ const MyPage = () => {
   );
 };
 
-export default MyPage;
+export default MyPageHome;
