@@ -23,14 +23,13 @@ export default function Profile() {
       <div className={styles.label}>프로필 이미지 설정</div>
       <div className={styles.info}>*프로필 사진은 최대 50mb까지 업로드 가능합니다.</div>
 
-    <div className={styles.profile__wrapper}>
-      <label htmlFor="fileInput" className={styles.upload__area}>
-        <img
-          src={preview ? preview : ProfileIcon}
-          alt="프로필 이미지"
-          className={styles.icon}
-        />
-      </label>
+      <div className={styles.profile__wrapper}>
+        <label htmlFor="fileInput" className={styles.upload__area}>
+          <img
+            src={preview ? preview : ProfileIcon}
+            alt="프로필 이미지"
+            className={styles.icon}
+          />
         </label>
 
         <label htmlFor="fileInput" className={styles.cameraImg}>
