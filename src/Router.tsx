@@ -22,6 +22,9 @@ import { MyNote } from "./pages/myNote/MyNote"
 import { MyNoteWrite } from "./pages/myNote/MyNoteWrite"
 import { Quiz } from "./pages/quiz/Quiz"
 import { QuizQ } from "./pages/quiz/QuizQ"
+import MyPageHome from "./pages/myPage/MyPage"
+import EditProfile from "./pages/myPage/EditProfile"
+import FavoriteGroupList from "./pages/myPage/FavoriteGroupList"
 
 export const Router = () => {
   return (
@@ -47,6 +50,10 @@ export const Router = () => {
         <Route path="/myNote/write" element={<MyNoteWrite />} />
         <Route path="/quiz" element={<Quiz />} />
         <Route path="/quiz/questions" element={<QuizQ />} />
+        <Route path="/mypage" element={<Layout><MyPageHome /></Layout>} />
+        <Route path="/myPage/edit" element={<EditProfile />} />
+        <Route path="/mypage/favorite" element={<Layout><FavoriteGroupList /></Layout>} />
+
       </Routes>
     </BrowserRouter>
   )

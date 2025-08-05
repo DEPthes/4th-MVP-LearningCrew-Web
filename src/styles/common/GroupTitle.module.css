@@ -1,0 +1,7 @@
+.title {
+  font: var(--HeadlineLMedium);
+  text-align: left;
+  color: var(--SubColor1);
+  width: auto;
+  margin: 0;
+}
