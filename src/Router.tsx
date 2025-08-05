@@ -25,11 +25,21 @@ import { QuizQ } from "./pages/quiz/QuizQ"
 import MyPageHome from "./pages/myPage/MyPage"
 import EditProfile from "./pages/myPage/EditProfile"
 import FavoriteGroupList from "./pages/myPage/FavoriteGroupList"
+import ParticipantMenu from "./components/fixedGroupHeader/ParticipantMenu"
+import GroupLayout from "./components/layout/GroupLayout";
 
 export const Router = () => {
   return (
     <BrowserRouter>
-      <Routes>
+        <Routes>
+          <Route path="/GroupLayout" element={<GroupLayout />}>
+          <Route path="MyGroupStudy" element={<MyGroupStudy title="예시제목" content="예시내용입니다." />} />
+          <Route path="myNote" element={<MyNote />} />
+          <Route path="shareNote" element={<ShareNoteList />} />
+          <Route path="QandA" element={<QandAList />} />
+          <Route path="quiz" element={<Quiz />} />
+        </Route>
+        <Route path="ParticipantMenu" element={<ParticipantMenu />}/>
         <Route path="/FixedBanner" element ={<FixedBanner />} />
         <Route path="/HostGroupApplicant" element ={<HostGroupApplicant />} />
         <Route path="/HostGroupParticipants" element ={<HostGroupParticipants />} />
