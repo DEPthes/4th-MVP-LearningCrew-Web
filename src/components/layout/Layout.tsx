@@ -1,12 +1,8 @@
 import Footer from "../common/Footer";
 import Navbar from "../common/Navbar"; 
-import React from "react";
+import { Outlet } from "react-router-dom";
 
-interface LayoutProps {
-  children: React.ReactNode;
-}
-
-const Layout: React.FC<LayoutProps> = ({ children }) => {
+const Layout = () => {
   return (
     <div style={{
       display: "flex",
@@ -15,7 +11,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     }}>
       <Navbar />
       <main style={{ flex: 1 }}>
-        {children}
+        <Outlet /> {/* 여기에 자식 Route의 element들이 렌더링됨 */}
       </main>
       <Footer />
     </div>
