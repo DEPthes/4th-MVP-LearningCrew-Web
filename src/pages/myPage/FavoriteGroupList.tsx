@@ -3,6 +3,8 @@ import GroupCard from '../../components/common/GroupCard';
 import GroupTitle from '../../components/common/GroupTitle';
 import {Pagenation} from '../../components/common/Pagenation';
 import sample from '../../assets/sample.png';
+import { Sort } from '../../components/common/Sort';
+import { useState } from 'react';
 
 const dummyData = Array.from({ length: 20 }, (_, i) => ({
   id: i,
@@ -16,10 +18,19 @@ const dummyData = Array.from({ length: 20 }, (_, i) => ({
 }));
 
 export default function FavoriteGroupList() {
+  const [sort, setSort] = useState<string>('최신순');
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState(1);
+
   return (
     <div className={styles.pageWrapper}>
       <div className={styles.container}>
-        <GroupTitle text="찜 그룹 리스트" />
+        <div className={styles.header}>
+          <GroupTitle text="찜 그룹 리스트" />
+          <div className={styles.sortWrapper}>
+            <Sort sort={sort} setSort={setSort} />
+          </div>
+        </div>
         <div className={styles.cardGrid}>
           {dummyData.map(group => (
             <GroupCard
@@ -32,11 +43,9 @@ export default function FavoriteGroupList() {
               person={group.person}
               tags={group.tags}
             />
-           
           ))}
-
         </div>
-         <Pagenation />
+         <Pagenation currentPage={currentPage} totalPages={totalPages} setCurrentPage={setCurrentPage}/>
       </div>
     </div>
   );

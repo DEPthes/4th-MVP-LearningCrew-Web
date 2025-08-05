@@ -18,6 +18,23 @@
   padding-bottom: 5vh;
 }
 
+.header{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: nowrap;
+}
+
+.sortWrapper {
+  position: relative;
+  z-index: 10;
+}
+
+/* 안됨
+.header > * {
+  align-self: center;
+} */
+
 .cardGrid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);

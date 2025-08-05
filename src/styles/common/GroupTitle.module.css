@@ -2,5 +2,6 @@
   font: var(--HeadlineLMedium);
   text-align: left;
   color: var(--SubColor1);
-  margin-bottom: -6px;
+  width: auto;
+  margin: 0;
 }
