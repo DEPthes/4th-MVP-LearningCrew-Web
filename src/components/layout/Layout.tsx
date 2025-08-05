@@ -11,7 +11,7 @@ const Layout = () => {
     }}>
       <Navbar />
       <main style={{ flex: 1 }}>
-        <Outlet /> {/* 여기에 자식 Route의 element들이 렌더링됨 */}
+        <Outlet /> 
       </main>
       <Footer />
     </div>
