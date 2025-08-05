@@ -1,4 +1,4 @@
-import styles from "../../styles/pages/myPage/myPageStyle.module.css";
+import styles from "../../styles/myPage/myPage.module.css";
 import { MdNavigateNext } from "react-icons/md";
 import profile from '../../assets/profile.svg';
 import { Link } from "react-router-dom";
@@ -11,9 +11,9 @@ const MyPageHome = () => {
         <h2 className={styles.title}>찜 그룹</h2>
         <hr></hr>
         <div className={styles.groupButtonWrapper}>
-          <button className={styles.groupButton}>찜 그룹 리스트 확인하기 
+          <Link to="/mypage/favorite" className={styles.groupButton} >찜 그룹 리스트 확인하기 
               <MdNavigateNext className={styles.groupIcon} />
-          </button>
+           </Link>   
         </div>
       </section>
 
