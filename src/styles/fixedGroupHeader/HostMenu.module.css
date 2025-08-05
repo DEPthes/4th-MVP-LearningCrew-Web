@@ -1,0 +1,28 @@
+.button__container {
+    display: flex;
+    flex-direction: column;
+    width: 180px;
+    height: 384px;
+    padding: 10px;
+    gap: 10px;
+    border-radius: 16px;
+    border: 1px solid var(--Gray3, #C9C9C9);
+}
+
+.button {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    border-radius: 16px;
+    background-color: #FFFFFF;
+    color: var(--PointColor);
+    font: var(--ButtonLRegular);
+    border-style: none;
+    cursor: pointer;
+}
+
+.button__active {
+  background-color: var(--PointColor);
+  color: #FFFFFF;
+}

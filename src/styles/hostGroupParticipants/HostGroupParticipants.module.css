@@ -60,6 +60,7 @@
 }
 
 .header__th__nickname {
+    margin-left: 6px;
     padding-left: 67.5px;
     padding-right: 67.5px;
     font: var(--HeadLineSMedium);
@@ -67,6 +68,7 @@
 }
 
 .header__th__gender {
+    margin-left: 16px;
     padding-left: 20.5px;
     padding-right: 20.5px;
     font: var(--HeadLineSMedium);
@@ -76,6 +78,7 @@
 .header__th__date {
     padding-left: 20.5px;
     padding-right: 20.5px;
+    margin-left: 16px;
     font: var(--HeadLineSMedium);
     color: var(--Gray0);
 }
