@@ -18,11 +18,11 @@ export default function BirthCalendar() {
         value={birth}
         locale="ko-KR"
         calendarType="gregory"
-        formatDay={(locale, date) => String(date.getDate())}
-        formatShortWeekday={(locale, date) =>
+        formatDay={(_, date) => String(date.getDate())}
+        formatShortWeekday={(_, date) =>
           date.toLocaleDateString("en-US", { weekday: "short" }).toLowerCase()
         }
-        formatMonthYear={(locale, date) =>
+        formatMonthYear={(_, date) =>
           `${date.getFullYear()}년 ${date.getMonth() + 1}월`
         }
         prevLabel={<img src={ArrowLeft} alt="이전달" style={{ width: "24px", height: "24px" }} />}

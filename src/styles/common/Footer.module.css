@@ -5,11 +5,14 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  min-width: 1024px;
 }
 
 .container {
   color: var(--Gray2);
-  width: 78.5rem;
+  width: 100%;
+  max-width: 1256px;
+  margin: 0 100px ;
 }
 
 .container hr {
@@ -49,5 +52,5 @@
 }
 
 .bottom div {
- margin-top: 0.6rem;   
+  margin-top: 0.6rem;   
 }

@@ -44,7 +44,7 @@ export default function FixedBanner() {
       </div>
     </div>
         <div className={styles.step__wrapper}>
-            <Step totalSteps={5} currentStep={3} />
+            <Step totalSteps={6} currentStep={2} />
         </div>
     </div>
     </>

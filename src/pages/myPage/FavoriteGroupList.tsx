@@ -1,7 +1,7 @@
 import styles from '../../styles/myPage/FavoriteGroupList.module.css';
 import GroupCard from '../../components/common/GroupCard';
 import GroupTitle from '../../components/common/GroupTitle';
-import {Pagenation} from '../../components/common/Pagenation';
+import { Pagenation } from '../../components/common/Pagenation';
 import sample from '../../assets/sample.png';
 import { Sort } from '../../components/common/Sort';
 import { useState } from 'react';
@@ -21,7 +21,7 @@ const dummyData = Array.from({ length: 20 }, (_, i) => ({
 export default function FavoriteGroupList() {
   const [sort, setSort] = useState<string>('최신순');
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [totalPages, setTotalPages] = useState(1);
+  // const [totalPages, setTotalPages] = useState(1);
 
   return (
     <div className={styles.pageWrapper}>
@@ -47,7 +47,7 @@ export default function FavoriteGroupList() {
             />
           ))}
         </div>
-         <Pagenation currentPage={currentPage} totalPages={totalPages} setCurrentPage={setCurrentPage}/>
+        <Pagenation currentPage={currentPage} totalPages={1} setCurrentPage={setCurrentPage} />
       </div>
     </div>
   );

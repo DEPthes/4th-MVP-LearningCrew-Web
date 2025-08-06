@@ -11,7 +11,7 @@ export const ShareNoteList = () => {
   const [snSort, setSnSort] = useState<string>("최신순")
 
   const handleNoteClick = (noteId: number) => {
-    navigate(`/shareNoteDetail/${noteId}`)
+    navigate(`/GroupLayout/shareNoteDetail/${noteId}`)
   }
 
   return (
