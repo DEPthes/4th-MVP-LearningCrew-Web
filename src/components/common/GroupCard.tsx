@@ -1,6 +1,6 @@
 import styles from "../../styles/common/GroupCard.module.css";
 import { FaBookmark, FaRegBookmark } from "react-icons/fa";
-import { useState } from "react";
+// import { useState } from "react";
 
 interface GroupCardProps {
   label: string;
