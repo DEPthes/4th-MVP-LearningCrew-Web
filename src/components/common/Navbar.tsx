@@ -13,7 +13,6 @@ export default function Navbar() {
         </div>
 
         {/* 메뉴 */}
-        {/* 라우트 경로 나중에 수정 */}
         <div className={styles.menu}>
           <NavLink
             to="/"
@@ -24,7 +23,7 @@ export default function Navbar() {
             홈
           </NavLink>
           <NavLink
-            to="/groups"
+            to="/GroupLayout"
             className={({ isActive }) =>
               `${styles.menuItem} ${isActive ? styles.active : ""}`
             }
