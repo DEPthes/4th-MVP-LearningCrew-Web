@@ -1,5 +1,5 @@
 import Footer from "../common/Footer";
-import Navbar from "../common/Navbar"; 
+import Navbar from "../common/Navbar";
 import { Outlet } from "react-router-dom";
 
 const Layout = () => {
@@ -10,10 +10,11 @@ const Layout = () => {
       minHeight: "100vh"
     }}>
       <Navbar />
-      <main style={{ 
+      <main style={{
         flex: 1,
-        paddingTop: "116px", }}>
-        <Outlet /> 
+        paddingTop: "116px",
+      }}>
+        <Outlet />
       </main>
       <Footer />
     </div>
