@@ -1,5 +1,6 @@
 import styles from "../../styles/common/GroupCard.module.css";
-import { CiBookmark } from "react-icons/ci";
+import { FaBookmark, FaRegBookmark } from "react-icons/fa";
+import { useState } from "react";
 
 interface GroupCardProps {
   label: string;
@@ -9,14 +10,31 @@ interface GroupCardProps {
   person: string;
   tags: string[];
   image: string;
+  isBookmarked: boolean;
 }
 
 export default  function GroupCard ({ label, count, title, subtitle, person, tags, image }: GroupCardProps) {
+  const [isBookmarked, setIsBookmarked] = useState(false);
+
+  const handleBookmarkClick = () => {
+    setIsBookmarked((prev) => !prev);
+  };
+
   return (
     <div className={styles.card}>
       <div className={styles.imageWrapper}>
         <img src={image} alt="카드 이미지" className={styles.image} />
-        <CiBookmark className={styles.bookmark} />
+        {isBookmarked ? (
+          <FaBookmark
+            className={`${styles.bookmark} ${styles.filled}`}
+            onClick={handleBookmarkClick}
+          />
+        ) : (
+          <FaRegBookmark
+            className={`${styles.bookmark} ${styles.outlined}`}
+            onClick={handleBookmarkClick}
+          />
+        )}
         <div className={styles.label}>{label}</div>
         <div className={styles.count}>{count}</div>
       </div>

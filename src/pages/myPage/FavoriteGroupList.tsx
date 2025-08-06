@@ -15,6 +15,7 @@ const dummyData = Array.from({ length: 20 }, (_, i) => ({
   subtitle: '25.07.11 ~ 25.08.20',
   person: '@아무개',
   tags: ['IT', '안드로이드', '프론트'],
+  isBookmarked: true,
 }));
 
 export default function FavoriteGroupList() {
@@ -42,6 +43,7 @@ export default function FavoriteGroupList() {
               subtitle={group.subtitle}
               person={group.person}
               tags={group.tags}
+              isBookmarked={group.isBookmarked}
             />
           ))}
         </div>
