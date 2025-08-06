@@ -1,5 +1,5 @@
 import { NavLink, Link } from "react-router-dom";
-import styles from "../../styles/components/common/Navbar.module.css";
+import styles from "../../styles/common/Navbar.module.css";
 import { MdOutlineSearch } from "react-icons/md";
 
 export default function Navbar() {
