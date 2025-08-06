@@ -18,7 +18,7 @@ interface CategoryProps {
 
 export const Category = ({ name, data, message, errorMessage, setValue }: CategoryProps) => {
   const [selects, setSelects] = useState<string[]>([]);
-  const [etc, setEtc] = useState<string>("");
+  // const [etc, setEtc] = useState<string>("");
 
   //나중에 api 보고 id로 정렬한 다음 넣기, 기타가 포함되어 있을 경우 기타 대신 etc 넣기
   const handleCategorySelect = (value: string) => {
@@ -35,7 +35,7 @@ export const Category = ({ name, data, message, errorMessage, setValue }: Catego
     if (value.length > 20) {
       alert('키워드는 20자 이내로 입력해주세요.');
     }
-    setEtc(value);
+    // setEtc(value);
   }
 
   return (
