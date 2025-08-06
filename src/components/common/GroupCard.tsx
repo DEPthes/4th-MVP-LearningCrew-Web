@@ -10,14 +10,14 @@ interface GroupCardProps {
   person: string;
   tags: string[];
   image: string;
-  isBookmarked: boolean;
+  isBookmarked?: boolean;
 }
 
-export default  function GroupCard ({ label, count, title, subtitle, person, tags, image }: GroupCardProps) {
-  const [isBookmarked, setIsBookmarked] = useState(false);
+export default  function GroupCard ({ label, count, title, subtitle, person, tags, image, isBookmarked }: GroupCardProps) {
+const [bookmarked, setBookmarked] = useState(isBookmarked ?? false);
 
   const handleBookmarkClick = () => {
-    setIsBookmarked((prev) => !prev);
+    setBookmarked((prev) => !prev);
   };
 
   return (
