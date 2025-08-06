@@ -1,12 +1,8 @@
 import Footer from "../common/Footer";
 import Navbar from "../common/Navbar"; 
-import React from "react";
+import { Outlet } from "react-router-dom";
 
-interface LayoutProps {
-  children: React.ReactNode;
-}
-
-const Layout: React.FC<LayoutProps> = ({ children }) => {
+const Layout = () => {
   return (
     <div style={{
       display: "flex",
@@ -14,8 +10,10 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       minHeight: "100vh"
     }}>
       <Navbar />
-      <main style={{ flex: 1 }}>
-        {children}
+      <main style={{ 
+        flex: 1,
+        paddingTop: "116px", }}>
+        <Outlet /> 
       </main>
       <Footer />
     </div>
