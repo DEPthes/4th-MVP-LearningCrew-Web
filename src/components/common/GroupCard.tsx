@@ -13,11 +13,11 @@ interface GroupCardProps {
   isBookmarked?: boolean;
 }
 
-export default  function GroupCard ({ label, count, title, subtitle, person, tags, image, isBookmarked }: GroupCardProps) {
-const [bookmarked, setBookmarked] = useState(isBookmarked ?? false);
+export default function GroupCard({ label, count, title, subtitle, person, tags, image, isBookmarked }: GroupCardProps) {
+  // const [bookmarked, setBookmarked] = useState(isBookmarked ?? false);
 
   const handleBookmarkClick = () => {
-    setBookmarked((prev) => !prev);
+    // setBookmarked((prev) => !prev);
   };
 
   return (
@@ -46,8 +46,8 @@ const [bookmarked, setBookmarked] = useState(isBookmarked ?? false);
         </div>
         <div className={styles.tags}>
           {tags.map((tag, idx) => (
-          <span key={idx}>#{tag}</span>
-        ))}
+            <span key={idx}>#{tag}</span>
+          ))}
         </div>
       </div>
     </div>
