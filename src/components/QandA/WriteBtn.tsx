@@ -6,7 +6,7 @@ export const WriteBtn = () => {
   const navigate = useNavigate();
 
   const handleWriteClick = () => {
-    navigate("/QandAWrite");
+    navigate("/GroupLayout/QandA/write");
   }
 
   return (

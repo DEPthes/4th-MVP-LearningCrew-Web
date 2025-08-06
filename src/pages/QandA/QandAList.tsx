@@ -12,7 +12,7 @@ export const QandAList = () => {
   const [qnaSort, setQnaSort] = useState<string>("최신순");
 
   const handleNoteClick = (noteId: number) => {
-    navigate(`/QandADetail/${noteId}`);
+    navigate(`/GroupLayout/QandADetail/${noteId}`);
   };
 
   return (
