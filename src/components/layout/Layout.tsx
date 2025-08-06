@@ -10,7 +10,9 @@ const Layout = () => {
       minHeight: "100vh"
     }}>
       <Navbar />
-      <main style={{ flex: 1 }}>
+      <main style={{ 
+        flex: 1,
+        paddingTop: "116px", }}>
         <Outlet /> 
       </main>
       <Footer />
