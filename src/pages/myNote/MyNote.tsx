@@ -42,7 +42,7 @@ function greet(user: User): string {
         </div>
       </div>
       <div className={styles.mynote__submit__container}>
-        <Submit text="작성" onClick={() => { navigator("/myNote/write") }} canSubmit={true} />
+        <Submit text="작성" onClick={() => { navigator("/GroupLayout/myNote/write") }} canSubmit={true} />
       </div>
     </div>
   )

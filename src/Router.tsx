@@ -31,39 +31,34 @@ import GroupLayout from "./components/layout/GroupLayout";
 export const Router = () => {
   return (
     <BrowserRouter>
-        <Routes>
-          <Route path="/GroupLayout" element={<GroupLayout />}>
+      <Routes>
+        <Route path="/GroupLayout" element={<GroupLayout />}>
           <Route path="MyGroupStudy" element={<MyGroupStudy title="예시제목" content="예시내용입니다." />} />
           <Route path="myNote" element={<MyNote />} />
+          <Route path="myNote/write" element={<MyNoteWrite />} />
           <Route path="shareNote" element={<ShareNoteList />} />
+          <Route path="shareNoteDetail/:id" element={<ShareNoteDetail />} />
           <Route path="QandA" element={<QandAList />} />
+          <Route path="QandA/write" element={<QandAWrite />} />
+          <Route path="QandADetail/:id" element={<QandADetail />} />
           <Route path="quiz" element={<Quiz />} />
         </Route>
-        <Route path="ParticipantMenu" element={<ParticipantMenu />}/>
-        <Route path="/FixedBanner" element ={<FixedBanner />} />
-        <Route path="/HostGroupApplicant" element ={<HostGroupApplicant />} />
-        <Route path="/HostGroupParticipants" element ={<HostGroupParticipants />} />
-        <Route path="/HostGroupStudy" element ={<HostGroupStudy />} />
-        <Route path="/HostGroupStudyWriting" element ={<HostGroupStudyWriting />} />
+        <Route path="/ParticipantMenu" element={<ParticipantMenu />} />
+        <Route path="/FixedBanner" element={<FixedBanner />} />
+        <Route path="/HostGroupApplicant" element={<HostGroupApplicant />} />
+        <Route path="/HostGroupParticipants" element={<HostGroupParticipants />} />
+        <Route path="/HostGroupStudy" element={<HostGroupStudy />} />
+        <Route path="/HostGroupStudyWriting" element={<HostGroupStudyWriting />} />
         <Route path="/MyGroupStudy" element={<MyGroupStudy title="예시제목" content="예시내용입니다." />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/welcomePage" element={<WelcomePage />} />
         <Route path="/" element={<Layout><Home /></Layout>} />
         <Route path="/createGroup" element={<CreateGroup />} />
-        <Route path="/shareNote" element={<ShareNoteList />} />
-        <Route path="/shareNoteDetail/:id" element={<ShareNoteDetail />} />
-        <Route path="/QandA" element={<QandAList />} />
-        <Route path="/QandA/write" element={<QandAWrite />} />
-        <Route path="/QandADetail/:id" element={<QandADetail />} />
-        <Route path="/myNote" element={<MyNote />} />
-        <Route path="/myNote/write" element={<MyNoteWrite />} />
-        <Route path="/quiz" element={<Quiz />} />
         <Route path="/quiz/questions" element={<QuizQ />} />
         <Route path="/mypage" element={<Layout><MyPageHome /></Layout>} />
         <Route path="/myPage/edit" element={<EditProfile />} />
         <Route path="/mypage/favorite" element={<Layout><FavoriteGroupList /></Layout>} />
-
       </Routes>
     </BrowserRouter>
   )

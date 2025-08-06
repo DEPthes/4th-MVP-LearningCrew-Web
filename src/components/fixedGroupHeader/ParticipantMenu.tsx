@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import styles from "../../styles/fixedGroupHeader/ParticipantMenu.module.css";
 
@@ -18,7 +17,7 @@ export default function HostMenu() {
   return (
     <div className={styles.menu__container}>
       {menuItems.map((item) => {
-        const isActive = location.pathname === item.path;
+        const isActive = location.pathname.startsWith(item.path);
 
         return (
           <button
