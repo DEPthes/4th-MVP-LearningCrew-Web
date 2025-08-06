@@ -136,6 +136,7 @@
 
 .step__wrapper {
   display: flex;
-  justify-content: center;
+  width: 1238px;
+  margin: 0 auto;
   padding-bottom: 72px;
 }
