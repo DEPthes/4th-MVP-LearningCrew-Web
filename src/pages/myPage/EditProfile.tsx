@@ -2,7 +2,7 @@ import Header from "../../components/header/Header";
 import styles from "../../styles/myPage/EditProfile.module.css";
 import IdInputGroup from "../../components/signUp/IdInputGroup";
 import PasswordInputGroup from "../../components/signUp/PasswordInputGroup";
-import Date from "../../components/signUp/Date";
+import Date from "../../components/signUp/BirthCalendar";
 import Profile from "../../components/signUp/Profile";
 import Gender from "../../components/signUp/Gender";
 

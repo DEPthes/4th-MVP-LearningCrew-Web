@@ -1,32 +1,40 @@
 import styles from "../../styles/signUp/PasswordInputGroup.module.css"
 
-type PasswordInputGroupProps = {
+interface PasswordInputGroupProps {
   label: string
   placeholder: string
   message: string
-  message2?: string
+  value: string
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
 }
 
 export default function PasswordInputGroup({
   label,
   placeholder,
   message,
-  message2
+  value,
+  onChange,
 }: PasswordInputGroupProps) {
+  const isError = message.includes("충족하지") || message.includes("일치하지")
+  const isSuccess = message === "*사용 가능한 비밀번호입니다." || message === "*비밀번호가 일치합니다."
+
   return (
-    <>
-      <div className={styles.div__container}>
-        <label className={styles.label}>{label}</label>
-        <div className={styles.input__container}>
-          <input
-            type="password"
-            placeholder={placeholder}
-            className={styles.input}
-          />
-        </div>
-        <div className={styles.input__require}>{message}</div>
-        <div className={styles.input__require2}>{message2}</div>
+    <div className={styles.div__container}>
+      <label className={styles.label}>{label}</label>
+      <div className={styles.input__container}>
+        <input
+          type="password"
+          placeholder={placeholder}
+          className={styles.input}
+          value={value}
+          onChange={onChange}
+        />
       </div>
-    </>
+      <div
+        className={`${styles.input__require} ${isError ? styles.require__error : ""} ${isSuccess ? styles.success : ""}`}
+      >
+        {message}
+      </div>
+    </div>
   )
 }
