@@ -17,7 +17,7 @@ export default function EditProfile() {
           {/* 아이디 */}
           <IdInputGroup
             label="아이디"
-            placeholder="이메일을 입력하세요"
+            placeholder="이메일을 입력하세요."
             message="*아이디를 입력하세요."
             type="email"
           />
@@ -25,7 +25,7 @@ export default function EditProfile() {
           {/* 비밀번호 */}
           <PasswordInputGroup
             label="비밀번호"
-            placeholder="비밀번호를 입력하세요"
+            placeholder="비밀번호를 입력하세요."
             message="*영어 대소문자, 숫자, 특수기호 조합 최소 8자 이상"
             message2="*비밀번호를 입력하세요."
           />
@@ -41,7 +41,7 @@ export default function EditProfile() {
           <IdInputGroup
             label="닉네임"
             placeholder="닉네임을 입력하세요"
-            message="*닉네임은 수정 가능합니다."
+            message="*닉네임을 입력하세요."
             type="text"
           />
 

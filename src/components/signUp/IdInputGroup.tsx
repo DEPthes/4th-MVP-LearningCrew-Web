@@ -1,4 +1,5 @@
 import styles from "../../styles/signUp/IdInputGroup.module.css"
+import { useState } from "react"
 
 type IdInputGroupProps = {
   label: string
