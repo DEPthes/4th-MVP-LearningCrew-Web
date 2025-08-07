@@ -1,95 +1,106 @@
 .div__container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 48px;
-    padding-top: 100px;
-    padding-bottom: 165px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 48px;
+  padding-top: 100px;
+  padding-bottom: 165px;
 }
 
 .form__title {
-    width: 500px;
-    font-weight: 500;
-    font-family: "S-CoreDream";
-    font-size: 36px;
+  width: 500px;
+  font-weight: 500;
+  font-family: "S-CoreDream";
+  font-size: 36px;
 }
 
 .input__container {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
 
 .label {
-    font: var(--BodyLRegular);
-    color: var(--PointColor);
-
+  font: var(--BodyLRegular);
+  color: var(--PointColor);
 }
 
 .input {
-    box-sizing: border-box;
-    width: 500px;
-    height: 55px;
-    border-radius: 10px;
-    border: 1.4px solid var(--Gray1);
-    margin-top: 12px;
-    font-size: 16px;
-    padding-left: 16px;
+  box-sizing: border-box;
+  width: 500px;
+  height: 55px;
+  border-radius: 10px;
+  border: 1.4px solid var(--Gray1);
+  margin-top: 12px;
+  font-size: 16px;
+  padding-left: 16px;
 }
 
 .input::placeholder {
-    font: var(--BodySRegular);
-    color: var(--Gray3);
-    padding: 18px 0px;
+  font: var(--BodySRegular);
+  color: var(--Gray3);
+  padding: 18px 0px;
 }
 
 .input__require {
-    padding: 10px 0px 10px 0px;
-    font: var(--BodyXSRegular);
-    color: var(--Gray2);
-    margin-bottom: 26px;
+  padding: 10px 0px 10px 0px;
+  font: var(--BodyXSRegular);
+  color: var(--Gray2);
+  margin-bottom: 26px;
+  height: 18px; /* 문구 없을 때도 공간 유지용 */
+  transition: visibility 0.2s, opacity 0.2s;
+}
+
+.hidden {
+  visibility: hidden;
 }
 
 .login__button {
-    width: 500px;
-    border-radius: 14px;
-    color: var(--MainColor1);
-    font: var(--ButtonXLMedium);
-    background-color: var(--MainColor2);
-    padding-top: 21px;
-    padding-bottom: 21px;
-    border-style: none;
+  width: 500px;
+  border-radius: 14px;
+  color: var(--MainColor1);
+  font: var(--ButtonXLMedium);
+  background-color: var(--MainColor2);
+  padding-top: 21px;
+  padding-bottom: 21px;
+  border-style: none;
+  cursor: pointer;
 }
 
 .button__wrapper {
-    margin-top: 85px;
+  margin-top: 85px;
+  position: relative; 
+  width: 500px;
+  height: auto;
 }
 
 .warning__msg {
-    padding-top: 10px;
-    padding-bottom: 10px;
-    font: var(--BodyXSRegular);
-    color: var(--MainColor2);
+  position: absolute;
+  top: -26px; 
+  left: 0;
+  font: var(--BodyXSRegular);
+  color: var(--MainColor2);
+  padding-bottom: 6px;
 }
 
 .signUp__div__container {
-    width: 500px;
-    height: 66px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-    margin-top: 48px;
+  width: 500px;
+  height: 66px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin-top: 48px;
 }
 
 .signUp__info {
-    font: var(--BodyMRegular);
-    color: var(--Gray2);
+  font: var(--BodyMRegular);
+  color: var(--Gray2);
 }
 
 .signUp__button {
-    font: var(--BodyMRegular);
-    color: var(--SubColor1);
-    text-decoration: none;
+  font: var(--BodyMRegular);
+  color: var(--SubColor1);
+  text-decoration: none;
 }
 
 .input:focus {
@@ -98,5 +109,5 @@
 }
 
 .input__container:focus-within .label {
-  color: var(--MainColor2); 
+  color: var(--MainColor2);
 }
