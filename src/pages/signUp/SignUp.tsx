@@ -25,6 +25,7 @@ export default function SignUp() {
 
   const [emailValid, setEmailValid] = useState(false)
   const [nicknameValid, setNicknameValid] = useState(false)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [passwordValid, setPasswordValid] = useState(false)
   const [passwordsMatch, setPasswordsMatch] = useState(false)
 
@@ -178,7 +179,12 @@ export default function SignUp() {
           <Gender selected={gender} onSelect={setGender} />
           <Profile onImageChange={setProfileImage} />
 
-          <button type="button" className={styles.button} onClick={handleSignUp}>
+          <button
+            type="button"
+            className={styles.button}
+            onClick={handleSignUp}
+            disabled={!passwordValid || !passwordsMatch}
+          >
             가입
           </button>
         </div>
