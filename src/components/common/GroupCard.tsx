@@ -1,6 +1,5 @@
 import styles from "../../styles/common/GroupCard.module.css";
 import { FaBookmark, FaRegBookmark } from "react-icons/fa";
-import { useState } from "react";
 
 interface GroupCardProps {
   label: string;
@@ -11,14 +10,14 @@ interface GroupCardProps {
   tags: string[];
   image: string;
   isBookmarked?: boolean;
+  onBookmarkClick?: () => void;
 }
 
-export default  function GroupCard ({ label, count, title, subtitle, person, tags, image, isBookmarked }: GroupCardProps) {
-const [bookmarked, setBookmarked] = useState(isBookmarked ?? false);
-
-  const handleBookmarkClick = () => {
-    setBookmarked((prev) => !prev);
-  };
+export default  function GroupCard ({ label, count, title, subtitle, person, tags, image, isBookmarked ,onBookmarkClick}: GroupCardProps) {
+  const handleBookmarkClick = (e: React.MouseEvent) => {
+  e.stopPropagation(); 
+  onBookmarkClick?.(); 
+};
 
   return (
     <div className={styles.card}>

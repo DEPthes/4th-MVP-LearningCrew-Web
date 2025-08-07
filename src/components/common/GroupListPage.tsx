@@ -21,12 +21,14 @@ interface GroupListPageProps {
   title: string;
   groupList: GroupItem[];
   showSort?: boolean;
+  onBookmarkClick?: (id: number) => void;
 }
 
 export default function GroupListPage({
   title,
   groupList,
   showSort = true,
+  onBookmarkClick,
 }: GroupListPageProps) {
   const [sort, setSort] = useState('최신순');
   const [currentPage, setCurrentPage] = useState(1);
@@ -44,7 +46,10 @@ export default function GroupListPage({
         </div>
         <div className={styles.cardGrid}>
           {groupList.map(group => (
-            <GroupCard key={group.id} {...group} />
+            <GroupCard 
+              key={group.id} 
+              {...group} 
+              onBookmarkClick={() => onBookmarkClick?.(group.id)} />
           ))}
         </div>
         <Pagenation
