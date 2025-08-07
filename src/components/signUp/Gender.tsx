@@ -1,25 +1,24 @@
-import { useState } from "react"
 import styles from "../../styles/signUp/Gender.module.css"
 
-export default function Gender() {
-  const [selected, setSelected] = useState<string | null>(null)
+type GenderProps = {
+  selected: string | null
+  onSelect: (gender: string) => void
+}
 
-  const handleClick = (gender: string) => {
-    setSelected(gender)
-  }
-
+export default function Gender({ selected, onSelect }: GenderProps) {
   return (
     <div className={styles.div__container}>
       <div className={styles.label}>성별</div>
       <div className={styles.info}>*성별을 선택하세요.</div>
       <div className={styles.button__container}>
-        {["남자", "여자", "기타"].map((gender) => (
+        {["MALE", "FEMALE", "OTHER"].map((gender) => (
           <button
             key={gender}
+            type="button"
             className={`${styles.button} ${selected === gender ? styles.active : ""}`}
-            onClick={() => handleClick(gender)}
+            onClick={() => onSelect(gender)}
           >
-            {gender}
+            {gender === "MALE" ? "남자" : gender === "FEMALE" ? "여자" : "기타"}
           </button>
         ))}
       </div>

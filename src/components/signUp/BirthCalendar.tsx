@@ -1,12 +1,16 @@
-import { useState } from "react"
 import Calendar from "react-calendar"
 import "react-calendar/dist/Calendar.css"
-import styles from "../../styles/signUp/Date.module.css"
+import styles from "../../styles/signUp/BirthCalendar.module.css"
 import ArrowLeft from "../../assets/arrow_left.svg"
 import ArrowRight from "../../assets/arrow_right.svg"
+import { useState } from "react"
 
-export default function BirthCalendar() {
-  const [birth, setBirth] = useState<Date | null>(null)
+type BirthCalendarProps = {
+  value: Date | null
+  onChange: (date: Date) => void
+}
+
+export default function BirthCalendar({ value, onChange }: BirthCalendarProps) {
   const [currentMonth, setCurrentMonth] = useState<Date>(new Date())
 
   return (
@@ -14,8 +18,8 @@ export default function BirthCalendar() {
       <label className={styles.label}>생년월일</label>
       <div className={styles.input__require}>*생년월일을 입력해주세요</div>
       <Calendar
-        onChange={(value) => setBirth(value as Date)}
-        value={birth}
+        onChange={(value) => onChange(value as Date)}
+        value={value}
         locale="ko-KR"
         calendarType="gregory"
         formatDay={(_, date) => String(date.getDate())}
