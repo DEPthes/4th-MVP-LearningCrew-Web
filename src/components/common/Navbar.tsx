@@ -1,14 +1,16 @@
-import { NavLink, Link } from "react-router-dom";
+import { NavLink, Link, useNavigate, useLocation } from "react-router-dom";
 import styles from "../../styles/common/Navbar.module.css";
-import { MdOutlineSearch } from "react-icons/md";
-import { useState } from "react";
+import SearchBar from "../common/SearchBar";
 
 export default function Navbar() {
-  const [q, setQ] = useState("");
+  const navigate = useNavigate();
+  const { pathname } = useLocation();
 
-  const emitSearch = () => {
-    const query = q.trim();
-    window.dispatchEvent(new CustomEvent("app:search", { detail: { query } }));
+  const emitSearch = (query: string) => {
+    navigate({
+      pathname,
+      search: query ? `?q=${encodeURIComponent(query)}` : "",
+    });
   };
 
   return (
@@ -25,17 +27,7 @@ export default function Navbar() {
         </div>
 
         <div className={styles.rightSection}>
-          <div className={styles.searchWrapper}>
-            <input
-              type="text"
-              placeholder="스터디 이름을 검색해 보세요"
-              className={styles.searchInput}
-              value={q}
-              onChange={(e) => setQ(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && emitSearch()}
-            />
-            <MdOutlineSearch className={styles.searchIcon} onClick={emitSearch}/>
-          </div>
+          <SearchBar placeholder="스터디 이름을 검색해 보세요" onSearch={emitSearch} />
           <Link to="/login" className={styles.loginBtn}>로그인</Link>
         </div>
       </div>

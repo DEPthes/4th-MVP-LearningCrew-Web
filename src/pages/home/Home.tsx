@@ -2,7 +2,8 @@
 import GroupListPage from '../../components/common/GroupListPage';
 import sample from '../../assets/sample.png';
 import CategoryTabs from '../../components/home/CategoryTabs';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
+import { useSearchParams } from 'react-router-dom'; 
 import styles from "../../styles/home/Home.module.css";
 
 const dummyData = Array.from({ length: 20 }, (_, i) => ({
@@ -20,7 +21,10 @@ const dummyData = Array.from({ length: 20 }, (_, i) => ({
 export const Home = () => {
   const [groupList, setGroupList] = useState(dummyData);
   const [selectedCategory, setSelectedCategory] = useState<string>('전체');
-  const [searchQuery, setSearchQuery] = useState<string>('');
+
+  const [params] = useSearchParams();
+  const rawQ = params.get('q') ?? '';
+  const q = rawQ.trim().toLowerCase();
 
   const handleBookmarkClick = (id: number) => {
     setGroupList((prev) =>
@@ -30,19 +34,8 @@ export const Home = () => {
     );
   };
 
-  useEffect(() => {
-    const onSearch = (e: Event) => {
-      const ce = e as CustomEvent<{ query: string }>;
-      setSearchQuery(ce.detail?.query ?? '');
-    };
-    window.addEventListener('app:search', onSearch as EventListener);
-    return () =>
-      window.removeEventListener('app:search', onSearch as EventListener);
-  }, []);
-
-  // 필터링: 카테고리 + 그룹이름 
+  // 필터링
   const filtered = useMemo(() => {
-    const q = searchQuery.trim().toLowerCase();
     return groupList.filter((item) => {
       const byCategory =
         selectedCategory === '전체' ||
@@ -55,11 +48,11 @@ export const Home = () => {
 
       return byCategory && bySearch;
     });
-  }, [groupList, selectedCategory, searchQuery]);
+  }, [groupList, selectedCategory, q]);
 
-  // 제목: 검색어 있으면 '검색어' 검색 결과, 없으면 스터디 모집
-  const title = searchQuery.trim()
-    ? <span className={styles.searchTitle}>{`'${searchQuery.trim()}' 검색 결과`}</span>
+  // 제목
+  const title = rawQ.trim()
+    ? <span className={styles.searchTitle}>{`'${rawQ.trim()}' 검색 결과`}</span>
     : <span>스터디 모집</span>;
 
   return (
