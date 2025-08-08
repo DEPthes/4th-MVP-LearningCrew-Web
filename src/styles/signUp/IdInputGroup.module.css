@@ -1,55 +1,69 @@
+.div__container {
+  display: flex;
+  flex-direction: column;
+}
+
 .label {
-    font: var(--BodyMRegular);
-    color: var(--PointColor);
-    display: block;
-    margin-bottom: 17.5px;
+  font: var(--BodyMRegular);
+  color: var(--PointColor);
+  display: block;
+  margin-bottom: 17.5px;
 }
 
 .input__container {
-    box-sizing: border-box;
-    display: flex;
-    align-items: center;
-    width: 500px;
-    height: 53px;
-    border: 1px solid var(--Gray1);
-    border-radius: 4px;
-    overflow: hidden;
-    padding-right: 10px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  width: 500px;
+  height: 53px;
+  border: 1px solid var(--Gray1);
+  border-radius: 4px;
+  overflow: hidden;
+  padding-right: 10px;
 }
 
 .input {
-    flex: 1;
-    height: 100%;
-    border: none;
-    outline: none;
-    font-size: 16px;
-    padding: 10px;
-}
-
-.dup__button {
-    width: 80px;
-    height: 33px;
-    padding: 8px;
-    border-radius: 4px;
-    font: var(--ButtonSMedium);
-    color: var(--PointColor);
-    background-color: white;
-    border: 1px solid var(--PointColor);
-}
-
-.dup__button.active {
-    background-color: var(--MainColor2);
-    color: #FFFFFF;
-    border-style: none;
+  flex: 1;
+  height: 100%;
+  border: none;
+  outline: none;
+  font-size: 16px;
+  padding: 10px;
 }
 
 .input::placeholder {
-    font: var(--BodySRegular);
-    color: var(--Gray3);
+  font: var(--BodySRegular);
+  color: var(--Gray3);
+}
+
+.dup__button {
+  width: 80px;
+  height: 33px;
+  padding: 8px;
+  border-radius: 4px;
+  font: var(--ButtonSMedium);
+  color: var(--PointColor);
+  background-color: white;
+  border: 1px solid var(--PointColor);
+  cursor: pointer;
+}
+
+.dup__button.active {
+  background-color: var(--MainColor2);
+  color: #FFFFFF;
+  border-style: none;
 }
 
 .input__require {
-    padding: 10px 0px 10px 0px;
-    font: var(--BodyXSRegular);
-    color: var(--Gray2);
+  font: var(--BodyXSRegular);
+  color: var(--Gray2);
+  padding-top: 10px;
+}
+
+.require__error {
+  color: var(--MainColor2);
+}
+
+.success {
+  color: var(--MainColor2);
 }
