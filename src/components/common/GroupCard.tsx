@@ -7,32 +7,30 @@ interface GroupCardProps {
   title: string;
   subtitle: string;
   person: string;
-  tags: string[];
+  categories?: string[];   
   image: string;
   isBookmarked?: boolean;
   onBookmarkClick?: () => void;
 }
 
-export default  function GroupCard ({ label, count, title, subtitle, person, tags, image, isBookmarked ,onBookmarkClick}: GroupCardProps) {
+export default function GroupCard({
+  label, count, title, subtitle, person,
+  categories, image, isBookmarked, onBookmarkClick
+}: GroupCardProps) {
+
   const handleBookmarkClick = (e: React.MouseEvent) => {
-  e.stopPropagation(); 
-  onBookmarkClick?.(); 
-};
+    e.stopPropagation();
+    onBookmarkClick?.();
+  };
 
   return (
     <div className={styles.card}>
       <div className={styles.imageWrapper}>
         <img src={image} alt="카드 이미지" className={styles.image} />
         {isBookmarked ? (
-          <FaBookmark
-            className={`${styles.bookmark} ${styles.filled}`}
-            onClick={handleBookmarkClick}
-          />
+          <FaBookmark className={`${styles.bookmark} ${styles.filled}`} onClick={handleBookmarkClick}/>
         ) : (
-          <FaRegBookmark
-            className={`${styles.bookmark} ${styles.outlined}`}
-            onClick={handleBookmarkClick}
-          />
+          <FaRegBookmark className={`${styles.bookmark} ${styles.outlined}`} onClick={handleBookmarkClick}/>
         )}
         <div className={styles.label}>{label}</div>
         <div className={styles.count}>{count}</div>
@@ -44,11 +42,11 @@ export default  function GroupCard ({ label, count, title, subtitle, person, tag
           <p className={styles.person}>{person}</p>
         </div>
         <div className={styles.tags}>
-          {tags.map((tag, idx) => (
-          <span key={idx}>#{tag}</span>
-        ))}
+          {(categories ?? []).map((c, idx) => (
+            <span key={idx}>#{c}</span>
+          ))}
         </div>
       </div>
     </div>
   );
-};
+}

@@ -1,5 +1,4 @@
 import styles from "../../styles/home/CategoryTabs.module.css";
-import { useState } from "react";
 
 const categories = [
   { key: "all", label: "전체" },
@@ -14,20 +13,22 @@ const categories = [
   { key: "exam", label: "대입 수능" },
 ];
 
-export default function CategoryTabs() {
-  const [selected, setSelected] = useState("all");
+type Props = {
+  selectedLabel: string;               
+  onSelect: (label: string) => void;
+};
 
+export default function CategoryTabs({ selectedLabel, onSelect }: Props) {
   return (
     <div className={styles.tabContainer}>
       {categories.map((cat) => {
-        const isActive = selected === cat.key;
+        const isActive = selectedLabel === cat.label;
         const iconSrc = `/icons/${cat.key}-${isActive ? "on" : "off"}.svg`;
-
         return (
           <div
             key={cat.key}
             className={`${styles.tab} ${isActive ? styles.active : ""}`}
-            onClick={() => setSelected(cat.key)}
+            onClick={() => onSelect(cat.label)}
           >
             <img src={iconSrc} alt={cat.label} className={styles.icon} />
             <span className={styles.label}>{cat.label}</span>

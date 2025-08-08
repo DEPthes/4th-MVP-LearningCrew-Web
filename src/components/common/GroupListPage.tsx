@@ -4,6 +4,7 @@ import GroupTitle from '../../components/common/GroupTitle';
 import { Pagenation } from '../../components/common/Pagenation';
 import { Sort } from '../../components/common/Sort';
 import { useState } from 'react';
+import type { ReactNode } from 'react'; 
 
 interface GroupItem {
   id: number;
@@ -13,22 +14,19 @@ interface GroupItem {
   title: string;
   subtitle: string;
   person: string;
-  tags: string[];
+  categories?: string[];     
   isBookmarked?: boolean;
 }
 
 interface GroupListPageProps {
-  title: string;
+  title: ReactNode;
   groupList: GroupItem[];
   showSort?: boolean;
   onBookmarkClick?: (id: number) => void;
 }
 
 export default function GroupListPage({
-  title,
-  groupList,
-  showSort = true,
-  onBookmarkClick,
+  title, groupList, showSort = true, onBookmarkClick,
 }: GroupListPageProps) {
   const [sort, setSort] = useState('최신순');
   const [currentPage, setCurrentPage] = useState(1);
@@ -44,19 +42,28 @@ export default function GroupListPage({
             </div>
           )}
         </div>
-        <div className={styles.cardGrid}>
-          {groupList.map(group => (
-            <GroupCard 
-              key={group.id} 
-              {...group} 
-              onBookmarkClick={() => onBookmarkClick?.(group.id)} />
-          ))}
-        </div>
-        <Pagenation
-          currentPage={currentPage}
-          totalPages={1}
-          setCurrentPage={setCurrentPage}
-        />
+
+        {groupList.length === 0 ? (
+          <div className={styles.empty}>검색 결과가 없어요.</div>
+        ) : (
+          <div className={styles.cardGrid}>
+            {groupList.map(group => (
+              <GroupCard
+                key={group.id}
+                {...group}
+                onBookmarkClick={() => onBookmarkClick?.(group.id)}
+              />
+            ))}
+          </div>
+        )}
+
+        {groupList.length > 0 && (
+          <Pagenation
+            currentPage={currentPage}
+            totalPages={1}
+            setCurrentPage={setCurrentPage}
+          />
+        )}
       </div>
     </div>
   );

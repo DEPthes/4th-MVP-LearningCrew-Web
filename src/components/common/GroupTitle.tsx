@@ -1,7 +1,8 @@
 import styles from "../../styles/common/GroupTitle.module.css";
+import type { ReactNode } from 'react';
 
 type Props = {
-  text: string;
+  text:  string | ReactNode;
 };
 
 export default function GroupTitle({ text }: Props) {
