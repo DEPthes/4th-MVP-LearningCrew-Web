@@ -25,6 +25,7 @@ import EditProfile from "./pages/myPage/EditProfile"
 import FavoriteGroupList from "./pages/myPage/FavoriteGroupList"
 import ParticipantMenu from "./components/fixedGroupHeader/ParticipantMenu"
 import GroupLayout from "./components/layout/GroupLayout"
+import MyGroup from "./pages/myGroup/MyGroup"
 
 export const Router = () => {
   return (
@@ -35,6 +36,7 @@ export const Router = () => {
           <Route path="/" element={<Home />} />
           <Route path="/mypage" element={<MyPageHome />} />
           <Route path="/mypage/favorite" element={<FavoriteGroupList />} />
+          <Route path="/mygroup" element={<MyGroup />} />
         </Route>
 
         {/* 그룹 전용 레이아웃 */}

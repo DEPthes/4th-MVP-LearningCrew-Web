@@ -22,7 +22,7 @@ export default function Navbar() {
 
         <div className={styles.menu}>
           <NavLink to="/" className={({ isActive }) => `${styles.menuItem} ${isActive ? styles.active : ""}`}>홈</NavLink>
-          <NavLink to="/GroupLayout" className={({ isActive }) => `${styles.menuItem} ${isActive ? styles.active : ""}`}>내 그룹</NavLink>
+          <NavLink to="/mygroup" className={({ isActive }) => `${styles.menuItem} ${isActive ? styles.active : ""}`}>내 그룹</NavLink>
           <NavLink to="/mypage" className={({ isActive }) => `${styles.menuItem} ${isActive ? styles.active : ""}`}>마이페이지</NavLink>
         </div>
 

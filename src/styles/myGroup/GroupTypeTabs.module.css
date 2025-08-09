@@ -1,0 +1,32 @@
+.tabs {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.tab {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  color: var(--Gray2); 
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: var(--Gray2); 
+}
+
+.active .dot {
+  background-color: var(--MainColor2); 
+}
+
+.label {
+  font: var(--ButtonLMedium);
+}
+
+.active .label {
+  color: var(--SubColor1); 
+}
