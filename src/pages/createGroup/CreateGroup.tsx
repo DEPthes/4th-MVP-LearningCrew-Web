@@ -27,6 +27,7 @@ export const CreateGroup = () => {
   } = useForm({
     resolver: zodResolver(createGroupSchema),
     defaultValues: {
+      maxMembers: 3,
       step: 3,
       steps: [],
     },
@@ -58,11 +59,6 @@ export const CreateGroup = () => {
 
     setValue("steps", newSteps, { shouldValidate: false, shouldDirty: false });
   }, [stepCount, getValues, setValue]);
-
-  const onSubmit = (data: CreateGroup) => {
-    console.log("제출된 데이터:", data);
-    //server
-  }
 
   return (
     <div className={styles.creategroup__container}>
@@ -100,18 +96,18 @@ export const CreateGroup = () => {
 
       <Container title="그룹 대표 이미지 설정">
         <UploadImg
-          name="image"
+          name="groupImage"
           message="그룹 대표 이미지는 최대 50mb까지 업로드 가능합니다."
           message2="그룹 대표 이미지를 설정해 주세요."
-          errorMessage={errors.image?.message === "그룹 대표 이미지가 50mb를 초과하였습니다." ? errors.image.message : undefined}
-          errorMessage2={errors.image?.message === "그룹 대표 이미지가 설정되지 않았습니다." ? errors.image.message : undefined}
+          errorMessage={errors.groupImage?.message === "그룹 대표 이미지가 50mb를 초과하였습니다." ? errors.groupImage.message : undefined}
+          errorMessage2={errors.groupImage?.message === "그룹 대표 이미지가 설정되지 않았습니다." ? errors.groupImage.message : undefined}
           setValue={setValue}
         />
       </Container>
 
       <Container title="모집인원">
         <SelectRange
-          name="personnel"
+          name="maxMembers"
           messgae="모집 인원을 작성해 주세요."
           max={20}
           unit="명"
@@ -160,7 +156,7 @@ export const CreateGroup = () => {
       })}
 
 
-      <Button handleSubmit={handleSubmit(onSubmit)} />
+      <Button handleSubmit={handleSubmit} />
     </div>
   );
 };
