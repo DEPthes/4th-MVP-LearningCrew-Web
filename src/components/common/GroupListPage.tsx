@@ -4,7 +4,7 @@ import GroupTitle from '../../components/common/GroupTitle';
 import { Pagenation } from '../../components/common/Pagenation';
 import { Sort } from '../../components/common/Sort';
 import { useState } from 'react';
-import type { ReactNode } from 'react'; 
+import type { ReactNode } from 'react';
 
 interface GroupItem {
   id: number;
@@ -14,7 +14,7 @@ interface GroupItem {
   title: string;
   subtitle: string;
   person: string;
-  categories?: string[];     
+  categories?: string[];
   isBookmarked?: boolean;
 }
 

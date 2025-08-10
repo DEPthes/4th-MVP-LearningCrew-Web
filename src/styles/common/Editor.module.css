@@ -124,7 +124,7 @@
  border: 1px solid var(--Gray3);
  font: var(--BodySRegular);
  border-radius: 8px;
- overflow-y: scroll;
+ overflow-y: auto;
  overflow-x: hidden;
  transition: border-color 0.2s ease;
  background: var(--MainColor1);
