@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom"
 import { Home } from "./pages/home/Home"
 import Layout from "./components/layout/Layout"
+import MinimalLayout from "./components/layout/MinimalLayout"
 import Login from "./components/login/Login"
 import WelcomePage from "./components/welcomePage/WelcomePage"
 import SignUp from "./pages/signUp/SignUp"
@@ -32,12 +33,17 @@ export const Router = () => {
   return (
     <BrowserRouter>
       <Routes>
-        {/* 기본 레이아웃 적용 */}
+        {/* Navbar + Footer */}
         <Route element={<Layout />}>
           <Route path="/" element={<Home />} />
           <Route path="/mypage" element={<MyPageHome />} />
           <Route path="/mypage/favorite" element={<FavoriteGroupList />} />
           <Route path="/mygroup" element={<MyGroup />} />
+        </Route>
+
+        {/* Navbar (footer x)*/}
+        <Route element={<MinimalLayout />}>
+          <Route path="/mygroup/create" element={<CreateGroupPage />} />
         </Route>
 
         {/* 그룹 전용 레이아웃 */}
@@ -67,7 +73,9 @@ export const Router = () => {
         <Route path="/createGroup" element={<CreateGroup />} />
         <Route path="/quiz/questions" element={<QuizQ />} />
         <Route path="/mypage/edit" element={<EditProfile />} />
-        <Route path="/mygroup/create" element={<CreateGroupPage />} />
+
+        {/* 404 처리 */}
+        <Route path="*" element={<div>404 Not Found</div>} />
       </Routes>
     </BrowserRouter>
   )
