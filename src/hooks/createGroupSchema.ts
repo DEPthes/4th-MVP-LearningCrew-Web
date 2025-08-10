@@ -6,9 +6,9 @@ export const createGroupSchema = z
   categories: z
    .array(z.string(), "카테고리를 선택해주세요.")
    .min(1, "카테고리를 1개 이상 선택해 주세요.")
-   .max(3, "카테고리는 최대 3개까지 선택 가능합니다."),
+   .max(3.1, "카테고리는 최대 3개까지 선택 가능합니다."),
   summary: z.string().min(1, "소개글을 작성하지 않았습니다.").max(15),
-  image: z
+  groupImage: z
    .custom<File>()
    .refine((file) => !!file, {
     message: "그룹 대표 이미지가 설정되지 않았습니다.",
@@ -18,7 +18,7 @@ export const createGroupSchema = z
     "그룹 대표 이미지가 50mb를 초과하였습니다."
    ),
 
-  personnel: z
+  maxMembers: z
    .number()
    .min(2, "모집 인원은 최소 2명입니다.")
    .max(20, "모집 인원은 최대 20명입니다."),

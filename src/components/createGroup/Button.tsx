@@ -1,13 +1,28 @@
-import type { UseFormHandleSubmit } from "react-hook-form";
+import type { UseFormHandleSubmit, SubmitHandler } from "react-hook-form";
 import styles from "../../styles/createGroup/Button.module.css";
+import { PostCreateGroup } from "../../apis/creatGroup/createGroup";
 
 interface ButtonProps {
-  handleSubmit: ReturnType<UseFormHandleSubmit<any>>;
+  handleSubmit: UseFormHandleSubmit<any>;
 }
 
 export const Button = ({ handleSubmit }: ButtonProps) => {
+  const handleFormSubmit: SubmitHandler<any> = async (formData) => {
+    console.log(formData);
+    try {
+      const response = await PostCreateGroup(formData);
+      console.log(response);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
-    <button className={styles.create__button} onClick={handleSubmit}>
+    <button
+      type="button"
+      className={styles.create__button}
+      onClick={handleSubmit(handleFormSubmit)}
+    >
       개설
     </button>
   );
