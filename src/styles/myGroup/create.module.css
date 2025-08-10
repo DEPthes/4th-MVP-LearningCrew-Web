@@ -1,0 +1,93 @@
+.page {
+  min-height: 100vh; 
+  display: flex;
+  justify-content: center; 
+  align-items: center; 
+  padding: 100px 0;
+  /* 위에 여백 수정해야함 -> navbar 수정 후 */
+}
+
+.container {
+  max-width: 500px;
+  min-width: 300px;
+}
+
+.block { 
+  margin: 40px 0; 
+}
+
+
+.customTagBox {
+  width: 100%;
+  margin-top: 20px;
+}
+
+.customTagLabel{
+  font: var(--BodySRegular);
+  color: var(--MainColor2);
+}
+
+.customTagInput{
+  width: 100%;
+  border: none;
+  border-bottom: solid 1px var(--Gray1);
+  height: 50px;
+  padding: 0 16px;
+}
+
+.customTagInput:focus {
+ outline: none;
+}
+
+.customTagInput::placeholder {
+ font: var(--BodySRegular);
+ color: var(--Gray3);
+}
+
+.label { 
+  display: block;  
+  margin-bottom: 12px;
+  font: var(--BodyMRegular); 
+  color: var(--PointColor);
+  margin-bottom: 12px;
+}
+
+.hint { 
+  color: var(--Gray2); 
+  font: var(--BodyXSRegular); 
+  margin-bottom: 30px;
+}
+
+.pillText {
+  color: var(--Gray2);
+  font: var(--BodySRegular);
+}
+
+.pillText b { 
+  font: var(--ButtonXLMedium);
+  color: var(--PointColor);
+}
+
+.tags { 
+  display: flex; 
+  flex-wrap: wrap; 
+  gap: 16px; 
+}
+
+.tag {
+  padding: 6px 10px;
+  border-radius: 24px;
+  border: 1px solid var(--MainColor2);
+  font: var(--BodySRegular);
+  color: var(--SubColor1);
+  background-color: var(--MainColor1);
+}
+
+.tagActive { 
+  background: var(--MainColor2); 
+  color: var(--MainColor1);
+}
+
+.submitWrapper button {
+  width: 100%;
+}
