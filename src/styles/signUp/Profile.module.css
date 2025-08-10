@@ -58,6 +58,20 @@
   border-radius: 50%;
 }
 
+/* 직사각일 때*/
+.rect .upload__area,
+.rect .icon {
+  border-radius: 8px;
+  width: 240px;
+}
+
+/* 직사각일 때 */
+.profile__wrapper.rect .cameraImg {
+  bottom: -15px;  
+  right: -60px;    
+}
+
+
 .cameraImg {
   position: absolute;
   bottom: 1.3px;

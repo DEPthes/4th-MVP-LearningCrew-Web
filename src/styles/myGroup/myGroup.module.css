@@ -1,0 +1,14 @@
+.headerBelowRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 12px;
+  position: relative; 
+}
+
+.createBtnWrapper {
+  position: absolute;
+  right: 0;
+  top: 260px; 
+  z-index: 5;
+}

@@ -10,6 +10,7 @@ interface GroupCardProps {
   categories?: string[];   
   image: string;
   isBookmarked?: boolean;
+  type?: 'joined' | 'hosted' | 'applied'; 
   onBookmarkClick?: () => void;
 }
 
