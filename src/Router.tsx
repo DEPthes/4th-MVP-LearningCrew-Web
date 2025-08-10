@@ -26,6 +26,7 @@ import FavoriteGroupList from "./pages/myPage/FavoriteGroupList"
 import ParticipantMenu from "./components/fixedGroupHeader/ParticipantMenu"
 import GroupLayout from "./components/layout/GroupLayout"
 import MyGroup from "./pages/myGroup/MyGroup"
+import CreateGroupPage from "./pages/myGroup/CreateGroupPage"
 
 export const Router = () => {
   return (
@@ -66,6 +67,7 @@ export const Router = () => {
         <Route path="/createGroup" element={<CreateGroup />} />
         <Route path="/quiz/questions" element={<QuizQ />} />
         <Route path="/mypage/edit" element={<EditProfile />} />
+        <Route path="/mygroup/create" element={<CreateGroupPage />} />
       </Routes>
     </BrowserRouter>
   )
