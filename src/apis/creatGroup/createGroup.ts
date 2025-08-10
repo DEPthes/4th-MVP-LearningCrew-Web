@@ -17,8 +17,7 @@ interface CreateGroupRequest {
  groupImage: File;
 }
 
-const Token =
- "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwidG9rZW5UeXBlIjoiQUNDRVNTIiwicmVmcmVzaFV1aWQiOiJleUpoYkdjaU9pSklVelV4TWlKOS5leUp6ZFdJaU9pSXhJaXdpZEc5clpXNVVlWEJsSWpvaVVrVkdVa1ZUU0NJc0ltbGhkQ0k2TVRjMU5EYzRPRGN4TWl3aVpYaHdJam94TnpVMU9UazRNekV5ZlEuVXZnQ3JReFJpTXEyZEJmanlXcjlSb0xNMEdSeXNMcXFGMjVRbExlR2Y4OWtiWWFEV3o1WGZ0aG83dUp5RXM5cU1LdmRkeDV4czJRMlcwekRtTmVoWFEiLCJpYXQiOjE3NTQ3ODg3MTIsImV4cCI6MTc1NDc5MDUxMn0.34cst0vab1oP6--2dwqvn0wGXaMVwxQEWuLd00e3lo7O_ZD5sJXbCys7KAZkluR6HpihZjam_V11n_uTQwpEng";
+const Token = localStorage.getItem("accessToken");
 
 export async function PostCreateGroup(data: CreateGroupRequest) {
  try {
