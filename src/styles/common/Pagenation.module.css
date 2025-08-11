@@ -8,20 +8,52 @@
  margin-bottom: 100px;
 }
 
+.pagenation__arrow_container {
+ display: flex;
+ flex-direction: row;
+ align-items: center;
+ justify-content: center;
+ width: 80px;
+}
+
 .pagenation__arrow {
  display: flex;
  flex-direction: row;
  align-items: center;
  cursor: pointer;
- width: 80px;
+ padding-left: 10px;
  justify-content: center;
+ border-radius: 8px;
 }
 
 .pagenation__arrow:hover {
  background-color: var(--Gray4);
+ height: 100%;
 }
 
 .pagenation__arrow p {
+ margin: 0;
+ white-space: nowrap;
+ font: var(--ButtonAddsizeMedium);
+ color: var(--Gray0);
+}
+
+.pagenation__arrow_left {
+ display: flex;
+ flex-direction: row;
+ align-items: center;
+ cursor: pointer;
+ padding-right: 10px;
+ justify-content: center;
+ border-radius: 8px;
+}
+
+.pagenation__arrow_left:hover {
+ background-color: var(--Gray4);
+ height: 100%;
+}
+
+.pagenation__arrow_left p {
  margin: 0;
  white-space: nowrap;
  font: var(--ButtonAddsizeMedium);

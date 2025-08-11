@@ -1,6 +1,6 @@
 .writeBtn__button {
  display: flex;
- padding: 12px 24px;
+ padding: 12px 20px;
  border-radius: 50px;
  background-color: var(--MainColor2);
  border: none;
@@ -9,7 +9,7 @@
  cursor: pointer;
  position: fixed;
  bottom: 20%;
- right: 20%;
+ right: 8%;
  z-index: 1000;
 }
 

@@ -1,5 +1,6 @@
 import styles from "../../styles/createGroup/UploadImgComponentStyle.module.css";
 import Camera from "../../assets/CameraImg.svg";
+import GroupCover from "../../assets/group-cover.svg";
 import { useState, useRef } from "react";
 import type { UseFormSetValue } from "react-hook-form";
 
@@ -36,7 +37,7 @@ export const UploadImg = ({ name, message, errorMessage, message2, errorMessage2
       <div
         className={styles.upload__image}
         style={{
-          backgroundImage: `url(${image || Camera})`,
+          backgroundImage: `url(${image || GroupCover})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
         }}
