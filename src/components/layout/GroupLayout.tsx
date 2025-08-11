@@ -1,10 +1,12 @@
 // components/layout/GroupLayout.tsx
 import FixedBanner from "../fixedGroupHeader/FixedBanner";
 import ParticipantMenu from "../fixedGroupHeader/ParticipantMenu"
-import { Outlet } from "react-router-dom";
+import { Outlet, useParams } from "react-router-dom";
 import styles from "./GroupLayout.module.css"
 
 export default function GroupLayout() {
+  const { groupId } = useParams<{ groupId: string }>();
+
   return (
     <>
       <FixedBanner />

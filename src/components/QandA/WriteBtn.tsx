@@ -1,12 +1,13 @@
 import styles from "../../styles/QandA/WriteBtnComponentStyle.module.css"
 import Add from "../../assets/Add.svg";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 export const WriteBtn = () => {
   const navigate = useNavigate();
+  const { groupId } = useParams<{ groupId: string }>();
 
   const handleWriteClick = () => {
-    navigate("/GroupLayout/QandA/write");
+    navigate(`/group/${groupId}/QandA/write`);
   }
 
   return (

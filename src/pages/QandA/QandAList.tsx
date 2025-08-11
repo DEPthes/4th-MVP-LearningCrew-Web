@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { WriteBtn } from "../../components/QandA/WriteBtn"
 import styles from "../../styles/QandA/QandAListPageStyle.module.css"
 import { ShareNoteListDummy } from "../../assets/shareNoteListDummy";
@@ -10,9 +10,10 @@ export const QandAList = () => {
   const navigate = useNavigate();
   const noteData = ShareNoteListDummy;
   const [qnaSort, setQnaSort] = useState<string>("최신순");
+  const { groupId } = useParams<{ groupId: string }>();
 
   const handleNoteClick = (noteId: number) => {
-    navigate(`/GroupLayout/QandADetail/${noteId}`);
+    navigate(`/group/${groupId}/QandADetail/${noteId}`);
   };
 
   return (
