@@ -9,7 +9,6 @@
 }
 
 .menu__container {
- /* width: 160px; */
  flex-shrink: 0;
  display: flex;
  flex-direction: column;

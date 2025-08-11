@@ -5,6 +5,8 @@ import { Outlet } from "react-router-dom";
 import styles from "./GroupLayout.module.css"
 
 export default function GroupLayout() {
+  // const { groupId } = useParams<{ groupId: string }>();
+
   return (
     <>
       <FixedBanner />

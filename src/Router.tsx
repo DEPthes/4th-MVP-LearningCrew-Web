@@ -50,7 +50,7 @@ export const Router = () => {
 
         {/* 그룹 전용 레이아웃 */}
         <Route element={<Layout />}>
-          <Route path="/GroupLayout" element={<GroupLayout />}>
+          <Route path="/group/:groupId" element={<GroupLayout />}>
             <Route path="MyGroupStudy" element={<MyGroupStudy title="예시제목" content="예시내용입니다." />} />
             <Route path="myNote" element={<MyNote />} />
             <Route path="myNote/write" element={<MyNoteWrite />} />
