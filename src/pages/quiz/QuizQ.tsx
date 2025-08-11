@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import styles from "../../styles/quiz/QuizQPageStyle.module.css";
 import ProgressQuizBackground from "../../assets/ProgressQuizBackground.svg";
 import Click from "../../assets/QuizCheck.svg";
@@ -11,6 +11,7 @@ export const QuizQ = () => {
   const [selectedAnswers, setSelectedAnswers] = useState<{ [key: number]: number }>({});
   const [showError, setShowError] = useState<boolean>(false);
   const navigate = useNavigate();
+  const { groupId } = useParams<{ groupId: string }>();
 
   const currentQuestion = QuizDummy.find(q => q.id === currentQuestionId);
   const totalQuestions = QuizDummy.length;
@@ -26,6 +27,11 @@ export const QuizQ = () => {
   };
 
   const handlePrevious = () => {
+    if (isFirstQuestion) {
+      navigate(`/group/${groupId}/quiz`);
+      return;
+    }
+
     if (!isFirstQuestion) {
       setCurrentQuestionId(prev => prev - 1);
       setShowError(false);
@@ -87,7 +93,7 @@ export const QuizQ = () => {
           </div>
           <p className={styles.quizq__error}>{showError ? "*정답이 선택되지 않았습니다" : " "}</p>
           <div className={styles.quizq__navigation}>
-            <button onClick={handlePrevious} className={styles.quizq__prev} disabled={isFirstQuestion}>
+            <button onClick={handlePrevious} className={styles.quizq__prev}>
               <p>이전</p>
             </button>
             <button onClick={handleNext} className={styles.quizq__next}>

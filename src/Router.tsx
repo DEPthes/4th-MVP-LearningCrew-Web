@@ -45,7 +45,7 @@ export const Router = () => {
         <Route element={<MinimalLayout />}>
           {/* <Route path="/mygroup/create" element={<CreateGroupPage />} /> */}
           <Route path="/mygroup/create" element={<CreateGroup />} />
-          <Route path="/quiz/questions" element={<QuizQ />} />
+          <Route path="group/:groupId/quiz/questions" element={<QuizQ />} />
         </Route>
 
         {/* 그룹 전용 레이아웃 */}

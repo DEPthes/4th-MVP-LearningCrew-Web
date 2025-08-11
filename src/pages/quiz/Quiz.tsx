@@ -2,14 +2,14 @@ import styles from "../../styles/quiz/QuizPageStyle.module.css";
 import StartQuizBackground from "../../assets/StartQuizBackground.svg";
 import EndQuizBackground from "../../assets/EndQuizBackground.svg";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 export const Quiz = () => {
   const [isQuiz, setIsQuiz] = useState<boolean>(true); //퀴즈 생성 여부
   const [isDone, setIsDone] = useState<boolean>(false);
   const [score, setScore] = useState<number>(0);
   const [step, setStep] = useState<number>(1);
-
+  const { groupId } = useParams<{ groupId: string }>();
   const navigator = useNavigate();
 
   const handleIsQuiz = () => {
@@ -17,7 +17,7 @@ export const Quiz = () => {
     setIsQuiz(false);
     //퀴즈가 있으면 이동 없으면 setIsQuiz false로세팅
     //isQuiz 그대로 쓰면 안되고 변수 생성 해서 바로 받아와서 해야됨***바꿔***
-    if (isQuiz && !isDone) navigator("/quiz/questions");
+    if (isQuiz && !isDone) navigator(`/group/${groupId}/quiz/questions`);
   }
 
   useEffect(() => {
