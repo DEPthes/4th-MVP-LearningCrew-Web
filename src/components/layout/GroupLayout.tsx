@@ -6,8 +6,6 @@ import styles from "./GroupLayout.module.css"
 import Navbar from "../common/Navbar";
 
 export default function GroupLayout() {
-  // const { groupId } = useParams<{ groupId: string }>();
-
   return (
     <>
       <Navbar />
