@@ -8,10 +8,10 @@ import UnClick from "../../assets/SortNonClick.svg";
 interface SortProps {
   sort: string,
   setSort: (sort: string) => void,
-  isList?: boolean,
+  isGroup?: boolean,
 }
 
-export const Sort = ({ sort, setSort, isList }: SortProps) => {
+export const Sort = ({ sort, setSort, isGroup }: SortProps) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const handleBtnClick = () => {
@@ -46,7 +46,7 @@ export const Sort = ({ sort, setSort, isList }: SortProps) => {
               : <img src={UnClick} />}
             <p>오래된순</p>
           </div>
-          {isList && <div onClick={() => handleSortClick("관련도순")} className={styles.sort__list__item}>
+          {isGroup && <div onClick={() => handleSortClick("관련도순")} className={styles.sort__list__item}>
             {sort === "관련도순" ?
               <img src={Click} />
               : <img src={UnClick} />}

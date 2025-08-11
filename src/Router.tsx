@@ -27,7 +27,7 @@ import FavoriteGroupList from "./pages/myPage/FavoriteGroupList"
 import ParticipantMenu from "./components/fixedGroupHeader/ParticipantMenu"
 import GroupLayout from "./components/layout/GroupLayout"
 import MyGroup from "./pages/myGroup/MyGroup"
-import CreateGroupPage from "./pages/myGroup/CreateGroupPage"
+// import CreateGroupPage from "./pages/myGroup/CreateGroupPage"
 
 export const Router = () => {
   return (
@@ -43,20 +43,24 @@ export const Router = () => {
 
         {/* Navbar (footer x)*/}
         <Route element={<MinimalLayout />}>
-          <Route path="/mygroup/create" element={<CreateGroupPage />} />
+          {/* <Route path="/mygroup/create" element={<CreateGroupPage />} /> */}
+          <Route path="/mygroup/create" element={<CreateGroup />} />
+          <Route path="/quiz/questions" element={<QuizQ />} />
         </Route>
 
         {/* 그룹 전용 레이아웃 */}
-        <Route path="/GroupLayout" element={<GroupLayout />}>
-          <Route path="MyGroupStudy" element={<MyGroupStudy title="예시제목" content="예시내용입니다." />} />
-          <Route path="myNote" element={<MyNote />} />
-          <Route path="myNote/write" element={<MyNoteWrite />} />
-          <Route path="shareNote" element={<ShareNoteList />} />
-          <Route path="shareNoteDetail/:id" element={<ShareNoteDetail />} />
-          <Route path="QandA" element={<QandAList />} />
-          <Route path="QandA/write" element={<QandAWrite />} />
-          <Route path="QandADetail/:id" element={<QandADetail />} />
-          <Route path="quiz" element={<Quiz />} />
+        <Route element={<Layout />}>
+          <Route path="/GroupLayout" element={<GroupLayout />}>
+            <Route path="MyGroupStudy" element={<MyGroupStudy title="예시제목" content="예시내용입니다." />} />
+            <Route path="myNote" element={<MyNote />} />
+            <Route path="myNote/write" element={<MyNoteWrite />} />
+            <Route path="shareNote" element={<ShareNoteList />} />
+            <Route path="shareNoteDetail/:id" element={<ShareNoteDetail />} />
+            <Route path="QandA" element={<QandAList />} />
+            <Route path="QandA/write" element={<QandAWrite />} />
+            <Route path="QandADetail/:id" element={<QandADetail />} />
+            <Route path="quiz" element={<Quiz />} />
+          </Route>
         </Route>
 
         {/* 단독 컴포넌트 */}
@@ -70,8 +74,6 @@ export const Router = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/welcome" element={<WelcomePage />} /> {/* ← 여기 경로 소문자로 변경됨 */}
-        <Route path="/createGroup" element={<CreateGroup />} />
-        <Route path="/quiz/questions" element={<QuizQ />} />
         <Route path="/mypage/edit" element={<EditProfile />} />
 
         {/* 404 처리 */}
