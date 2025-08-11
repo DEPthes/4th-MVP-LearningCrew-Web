@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
 import { ShareNoteListDummy } from "../../assets/shareNoteListDummy"
 import { Sort } from "../../components/common/Sort"
 import styles from "../../styles/shareNote/ShareNoteListPageStyle.module.css"
@@ -9,9 +9,10 @@ export const ShareNoteList = () => {
   const navigate = useNavigate()
   const noteData = ShareNoteListDummy
   const [snSort, setSnSort] = useState<string>("최신순")
+  const { groupId } = useParams<{ groupId: string }>();
 
   const handleNoteClick = (noteId: number) => {
-    navigate(`/GroupLayout/shareNoteDetail/${noteId}`)
+    navigate(`/group/${groupId}/shareNoteDetail/${noteId}`)
   }
 
   return (

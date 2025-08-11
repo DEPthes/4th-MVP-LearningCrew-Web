@@ -56,7 +56,6 @@
  display: flex;
  flex-direction: column;
  flex: 1;
- min-height: 0;
 }
 
 .toolbar {
@@ -130,9 +129,10 @@
  transition: border-color 0.2s ease;
  background: var(--MainColor1);
  flex: 1;
- min-height: 0;
  display: flex;
  flex-direction: column;
+ min-height: 300px;
+ max-height: 300px;
 }
 
 .editorWrapper:focus-within {

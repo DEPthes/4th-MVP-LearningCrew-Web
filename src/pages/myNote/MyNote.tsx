@@ -1,11 +1,11 @@
 import { Submit } from "../../components/common/Submit";
 import styles from "../../styles/myNote/MyNotePageStyle.module.css";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 export const MyNote = () => {
   // const [canWrite, setCanWrite] = useState<boolean>(true);//그 주차에 작성했으면 작성 못하게
   const navigator = useNavigate();
-
+  const { groupId } = useParams<{ groupId: string }>();
   //content 받고 이미지 처리 해서 넘기기
   const title = "다3주차 스터디";
   const content = `
@@ -42,7 +42,7 @@ function greet(user: User): string {
         </div>
       </div>
       <div className={styles.mynote__submit__container}>
-        <Submit text="작성" onClick={() => { navigator("/GroupLayout/myNote/write") }} canSubmit={true} />
+        <Submit text="작성" onClick={() => { navigator(`/group/${groupId}/myNote/write`) }} canSubmit={true} />
       </div>
     </div>
   )
