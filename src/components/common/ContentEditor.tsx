@@ -191,32 +191,32 @@ export const ContentEditor = ({ contentText, wholeTitle, onSubmit }: EditorProps
 
   //여기부터 서버 처리
   // 이미지들을 서버로 업로드하고 URL 배열을 받아오는 함수
-  const uploadImagesToServer = async (): Promise<string[]> => {
-    if (imageFiles.length === 0) return [];
+  // const uploadImagesToServer = async (): Promise<string[]> => {
+  //   if (imageFiles.length === 0) return [];
 
-    const formData = new FormData();
-    imageFiles.forEach((imageFile, index) => {
-      formData.append(`image_${index}`, imageFile.file);
-    });
+  //   const formData = new FormData();
+  //   imageFiles.forEach((imageFile, index) => {
+  //     formData.append(`image_${index}`, imageFile.file);
+  //   });
 
-    try {
-      // 실제 서버 엔드포인트로 변경해야 합니다
-      const response = await fetch('/api/upload-images', {
-        method: 'POST',
-        body: formData,
-      });
+  //   try {
+  //     // 실제 서버 엔드포인트로 변경해야 합니다
+  //     const response = await fetch('/api/upload-images', {
+  //       method: 'POST',
+  //       body: formData,
+  //     });
 
-      if (!response.ok) {
-        throw new Error('이미지 업로드에 실패했습니다.');
-      }
+  //     if (!response.ok) {
+  //       throw new Error('이미지 업로드에 실패했습니다.');
+  //     }
 
-      const result = await response.json();
-      return result.imageUrls; // 서버에서 반환하는 URL 배열
-    } catch (error) {
-      console.error('이미지 업로드 오류:', error);
-      throw error;
-    }
-  };
+  //     const result = await response.json();
+  //     return result.imageUrls; // 서버에서 반환하는 URL 배열
+  //   } catch (error) {
+  //     console.error('이미지 업로드 오류:', error);
+  //     throw error;
+  //   }
+  // };
 
   // 에디터 내용의 base64 이미지를 URL로 교체하는 함수
   // const replaceBase64WithUrls = (content: string, imageUrls: string[]): string => {
