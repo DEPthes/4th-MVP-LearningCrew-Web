@@ -1,20 +1,78 @@
-import { useState } from "react"
-import Header from "../../components/header/Header"
-import styles from "../../styles/myPage/EditProfile.module.css"
-import IdInputGroup from "../../components/signUp/IdInputGroup"
-import PasswordInputGroup from "../../components/signUp/PasswordInputGroup"
-import Date from "../../components/signUp/BirthCalendar"
-import Profile from "../../components/signUp/Profile"
-import Gender from "../../components/signUp/Gender"
+import { useState } from "react";
+import Header from "../../components/header/Header";
+import styles from "../../styles/myPage/EditProfile.module.css";
+import IdInputGroup from "../../components/signUp/IdInputGroup";
+import PasswordInputGroup from "../../components/signUp/PasswordInputGroup";
+import BirthCalendar from "../../components/signUp/BirthCalendar";
+import Profile from "../../components/signUp/Profile";
+import Gender from "../../components/signUp/Gender";
 
 export default function EditProfile() {
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const [confirmPassword, setConfirmPassword] = useState("")
-  const [nickname, setNickname] = useState("")
-  const [birthday, setBirthday] = useState<Date | null>(null)
-  const [gender, setGender] = useState<string | null>(null)
-  const [, setProfileImage] = useState<File | null>(null)
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [nickname, setNickname] = useState("");
+  const [birthday, setBirthday] = useState<Date | null>(null);
+  const [gender, setGender] = useState<string | null>(null);
+  const [, setProfileImage] = useState<File | null>(null);
+
+  const [emailMessage, setEmailMessage] = useState("*이메일을 입력하세요.");
+  const [nicknameMessage, setNicknameMessage] = useState("*닉네임을 입력하세요.");
+  const [passwordMessage, setPasswordMessage] = useState("*영어 대소문자, 숫자, 특수기호 조합 최소 8자 이상");
+  const [confirmPasswordMessage, setConfirmPasswordMessage] = useState("*비밀번호를 다시 입력하세요.");
+
+  const [emailValid, setEmailValid] = useState(false);
+  const [nicknameValid, setNicknameValid] = useState(false);
+  const [passwordValid, setPasswordValid] = useState(false);
+  const [passwordsMatch, setPasswordsMatch] = useState(false);
+
+  const validatePassword = (value: string) => {
+    const regex =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{8,}$/;
+    if (value === "") {
+      setPasswordMessage("*영어 대소문자, 숫자, 특수기호 조합 최소 8자 이상");
+      setPasswordValid(false);
+    } else if (regex.test(value)) {
+      setPasswordMessage("*사용 가능한 비밀번호입니다.");
+      setPasswordValid(true);
+    } else {
+      setPasswordMessage("*비밀번호 조건에 충족하지 않습니다.");
+      setPasswordValid(false);
+    }
+  };
+
+  const validateConfirmPassword = (value: string) => {
+    if (value === "") {
+      setConfirmPasswordMessage("*비밀번호를 다시 입력하세요.");
+      setPasswordsMatch(false);
+    } else if (value === password) {
+      setConfirmPasswordMessage("*비밀번호가 일치합니다.");
+      setPasswordsMatch(true);
+    } else {
+      setConfirmPasswordMessage("*비밀번호가 일치하지 않습니다.");
+      setPasswordsMatch(false);
+    }
+  };
+
+  const handleCheckEmail = () => {
+    if (!email) {
+      setEmailMessage("*이메일을 입력하세요.");
+      setEmailValid(false);
+      return;
+    }
+    setEmailMessage("*사용 가능한 아이디입니다.");
+    setEmailValid(true);
+  };
+
+  const handleCheckNickname = () => {
+    if (!nickname.trim()) {
+      setNicknameMessage("*닉네임을 입력하세요.");
+      setNicknameValid(false);
+      return;
+    }
+    setNicknameMessage("*사용 가능한 닉네임입니다.");
+    setNicknameValid(true);
+  };
 
   return (
     <>
@@ -23,57 +81,74 @@ export default function EditProfile() {
         <div className={styles.div__container}>
           <div className={styles.title}>프로필 수정</div>
 
-          {/* 아이디 */}
           <IdInputGroup
             label="아이디"
             placeholder="이메일을 입력하세요."
-            message="*아이디를 입력하세요."
+            message={emailMessage}
             type="email"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) => {
+              setEmail(e.target.value);
+              setEmailMessage("*이메일을 입력하세요.");
+              setEmailValid(false);
+            }}
+            showCheckButton
+            onCheckDuplicate={handleCheckEmail}
+            isValid={emailValid}
           />
 
-          {/* 비밀번호 */}
           <PasswordInputGroup
             label="비밀번호"
             placeholder="비밀번호를 입력하세요."
-            message="*영어 대소문자, 숫자, 특수기호 조합 최소 8자 이상"
+            message={passwordMessage}
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={(e) => {
+              setPassword(e.target.value);
+              validatePassword(e.target.value);
+              validateConfirmPassword(confirmPassword);
+            }}
           />
 
-          {/* 비밀번호 확인 */}
           <PasswordInputGroup
             label="비밀번호 재확인"
             placeholder="비밀번호를 다시 입력하세요."
-            message="*비밀번호가 일치하지 않습니다."
+            message={confirmPasswordMessage}
             value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
+            onChange={(e) => {
+              setConfirmPassword(e.target.value);
+              validateConfirmPassword(e.target.value);
+            }}
           />
 
-          {/* 닉네임 */}
           <IdInputGroup
             label="닉네임"
             placeholder="닉네임을 입력하세요"
-            message="*닉네임을 입력하세요."
+            message={nicknameMessage}
             type="text"
             value={nickname}
-            onChange={(e) => setNickname(e.target.value)}
+            onChange={(e) => {
+              setNickname(e.target.value);
+              setNicknameMessage("*닉네임을 입력하세요.");
+              setNicknameValid(false);
+            }}
+            showCheckButton
+            onCheckDuplicate={handleCheckNickname}
+            isValid={nicknameValid}
           />
 
-          {/* 생년월일 */}
-          <Date value={birthday} onChange={setBirthday} />
-
-          {/* 프로필 이미지 */}
+          <BirthCalendar value={birthday} onChange={setBirthday} />
+          <Gender selected={gender} onSelect={setGender} />
           <Profile onImageChange={setProfileImage} />
 
-          {/* 성별 선택 */}
-          <Gender selected={gender} onSelect={setGender} />
-
-          {/* 저장 버튼 */}
-          <button type="submit" className={styles.button}>완료</button>
+          <button
+            type="submit"
+            className={styles.button}
+            disabled={!passwordValid || !passwordsMatch}
+          >
+            완료
+          </button>
         </div>
       </div>
     </>
-  )
+  );
 }
