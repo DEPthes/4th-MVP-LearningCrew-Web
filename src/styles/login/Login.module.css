@@ -35,6 +35,12 @@
   padding-left: 16px;
 }
 
+/* Edge/IE 기본 비밀번호 표시(눈 아이콘) 제거 */
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear {
+  display: none;
+}
+
 .input::placeholder {
   font: var(--BodySRegular);
   color: var(--Gray3);
@@ -68,14 +74,14 @@
 
 .button__wrapper {
   margin-top: 85px;
-  position: relative; 
+  position: relative;
   width: 500px;
   height: auto;
 }
 
 .warning__msg {
   position: absolute;
-  top: -26px; 
+  top: -26px;
   left: 0;
   font: var(--BodyXSRegular);
   color: var(--MainColor2);

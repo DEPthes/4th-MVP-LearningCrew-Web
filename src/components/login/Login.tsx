@@ -22,7 +22,7 @@ export default function Login() {
         },
         {
           headers: {
-            "Content-Type": "application/json", 
+            "Content-Type": "application/json",
           },
         }
       )
