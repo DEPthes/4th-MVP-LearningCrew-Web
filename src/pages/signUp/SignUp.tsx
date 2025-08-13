@@ -20,23 +20,27 @@ export default function SignUp() {
 
   const [emailMessage, setEmailMessage] = useState("*이메일을 입력하세요.")
   const [nicknameMessage, setNicknameMessage] = useState("*닉네임을 입력하세요.")
-  const [passwordMessage, setPasswordMessage] = useState("*영어 대소문자, 숫자, 특수기호 조합 최소 8자 이상")
+  const [passwordMessage, setPasswordMessage] = useState("*영어 대소문자, 숫자, 특수기호 포함 최소 8자 이상")
   const [confirmPasswordMessage, setConfirmPasswordMessage] = useState("*비밀번호를 다시 입력하세요.")
 
   const [emailValid, setEmailValid] = useState(false)
   const [nicknameValid, setNicknameValid] = useState(false)
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [passwordValid, setPasswordValid] = useState(false)
   const [passwordsMatch, setPasswordsMatch] = useState(false)
 
+  const [formError, setFormError] = useState("")
+
   const navigate = useNavigate()
 
+  // 영어 대문자 + 소문자 + 숫자 + 특수문자 각각 1자 이상, 총 8자 이상
+  const passwordRegex =
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{8,}$/
+
   const validatePassword = (value: string) => {
-    const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{8,}$/
     if (value === "") {
-      setPasswordMessage("*영어 대소문자, 숫자, 특수기호 조합 최소 8자 이상")
+      setPasswordMessage("*영어 대소문자, 숫자, 특수기호 포함 최소 8자 이상")
       setPasswordValid(false)
-    } else if (regex.test(value)) {
+    } else if (passwordRegex.test(value)) {
       setPasswordMessage("*사용 가능한 비밀번호입니다.")
       setPasswordValid(true)
     } else {
@@ -60,6 +64,7 @@ export default function SignUp() {
 
   const handleCheckEmail = async () => {
     try {
+      // 프로젝트에 따라 엔드포인트 다를 수 있어 현재 코드 유지
       const res = await axios.get(`/api/auth/email-exist?email=${email}`)
       if (res.data.exist) {
         setEmailMessage("*중복되는 아이디입니다.")
@@ -68,7 +73,7 @@ export default function SignUp() {
         setEmailMessage("*사용 가능한 아이디입니다.")
         setEmailValid(true)
       }
-    } catch (error) {
+    } catch {
       setEmailMessage("*중복 확인 중 오류가 발생했습니다.")
       setEmailValid(false)
     }
@@ -84,13 +89,28 @@ export default function SignUp() {
         setNicknameMessage("*사용 가능한 닉네임입니다.")
         setNicknameValid(true)
       }
-    } catch (error) {
+    } catch {
       setNicknameMessage("*중복 확인 중 오류가 발생했습니다.")
       setNicknameValid(false)
     }
   }
 
   const handleSignUp = async () => {
+    if (!email || !password || !confirmPassword || !nickname || !birthday || !gender) {
+      setFormError("*입력되지 않은 정보가 있습니다.")
+      return
+    }
+    if (!passwordValid) {
+      setFormError("*비밀번호 조건에 충족하지 않습니다.")
+      return
+    }
+    if (!passwordsMatch) {
+      setFormError("*비밀번호가 일치하지 않습니다.")
+      return
+    }
+
+    setFormError("")
+
     try {
       const formData = new FormData()
       formData.append("email", email)
@@ -101,13 +121,11 @@ export default function SignUp() {
       if (profileImage) formData.append("profile", profileImage)
 
       await axios.post("/api/auth/register", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
+        headers: { "Content-Type": "multipart/form-data" },
       })
 
       navigate("/welcome")
-    } catch (error: any) {
+    } catch (error) {
       console.error("회원가입 실패:", error)
       alert("회원가입에 실패했습니다.")
     }
@@ -130,6 +148,7 @@ export default function SignUp() {
               setEmail(e.target.value)
               setEmailMessage("*이메일을 입력하세요.")
               setEmailValid(false)
+              setFormError("")
             }}
             onCheckDuplicate={handleCheckEmail}
             showCheckButton
@@ -142,9 +161,11 @@ export default function SignUp() {
             message={passwordMessage}
             value={password}
             onChange={(e) => {
-              setPassword(e.target.value)
-              validatePassword(e.target.value)
-              validateConfirmPassword(confirmPassword)
+              const v = e.target.value
+              setPassword(v)
+              validatePassword(v)
+              validateConfirmPassword(confirmPassword) // 재확인 문구도 즉시 갱신
+              setFormError("")
             }}
           />
 
@@ -154,8 +175,10 @@ export default function SignUp() {
             message={confirmPasswordMessage}
             value={confirmPassword}
             onChange={(e) => {
-              setConfirmPassword(e.target.value)
-              validateConfirmPassword(e.target.value)
+              const v = e.target.value
+              setConfirmPassword(v)
+              validateConfirmPassword(v)
+              setFormError("")
             }}
           />
 
@@ -169,24 +192,50 @@ export default function SignUp() {
               setNickname(e.target.value)
               setNicknameMessage("*닉네임을 입력하세요.")
               setNicknameValid(false)
+              setFormError("")
             }}
             onCheckDuplicate={handleCheckNickname}
             showCheckButton
             isValid={nicknameValid}
           />
 
-          <BirthCalendar value={birthday} onChange={setBirthday} />
-          <Gender selected={gender} onSelect={setGender} />
-          <Profile onImageChange={setProfileImage} />
+          <BirthCalendar
+            value={birthday}
+            onChange={(date) => {
+              setBirthday(date)
+              setFormError("")
+            }}
+          />
 
-          <button
-            type="button"
-            className={styles.button}
-            onClick={handleSignUp}
-            disabled={!passwordValid || !passwordsMatch}
-          >
-            가입
-          </button>
+          <Gender
+            selected={gender}
+            onSelect={(g) => {
+              setGender(g)
+              setFormError("")
+            }}
+          />
+
+          <Profile
+            onImageChange={(file) => {
+              setProfileImage(file)
+            }}
+          />
+
+          {/* 버튼 & 에러 문구 묶음 */}
+          <div className={styles.buttonWrapper}>
+            {formError && (
+              <div className={styles.formError} role="alert" aria-live="assertive">
+                {formError}
+              </div>
+            )}
+            <button
+              type="button"
+              className={styles.button}
+              onClick={handleSignUp}
+            >
+              가입
+            </button>
+          </div>
         </div>
       </div>
     </>

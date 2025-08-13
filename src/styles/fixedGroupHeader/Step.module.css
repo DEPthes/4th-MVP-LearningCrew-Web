@@ -66,7 +66,12 @@
   color: var(--MainColor1);
 }
 
-.current {
-  background-color: #FF552C; /* 주황색 (불투명) */
+.current { /* 현재 스텝이 '선택 해제된 상태'일 때 */
+  background-color: rgba(164, 78, 56, 0.8);
   color: var(--MainColor1);
+}
+
+.selected { /* 강조(메인 컬러) */
+  background-color: var(--MainColor2) !important;
+  color: var(--MainColor1) !important;
 }

@@ -16,7 +16,9 @@ export default function PasswordInputGroup({
   onChange,
 }: PasswordInputGroupProps) {
   const isError = message.includes("충족하지") || message.includes("일치하지")
-  const isSuccess = message === "*사용 가능한 비밀번호입니다." || message === "*비밀번호가 일치합니다."
+  const isSuccess =
+    message === "*사용 가능한 비밀번호입니다." ||
+    message === "*비밀번호가 일치합니다."
 
   return (
     <div className={styles.div__container}>
@@ -28,10 +30,14 @@ export default function PasswordInputGroup({
           className={styles.input}
           value={value}
           onChange={onChange}
+          autoComplete="new-password"
+          inputMode="text"
         />
       </div>
       <div
-        className={`${styles.input__require} ${isError ? styles.require__error : ""} ${isSuccess ? styles.success : ""}`}
+        className={`${styles.input__require} ${
+          isError ? styles.require__error : ""
+        } ${isSuccess ? styles.success : ""}`}
       >
         {message}
       </div>
