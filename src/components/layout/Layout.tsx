@@ -12,7 +12,6 @@ const Layout = () => {
       <Navbar />
       <main style={{
         flex: 1,
-        paddingTop: "116px",
       }}>
         <Outlet />
       </main>
