@@ -5,9 +5,10 @@ import { useNavigate, useParams } from "react-router-dom";
 export const WriteBtn = () => {
   const navigate = useNavigate();
   const { groupId } = useParams<{ groupId: string }>();
+  const { stepId } = useParams<{ stepId: string }>();
 
   const handleWriteClick = () => {
-    navigate(`/group/${groupId}/QandA/write`);
+    navigate(`/group/${groupId}/step/${stepId}/QandA/write`);
   }
 
   return (

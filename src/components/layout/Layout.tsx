@@ -7,7 +7,8 @@ const Layout = () => {
     <div style={{
       display: "flex",
       flexDirection: "column",
-      minHeight: "100vh"
+      minHeight: "100vh",
+      width: "100%"
     }}>
       <Navbar />
       <main style={{

@@ -12,6 +12,7 @@ export const QuizQ = () => {
   const [showError, setShowError] = useState<boolean>(false);
   const navigate = useNavigate();
   const { groupId } = useParams<{ groupId: string }>();
+  const { stepId } = useParams<{ stepId: string }>();
 
   const currentQuestion = QuizDummy.find(q => q.id === currentQuestionId);
   const totalQuestions = QuizDummy.length;
@@ -50,7 +51,7 @@ export const QuizQ = () => {
       // 마지막 문제이고 모든 답을 선택했으면 결과 페이지로 이동
       const allQuestionsAnswered = QuizDummy.every(q => selectedAnswers[q.id] !== undefined);
       if (allQuestionsAnswered) {
-        navigate("/quiz");
+        navigate(`/group/${groupId}/step/${stepId}/quiz`);
       } else {
         setShowError(true);
       }
@@ -64,7 +65,7 @@ export const QuizQ = () => {
 
   return (
     <div className={styles.quizq__container}>
-      <img src={ProgressQuizBackground} className={styles.quizq__background} />
+      <img loading="lazy" src={ProgressQuizBackground} className={styles.quizq__background} />
       <div className={styles.quizq__content}>
         <div className={styles.quizq__content__container}>
           <div className={styles.quizq__progress}>

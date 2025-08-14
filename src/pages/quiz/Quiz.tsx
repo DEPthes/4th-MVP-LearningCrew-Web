@@ -10,6 +10,7 @@ export const Quiz = () => {
   const [score, setScore] = useState<number>(0);
   const [step, setStep] = useState<number>(1);
   const { groupId } = useParams<{ groupId: string }>();
+  const { stepId } = useParams<{ stepId: string }>();
   const navigator = useNavigate();
 
   const handleIsQuiz = () => {
@@ -17,7 +18,7 @@ export const Quiz = () => {
     setIsQuiz(false);
     //퀴즈가 있으면 이동 없으면 setIsQuiz false로세팅
     //isQuiz 그대로 쓰면 안되고 변수 생성 해서 바로 받아와서 해야됨***바꿔***
-    if (isQuiz && !isDone) navigator(`/group/${groupId}/quiz/questions`);
+    if (isQuiz && !isDone) navigator(`/group/${groupId}/step/${stepId}/quiz/questions`);
   }
 
   useEffect(() => {
