@@ -63,7 +63,7 @@
  margin: 0;
  font: var(--HeadlineMMedium);
  color: var(--PointColor);
- font-size: 3vw;
+ font-size: clamp(16px, 2vw, 28px); /* 최소 16px, 최대 32px */
 }
 
 .startquiz__score__container {
@@ -72,7 +72,7 @@
  flex-direction: row;
  align-items: center;
  width: 100%;
- margin: 3vw 0 2vw 0;
+ /* margin: 1.5vw 0 2vw 0; */
 }
 
 .startquiz__content__score {
@@ -81,20 +81,44 @@
  -webkit-background-clip: text;
  background-clip: text;
  -webkit-text-fill-color: transparent;
- font-size: 10vw;
+ font-size: clamp(32px, 8vw, 112px); /* 최소 32px, 최대 120px */
  margin: 0;
 }
 
 .startquiz__content__score__text {
  font: var(--HeadlineXLMedium);
  color: var(--PointColor);
- font-size: 4vw;
- margin: 3vw 0 0 2%;
+ font-size: clamp(18px, 3vw, 48px); /* 최소 18px, 최대 48px */
+ margin: 1.5vw 0 0 2%;
 }
 
 .startquiz__content__score__alert {
  margin: 0;
  font: var(--BodyLMedium);
  color: var(--Gray1);
- font-size: 2vw;
+ font-size: clamp(14px, 1.5vw, 24px); /* 최소 14px, 최대 24px */
+}
+
+@media (max-width: 800px) {
+ .startquiz__content__step {
+  font-size: 12px;
+ }
+
+ .startquiz__score__container {
+  margin: 20px 0 10px 0;
+ }
+
+ .startquiz__content__score {
+  font-size: 40px;
+  margin: 0;
+ }
+
+ .startquiz__content__score__text {
+  font-size: 20px;
+  margin: 12px 0 0 12px;
+ }
+
+ .startquiz__content__score__alert {
+  font-size: 12px;
+ }
 }
