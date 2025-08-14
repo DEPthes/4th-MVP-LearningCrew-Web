@@ -90,3 +90,10 @@
  --ButtonAddsizeMedium: 500 18px / normal S-CoreDream;
  --ScoreBold: 700 100px / normal S-CoreDream;
 }
+
+/* 전역 최소 너비 설정 */
+
+#root {
+ width: 100%;
+ overflow-x: hidden;
+}

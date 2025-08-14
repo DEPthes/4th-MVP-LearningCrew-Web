@@ -29,6 +29,7 @@
  font: var(--ButtonLRegular);
  border-style: none;
  cursor: pointer;
+ padding-left: 10px;
 }
 
 .button__active {

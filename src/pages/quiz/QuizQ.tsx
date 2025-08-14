@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import styles from "../../styles/quiz/QuizQPageStyle.module.css";
 import ProgressQuizBackground from "../../assets/ProgressQuizBackground.svg";
 import Click from "../../assets/QuizCheck.svg";
@@ -11,6 +11,8 @@ export const QuizQ = () => {
   const [selectedAnswers, setSelectedAnswers] = useState<{ [key: number]: number }>({});
   const [showError, setShowError] = useState<boolean>(false);
   const navigate = useNavigate();
+  const { groupId } = useParams<{ groupId: string }>();
+  const { stepId } = useParams<{ stepId: string }>();
 
   const currentQuestion = QuizDummy.find(q => q.id === currentQuestionId);
   const totalQuestions = QuizDummy.length;
@@ -26,6 +28,11 @@ export const QuizQ = () => {
   };
 
   const handlePrevious = () => {
+    if (isFirstQuestion) {
+      navigate(`/group/${groupId}/quiz`);
+      return;
+    }
+
     if (!isFirstQuestion) {
       setCurrentQuestionId(prev => prev - 1);
       setShowError(false);
@@ -44,7 +51,7 @@ export const QuizQ = () => {
       // 마지막 문제이고 모든 답을 선택했으면 결과 페이지로 이동
       const allQuestionsAnswered = QuizDummy.every(q => selectedAnswers[q.id] !== undefined);
       if (allQuestionsAnswered) {
-        navigate("/quiz");
+        navigate(`/group/${groupId}/step/${stepId}/quiz`);
       } else {
         setShowError(true);
       }
@@ -58,7 +65,7 @@ export const QuizQ = () => {
 
   return (
     <div className={styles.quizq__container}>
-      <img src={ProgressQuizBackground} className={styles.quizq__background} />
+      <img loading="lazy" src={ProgressQuizBackground} className={styles.quizq__background} />
       <div className={styles.quizq__content}>
         <div className={styles.quizq__content__container}>
           <div className={styles.quizq__progress}>
@@ -87,7 +94,7 @@ export const QuizQ = () => {
           </div>
           <p className={styles.quizq__error}>{showError ? "*정답이 선택되지 않았습니다" : " "}</p>
           <div className={styles.quizq__navigation}>
-            <button onClick={handlePrevious} className={styles.quizq__prev} disabled={isFirstQuestion}>
+            <button onClick={handlePrevious} className={styles.quizq__prev}>
               <p>이전</p>
             </button>
             <button onClick={handleNext} className={styles.quizq__next}>
