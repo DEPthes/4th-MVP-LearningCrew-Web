@@ -27,18 +27,23 @@ import FavoriteGroupList from "./pages/myPage/FavoriteGroupList"
 import ParticipantMenu from "./components/fixedGroupHeader/ParticipantMenu"
 import GroupLayout from "./components/layout/GroupLayout"
 import MyGroup from "./pages/myGroup/MyGroup"
+import MainLayout from "./components/layout/MainLayout"
 // import CreateGroupPage from "./pages/myGroup/CreateGroupPage"
 
 export const Router = () => {
   return (
     <BrowserRouter>
       <Routes>
+        {/* Navbar + banner + Footer */}
+        <Route element={<MainLayout />}>
+          <Route path="/" element={<Home />} />
+          <Route path="/mygroup" element={<MyGroup />} />
+        </Route>
+        
         {/* Navbar + Footer */}
         <Route element={<Layout />}>
-          <Route path="/" element={<Home />} />
           <Route path="/mypage" element={<MyPageHome />} />
           <Route path="/mypage/favorite" element={<FavoriteGroupList />} />
-          <Route path="/mygroup" element={<MyGroup />} />
         </Route>
 
         {/* Navbar (footer x)*/}
