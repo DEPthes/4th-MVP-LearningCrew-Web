@@ -6,20 +6,21 @@ export default function HostMenu() {
   const navigate = useNavigate();
   const location = useLocation();
   const { groupId } = useParams<{ groupId: string }>();
+  const { stepId } = useParams<{ stepId: string }>();
 
   const menuItems = [
-    { name: "Study", path: `/group/${groupId}/MyGroupStudy` },
-    { name: "내 노트", path: `/group/${groupId}/myNote` },
-    { name: "공유 노트", path: `/group/${groupId}/shareNote` },
-    { name: "Q&A", path: `/group/${groupId}/QandA` },
-    { name: "Quiz", path: `/group/${groupId}/quiz` },
+    { name: "Study", path: `/group/${groupId}/step/${stepId}/MyGroupStudy` },
+    { name: "내 노트", path: `/group/${groupId}/step/${stepId}/myNote` },
+    { name: "공유 노트", path: `/group/${groupId}/step/${stepId}/shareNote` },
+    { name: "Q&A", path: `/group/${groupId}/step/${stepId}/QandA` },
+    { name: "Quiz", path: `/group/${groupId}/step/${stepId}/quiz` },
   ];
 
   const detailItems = [
-    { path: `/group/${groupId}/myNote/write`, previousPath: `/group/${groupId}/myNote` },
-    { path: `/group/${groupId}/shareNoteDetail/[^/]+`, previousPath: `/group/${groupId}/shareNote` },
-    { path: `/group/${groupId}/QandA/write`, previousPath: `/group/${groupId}/QandA` },
-    { path: `/group/${groupId}/QandADetail/[^/]+`, previousPath: `/group/${groupId}/QandA` },
+    { path: `/group/${groupId}/step/${stepId}/myNote/write`, previousPath: `/group/${groupId}/step/${stepId}/myNote` },
+    { path: `/group/${groupId}/step/${stepId}/shareNoteDetail/[^/]+`, previousPath: `/group/${groupId}/step/${stepId}/shareNote` },
+    { path: `/group/${groupId}/step/${stepId}/QandA/write`, previousPath: `/group/${groupId}/step/${stepId}/QandA` },
+    { path: `/group/${groupId}/step/${stepId}/QandADetail/[^/]+`, previousPath: `/group/${groupId}/step/${stepId}/QandA` },
   ];
 
   const isDetailPath = detailItems.some(item => {

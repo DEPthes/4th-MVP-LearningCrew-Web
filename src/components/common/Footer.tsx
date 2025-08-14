@@ -1,13 +1,13 @@
 import styles from "../../styles/common/Footer.module.css";
 
-export default function Footer(){
+export default function Footer() {
   return (
     <footer className={styles.footer}>
       <div className={styles.container}>
         <div className={styles.top}>
           <img src="/logo.svg" alt="LearnIT Logo" className={styles.logo} />
           <div>
-            <div className={styles.bar}></div> LearnIT 
+            <div className={styles.bar}></div> LearnIT
             <div className={styles.bar}></div> Learn it with IT - IT를 통해 함께 배우다
           </div>
         </div>
@@ -23,5 +23,5 @@ export default function Footer(){
         </div >
       </div>
     </footer>
-    );
+  );
 }

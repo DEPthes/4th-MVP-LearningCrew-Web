@@ -39,3 +39,36 @@
  font: var(--Content);
  color: var(--SubColor1);
 }
+
+.detail__image {
+ width: 100%;
+}
+
+.detail__fileList {
+ display: flex;
+ flex-direction: column;
+ gap: 5px;
+}
+
+.detail__fileItem {
+ display: flex;
+ align-items: center;
+}
+
+.detail__fileButton {
+ cursor: pointer;
+ margin-right: 10px;
+ background-color: var(--Gray2);
+ border-radius: 5px;
+ padding: 2px 6px;
+ color: var(--MainColor1);
+ font: var(--Content);
+ font-size: 12px;
+ border: 2px solid var(--Gray1);
+}
+
+.detail__fileSize {
+ font: var(--BodyXSRegular);
+ color: var(--Gray0);
+ font-size: 12px;
+}

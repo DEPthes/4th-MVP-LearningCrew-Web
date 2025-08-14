@@ -2,16 +2,32 @@ import styles from "../../styles/common/List.module.css";
 import { Pagenation } from "./Pagenation";
 import { useEffect, useState } from "react";
 
-interface ListItem {
+interface ListData {
   id: number;
+  step: number;
   title: string;
-  writer: string;
+  createdBy: {
+    id: number;
+    email: string;
+    nickname: string;
+    role: string;
+    gender: string;
+    profileImage: {
+      uuid: string;
+      fileName: string;
+      size: number;
+      handlingType: string;
+    };
+    createdAt: string;
+    lastModifiedAt: string;
+  };
   createdAt: string;
+  lastModifiedAt: string;
 }
 
 interface ListProps {
   pagenation: boolean;
-  items: ListItem[];
+  items: ListData[];
   handleClick: (id: number) => void;
   sort: string;
 }
@@ -19,11 +35,11 @@ interface ListProps {
 export const List = ({ pagenation, items, handleClick, sort }: ListProps) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [currentItems, setCurrentItems] = useState<ListItem[]>([]);
-  const [sortedItems, setSortedItems] = useState<ListItem[]>(items);
+  const [currentItems, setCurrentItems] = useState<ListData[]>([]);
+  const [sortedItems, setSortedItems] = useState<ListData[]>([]);
 
   useEffect(() => {
-    setTotalPages(Math.ceil(items.length / 20));
+    setTotalPages(Math.ceil(items.length / 20) == 0 ? 1 : Math.ceil(items.length / 20));
   }, [items])
 
   useEffect(() => {
@@ -33,7 +49,7 @@ export const List = ({ pagenation, items, handleClick, sort }: ListProps) => {
       const bottom = top - 20 > 0 ? top - 20 : 0;
       setCurrentItems(sortedItems.slice(bottom, top).reverse());
     }
-  }, [currentPage, sortedItems])
+  }, [currentPage, sortedItems, items.length, pagenation])
 
   useEffect(() => {
     if (sort == "오래된순") {
@@ -63,8 +79,8 @@ export const List = ({ pagenation, items, handleClick, sort }: ListProps) => {
               onClick={() => handleClick(list.id)}
             >
               <p className={styles.list__title}>{list.title}</p>
-              <p className={styles.list__writer}>{list.writer}</p>
-              <p className={styles.list__createdAt}>{list.createdAt}</p>
+              <p className={styles.list__writer}>{list.createdBy.nickname}</p>
+              <p className={styles.list__createdAt}>{new Date(list.createdAt).toLocaleDateString('ko-KR')}</p>
             </div>
           ))}
         </div>

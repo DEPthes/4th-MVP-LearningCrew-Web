@@ -45,20 +45,20 @@ export const Router = () => {
         <Route element={<MinimalLayout />}>
           {/* <Route path="/mygroup/create" element={<CreateGroupPage />} /> */}
           <Route path="/mygroup/create" element={<CreateGroup />} />
-          <Route path="/quiz/questions" element={<QuizQ />} />
+          <Route path="group/:groupId/step/:stepId/quiz/questions" element={<QuizQ />} />
         </Route>
 
         {/* 그룹 전용 레이아웃 */}
         <Route element={<Layout />}>
-          <Route path="/group/:groupId" element={<GroupLayout />}>
+          <Route path="/group/:groupId/step/:stepId" element={<GroupLayout />}>
             <Route path="MyGroupStudy" element={<MyGroupStudy title="예시제목" content="예시내용입니다." />} />
             <Route path="myNote" element={<MyNote />} />
             <Route path="myNote/write" element={<MyNoteWrite />} />
             <Route path="shareNote" element={<ShareNoteList />} />
-            <Route path="shareNoteDetail/:id" element={<ShareNoteDetail />} />
+            <Route path="shareNoteDetail/:noteId" element={<ShareNoteDetail />} />
             <Route path="QandA" element={<QandAList />} />
             <Route path="QandA/write" element={<QandAWrite />} />
-            <Route path="QandADetail/:id" element={<QandADetail />} />
+            <Route path="QandADetail/:qId" element={<QandADetail />} />
             <Route path="quiz" element={<Quiz />} />
           </Route>
         </Route>

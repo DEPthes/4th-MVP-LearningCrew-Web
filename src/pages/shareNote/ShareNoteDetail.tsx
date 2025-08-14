@@ -1,16 +1,41 @@
 import { useParams } from "react-router-dom";
-import { ShareNoteListDummy } from "../../assets/shareNoteListDummy";
 import { PostDetail } from "../../components/common/PostDetail";
+import { getDetailNote } from "../../apis/studygroup/Note";
+import { useState, useEffect } from "react";
 
 export const ShareNoteDetail = () => {
-  const { id } = useParams<{ id: string }>();
+  const { noteId } = useParams<{ noteId: string }>();
+  const [noteData, setNoteData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
 
-  // id로 해당 노트 찾기
-  const note = ShareNoteListDummy.find(note => note.id === Number(id));
+  useEffect(() => {
+    const fetchNoteDetail = async () => {
+      if (noteId) {
+        try {
+          const response = await getDetailNote(noteId);
+          setNoteData(response);
+          setLoading(false);
+        } catch (error) {
+          console.error("노트 상세 정보를 가져오는데 실패했습니다:", error);
+          setLoading(false);
+        }
+      }
+    };
+
+    fetchNoteDetail();
+  }, [noteId]);
+
+  if (loading) {
+    return <div>로딩 중...</div>;
+  }
+
+  if (!noteData) {
+    return <div>노트를 찾을 수 없습니다.</div>;
+  }
 
   return (
     <>
-      <PostDetail data={note} />
+      <PostDetail data={noteData} />
     </>
   );
 };
