@@ -8,6 +8,8 @@
   color: var(--MainColor1);
   text-decoration: none;
   font: var(--ButtonLMedium);
-  position: relative; 
-  z-index: 6;        
+  position: fixed;
+  bottom: 20%;
+  right: 9%;
+  z-index: 1000;
 }
