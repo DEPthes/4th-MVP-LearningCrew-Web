@@ -5,6 +5,8 @@ import { Pagenation } from '../../components/common/Pagenation';
 import { Sort } from '../../components/common/Sort';
 import { useEffect, useState } from 'react';
 import type { ReactNode } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { getStudyGroup } from '../../apis/studygroup/StudyGroup';
 
 interface GroupItem {
   id: number;
@@ -27,6 +29,7 @@ interface GroupListPageProps {
   headerBelow?: ReactNode;
   headerButton?: ReactNode;
   isGroup?: boolean;
+  loading?: boolean;
   sortLabel?: string;
   onSortChange?: (label: string) => void;
   onCardClick?: (id: number) => void;
@@ -39,13 +42,29 @@ export default function GroupListPage({
   onBookmarkClick,
   headerBelow,
   headerButton,
-  isGroup = false,
+  isGroup = true,
+  loading,
   sortLabel = "최신순",
   onSortChange,
-  onCardClick,
 }: GroupListPageProps) {
   const [sort, setSort] = useState(sortLabel);
   const [currentPage, setCurrentPage] = useState(1);
+  const navigate = useNavigate();
+
+  //임시
+  const handleGroupClick = (groupId: number) => {
+    const fetchCurrentStepId = async () => {
+      try {
+        if (groupId) {
+          const response = await getStudyGroup(groupId.toString());
+          navigate(`/group/${groupId}/step/${response.currentStep}/MyGroupStudy`);
+        }
+      } catch (error) {
+        console.error('현재 스텝 아이디 조회 실패:', error);
+      }
+    };
+    fetchCurrentStepId();
+  }
 
   useEffect(() => {
     setSort(sortLabel);
@@ -80,17 +99,22 @@ export default function GroupListPage({
         )}
 
         {groupList.length === 0 ? (
-          <div className={styles.empty}>검색 결과가 없어요.</div>
+          loading ? (
+            <div className={styles.empty}>로딩 중...</div>
+          ) : (
+            <div className={styles.empty}>검색 결과가 없어요.</div>
+          )
         ) : (
           <div className={styles.cardGrid}>
             {groupList.map(group => (
-              <GroupCard
-                key={group.id}
-                {...group}
-                type={group.type}
-                onBookmarkClick={() => onBookmarkClick?.(group.id)}
-                onClick={() => onCardClick?.(group.id)}   
-              />
+              <div onClick={() => handleGroupClick(group.id)}>
+                <GroupCard
+                  key={group.id}
+                  {...group}
+                  type={group.type}
+                  onBookmarkClick={() => onBookmarkClick?.(group.id)}
+                />
+              </div>
             ))}
           </div>
         )}

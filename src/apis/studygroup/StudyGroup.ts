@@ -1,13 +1,10 @@
 import axios from "axios";
-
-const Token = localStorage.getItem("accessToken");
+import { getAuthHeader } from "../auth/auth";
 
 export const getStudyGroup = async (groupId: string) => {
  try {
   const response = await axios.get(`/api/study-groups/${groupId}`, {
-   headers: {
-    Authorization: `Bearer ${Token}`,
-   },
+   headers: getAuthHeader(),
   });
   return response.data;
  } catch (error) {

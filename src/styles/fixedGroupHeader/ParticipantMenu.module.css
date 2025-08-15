@@ -39,7 +39,7 @@
 
 /* 대충 예시 — 프로젝트 기존 스타일에 맞춰 색상/폰트만 맞추면 됩니다 */
 .member__group__label {
-  margin: 12px 8px 4px;
-  font: var(--BodySMedium);
-  opacity: 0.7;
+ margin: 12px 8px 4px;
+ font: var(--BodySMedium);
+ opacity: 0.7;
 }

@@ -1,86 +1,104 @@
 .card {
-  width: 100%;
-  max-width: 290px;
-  min-width: 200px;
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
-  cursor: pointer;
+ width: 100%;
+ max-width: 290px;
+ min-width: 200px;
+ display: flex;
+ flex-direction: column;
+ gap: 0.4rem;
+ cursor: pointer;
 }
 
 .imageWrapper {
-  position: relative;
-  width: 100%;
-  max-height: 180px;
-  border-radius: 8px;
-  overflow: hidden;
+ position: relative;
+ width: 100%;
+ height: 180px;
+ border-radius: 8px;
+ overflow: hidden;
+}
+
+.imageWrapper::after {
+ content: "";
+ position: absolute;
+ top: 0;
+ left: 0;
+ width: 100%;
+ height: 100%;
+ background: linear-gradient(
+  to bottom,
+  transparent 0%,
+  rgba(0, 0, 0, 0.3) 50%,
+  rgba(0, 0, 0, 0.7) 100%
+ );
+ pointer-events: none;
+ z-index: 1;
 }
 
 .image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+ width: 100%;
+ height: 100%;
+ object-fit: cover;
 }
 
- .bookmark {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  font-size: 1.5rem;
-  cursor: pointer;
-  transition: color 0.2s ease;
+.bookmark {
+ position: absolute;
+ top: 12px;
+ right: 12px;
+ font-size: 1.5rem;
+ cursor: pointer;
+ transition: color 0.2s ease;
 }
 
 .outlined {
-  color: var(--MainColor1);
+ color: var(--MainColor1);
 }
 
 .filled {
-  color: var(--MainColor2);
+ color: var(--MainColor2);
 }
 
 .label {
-  position: absolute;
-  bottom: 6px;
-  left: 6px;
-  color: var(--MainColor1);
-  font: var(--HeadlineSMedium);
-  padding: 2px 6px;
+ position: absolute;
+ bottom: 6px;
+ left: 6px;
+ color: var(--MainColor1);
+ font: var(--HeadlineSMedium);
+ padding: 2px 6px;
+ z-index: 2;
 }
 
 .count {
-  position: absolute;
-  bottom: 6px;
-  right: 6px;
-  color: var(--MainColor1);
-  font: var(-BodyXSRegular);
-  padding: 2px 6px;
-
+ position: absolute;
+ bottom: 6px;
+ right: 6px;
+ color: var(--MainColor1);
+ font: var(--BodyXSRegular);
+ padding: 2px 6px;
+ z-index: 2;
 }
 
 .content {
-  display: flex;
-  flex-direction: column;
+ display: flex;
+ flex-direction: column;
 }
 
 .title {
-  font: var(--BodySRegular);
-  color: var(-SubColor1);
-  margin-bottom: -6px;
+ font: var(--BodySRegular);
+ color: var(-SubColor1);
+ margin-bottom: -6px;
 }
 
 .inform {
-  font: var(--BodyXSRegular);
-  color: var(--Gray2);
-  display: flex;
-  justify-content: start; 
-  gap: 1rem;
+ font: var(--BodyXSRegular);
+ color: var(--Gray2);
+ display: flex;
+ justify-content: start;
+ gap: 1rem;
 }
 
- .tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  font: var(--BodyXSMedium);
-  color: var(--Gray2);
+.tags {
+ display: flex;
+ flex-wrap: wrap;
+ gap: 0.5rem;
+ font: var(--BodyXSMedium);
+ color: var(--Gray2);
 }

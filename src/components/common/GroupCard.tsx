@@ -44,9 +44,9 @@ export default function GroupCard({
       <div className={styles.imageWrapper}>
         <img src={image} alt="카드 이미지" className={styles.image} />
         {isBookmarked ? (
-          <FaBookmark className={`${styles.bookmark} ${styles.filled}`} onClick={handleBookmarkClick}/>
+          <FaBookmark className={`${styles.bookmark} ${styles.filled}`} onClick={handleBookmarkClick} />
         ) : (
-          <FaRegBookmark className={`${styles.bookmark} ${styles.outlined}`} onClick={handleBookmarkClick}/>
+          <FaRegBookmark className={`${styles.bookmark} ${styles.outlined}`} onClick={handleBookmarkClick} />
         )}
         <div className={styles.label}>{label}</div>
         <div className={styles.count}>{count}</div>

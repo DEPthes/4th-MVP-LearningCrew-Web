@@ -354,6 +354,7 @@ export const ContentEditor = ({ contentText, wholeTitle, onSubmit }: EditorProps
         <input
           type="text"
           placeholder="제목을 입력하세요."
+          maxLength={20}
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           className={styles.titleField}

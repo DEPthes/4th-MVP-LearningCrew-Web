@@ -1,4 +1,5 @@
 import axios from "axios";
+import { getAuthHeader } from "../auth/auth";
 
 interface StepItem {
  step: number;
@@ -16,8 +17,6 @@ interface CreateGroupRequest {
  steps: StepItem[];
  groupImage: File;
 }
-
-const Token = localStorage.getItem("accessToken");
 
 export async function PostCreateGroup(data: CreateGroupRequest) {
  try {
@@ -49,9 +48,7 @@ export async function PostCreateGroup(data: CreateGroupRequest) {
   console.log("categories(getAll):", formData.getAll("categories"));
 
   const response = await axios.post("/api/study-groups", formData, {
-   headers: {
-    Authorization: `Bearer ${Token}`,
-   },
+   headers: getAuthHeader(),
   });
   return response.data;
  } catch (error) {

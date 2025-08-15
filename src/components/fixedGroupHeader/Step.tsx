@@ -53,13 +53,13 @@ export default function Step({ totalSteps, currentStep }: StepProps) {
 
         // 겹칠 때 오른쪽 카드가 왼쪽 카드 위에 오도록 z-index를 증가시키고,
         // 선택된 것만 가장 위로 올림(색 번짐 방지)
-        const z = stateClass === styles.selected ? 1000 : idx + 1;
+        // const z = stateClass === styles.selected ? 1000 : idx + 1;
 
         return (
           <div
             key={idx}
             className={`${styles.step} ${pos} ${stateClass}`}
-            style={{ zIndex: z }}
+            // style={{ zIndex: z }}
             onClick={() => handleClick(idx)}
             role="button"
             tabIndex={0}

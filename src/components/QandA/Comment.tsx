@@ -14,7 +14,7 @@ interface FileProps {
 interface CreatedProps {
   id: number;
   nickname: string;
-  profileImage: string | null;
+  profileImage: FileProps;
 }
 
 interface DataProps {

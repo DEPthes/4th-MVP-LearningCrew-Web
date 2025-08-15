@@ -1,4 +1,5 @@
 import axios from "axios";
+import { getAuthHeader } from "../auth/auth";
 
 interface WriteQandARequest {
  groupId: string;
@@ -22,17 +23,13 @@ interface PostCommentRequest {
  attachedImages: File[];
 }
 
-const Token = localStorage.getItem("accessToken");
-
 //리스트 보기
 export const getQandAList = async (data: SharedQandAListRequest) => {
  const formData = new FormData();
  formData.append("step", data.stepId);
  try {
   const response = await axios.get(`/api/study-groups/${data.groupId}/qna`, {
-   headers: {
-    Authorization: `Bearer ${Token}`,
-   },
+   headers: getAuthHeader(),
   });
   return response.data;
  } catch (error) {
@@ -52,9 +49,7 @@ export const getQandADetail = async ({
   const response = await axios.get(
    `/api/study-groups/${groupId}/qna/${qnaId}`,
    {
-    headers: {
-     Authorization: `Bearer ${Token}`,
-    },
+    headers: getAuthHeader(),
    }
   );
   return response.data;
@@ -75,9 +70,7 @@ export const getComments = async ({
   const response = await axios.get(
    `/api/study-groups/${groupId}/qna/${qnaId}/comments`,
    {
-    headers: {
-     Authorization: `Bearer ${Token}`,
-    },
+    headers: getAuthHeader(),
    }
   );
   return response.data;
@@ -108,9 +101,7 @@ export const postQandA = async (data: WriteQandARequest) => {
    `/api/study-groups/${data.groupId}/steps/${data.stepId}/questions`,
    formdata,
    {
-    headers: {
-     Authorization: `Bearer ${Token}`,
-    },
+    headers: getAuthHeader(),
    }
   );
   return response.data;
@@ -139,9 +130,7 @@ export const postComment = async (data: PostCommentRequest) => {
    `/api/study-groups/${data.groupId}/qna/${data.qnaId}/comments`,
    formData,
    {
-    headers: {
-     Authorization: `Bearer ${Token}`,
-    },
+    headers: getAuthHeader(),
    }
   );
   return response.data;
@@ -154,9 +143,7 @@ export const postComment = async (data: PostCommentRequest) => {
 export const getMyInfo = async () => {
  try {
   const response = await axios.get(`/api/users/me`, {
-   headers: {
-    Authorization: `Bearer ${Token}`,
-   },
+   headers: getAuthHeader(),
   });
   return response.data;
  } catch (error) {
