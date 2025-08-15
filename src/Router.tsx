@@ -56,7 +56,7 @@ export const Router = () => {
         {/* 그룹 전용 레이아웃 */}
         <Route element={<Layout />}>
           <Route path="/group/:groupId/step/:stepId" element={<GroupLayout />}>
-            <Route path="MyGroupStudy" element={<MyGroupStudy title="예시제목" content="예시내용입니다." />} />
+            <Route path="MyGroupStudy" element={<MyGroupStudy />} />
             <Route path="myNote" element={<MyNote />} />
             <Route path="myNote/write" element={<MyNoteWrite />} />
             <Route path="shareNote" element={<ShareNoteList />} />
@@ -75,7 +75,7 @@ export const Router = () => {
         <Route path="/HostGroupParticipants" element={<HostGroupParticipants />} />
         <Route path="/HostGroupStudy" element={<HostGroupStudy />} />
         <Route path="/HostGroupStudyWriting" element={<HostGroupStudyWriting />} />
-        <Route path="/MyGroupStudy" element={<MyGroupStudy title="예시제목" content="예시내용입니다." />} />
+        <Route path="/MyGroupStudy" element={<MyGroupStudy />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/welcome" element={<WelcomePage />} /> {/* ← 여기 경로 소문자로 변경됨 */}

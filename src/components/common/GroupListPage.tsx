@@ -8,7 +8,7 @@ import type { ReactNode } from 'react';
 
 interface GroupItem {
   id: number;
-  image: string;       
+  image: string;
   label: string;
   count: string;
   title: string;
@@ -26,10 +26,10 @@ interface GroupListPageProps {
   onBookmarkClick?: (id: number) => void;
   headerBelow?: ReactNode;
   headerButton?: ReactNode;
-  // ✅ 추가된 prop
-  isGroup?: boolean;                  
-  sortLabel?: string;                  
-  onSortChange?: (label: string) => void; 
+  isGroup?: boolean;
+  sortLabel?: string;
+  onSortChange?: (label: string) => void;
+  onCardClick?: (id: number) => void;
 }
 
 export default function GroupListPage({
@@ -42,6 +42,7 @@ export default function GroupListPage({
   isGroup = false,
   sortLabel = "최신순",
   onSortChange,
+  onCardClick,
 }: GroupListPageProps) {
   const [sort, setSort] = useState(sortLabel);
   const [currentPage, setCurrentPage] = useState(1);
@@ -88,6 +89,7 @@ export default function GroupListPage({
                 {...group}
                 type={group.type}
                 onBookmarkClick={() => onBookmarkClick?.(group.id)}
+                onClick={() => onCardClick?.(group.id)}   
               />
             ))}
           </div>
@@ -96,7 +98,7 @@ export default function GroupListPage({
         {groupList.length > 0 && (
           <Pagenation
             currentPage={currentPage}
-            totalPages={1}             
+            totalPages={1}
             setCurrentPage={setCurrentPage}
           />
         )}

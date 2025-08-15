@@ -1,11 +1,12 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import GroupListPage from "../../components/common/GroupListPage";
 import CategoryTabs from "../../components/home/CategoryTabs";
 import styles from "../../styles/home/Home.module.css";
 import {
   fetchStudyGroups,
   type StudyGroupItem,
+  fetchStudyGroup, 
 } from "../../apis/common/studyGroups";
 import CATEGORY_NAME_TO_ID from "../../constants/categoryNameToId";
 import { mapSort, type SortLabel } from "../../utils/mapSort";
@@ -60,6 +61,8 @@ export const Home = () => {
   const createdUrlsRef = useRef<string[]>([]);
   const requestIdRef = useRef(0);
 
+  const navigate = useNavigate();
+
   useEffect(() => {
     let alive = true;
     const myRequestId = ++requestIdRef.current;
@@ -72,7 +75,6 @@ export const Home = () => {
         const categoryId = CATEGORY_NAME_TO_ID[selectedCategory];
         const { sort, order } = mapSort(sortLabel);
 
-        // 목록 조회 
         const res = await fetchStudyGroups({
           sort,
           order,
@@ -87,7 +89,6 @@ export const Home = () => {
         const skels = res.content.map(toCardSkeleton);
         setCards(skels);
 
-        // 이미지 조회 
         const loaded = await Promise.all(
           res.content.map(async (item, idx) => {
             const base = skels[idx];
@@ -156,7 +157,20 @@ export const Home = () => {
     setCards((prev) =>
       prev.map((v) => (v.id === id ? { ...v, isBookmarked: !v.isBookmarked } : v))
     );
-    // 찜 토글 API 연동
+    // TODO: 찜 토글 API 연동
+  };
+
+  const handleCardClick = async (id: number) => {
+    try {
+      const detail = await fetchStudyGroup(id);
+      const step = Number(detail.currentStep) || 1;
+      navigate(`/group/${id}/step/${step}/MyGroupStudy`, { state: { group: detail } });
+    } catch (err) {
+      console.error(err);
+      const msg =
+        err instanceof Error ? err.message : "스터디 상세를 불러오지 못했어요.";
+      alert(msg);
+    }
   };
 
   return (
@@ -180,6 +194,7 @@ export const Home = () => {
           isGroup
           sortLabel={sortLabel}
           onSortChange={(label) => setSortLabel(label as SortLabel)}
+          onCardClick={handleCardClick} // ← 전달
         />
       )}
 
