@@ -1,62 +1,73 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import styles from "../../styles/fixedGroupHeader/Step.module.css";
 
-export type StepStatus = "before" | "current" | "after";
-export type StepPosition = "left" | "middle" | "right";
-
 interface StepProps {
-  totalSteps: number;
-  currentStep: number; // 0-based
+  totalSteps: number;   // 전체 스텝 수 (예: 6)
+  currentStep: number;  // 0-based 현재 스텝 인덱스 (예: stepId - 1)
 }
 
 export default function Step({ totalSteps, currentStep }: StepProps) {
-  const [selectedStep, setSelectedStep] = useState<number | null>(null);
-  const steps = Array.from({ length: totalSteps }, (_, i) => i + 1);
+  const navigate = useNavigate();
+  const { groupId, stepId } = useParams<{ groupId: string; stepId: string }>();
 
-  const handleStepClick = (index: number, status: StepStatus) => {
-    if (status === "current") {
-      // 현재 스텝 클릭 → 기본 상태(현재 스텝이 MainColor2)로 복귀
-      setSelectedStep(null);
-      return;
-    }
-    // before/after 스텝 클릭 → 그 스텝만 강조(MainColor2)
-    setSelectedStep(index);
+  // 선택된 스텝 인덱스(0-based). null이면 기본 모드(현재 스텝 강조)
+  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+
+  const steps = Array.from({ length: totalSteps }, (_, i) => i);
+
+  // URL(stepId) 바뀌면 선택 해제 → 기본(현재 스텝 강조)로 복귀
+  useEffect(() => {
+    setSelectedIndex(null);
+  }, [stepId]);
+
+  const handleClick = (index: number) => {
+    // 현재 스텝 클릭 → 선택 해제(기본 모드)
+    if (index === currentStep) setSelectedIndex(null);
+    else setSelectedIndex(index);
+
+    // 라우트 이동 (1-based)
+    navigate(`/group/${groupId}/step/${index + 1}`);
   };
 
   return (
     <div className={styles.wrapper}>
-      {steps.map((step, index) => {
-        // 상태 계산
-        let status: StepStatus = "before";
-        if (index < currentStep) status = "after";
-        else if (index === currentStep) status = "current";
+      {steps.map((idx) => {
+        // 모양(좌/중/우)
+        let pos = styles.middle;
+        if (idx === 0) pos = styles.left;
+        else if (idx === totalSteps - 1) pos = styles.right;
 
-        // 위치 계산
-        let position: StepPosition = "middle";
-        if (index === 0) position = "left";
-        else if (index === totalSteps - 1) position = "right";
-
-        const isSelected = selectedStep === index; // before/after 선택 여부
-
-        // 클래스 합성
-        let className = `${styles.step} ${styles[position]}`;
-        if (status === "before") {
-          className += isSelected ? ` ${styles.selected}` : ` ${styles.before}`;
-        } else if (status === "current") {
-          // 아무 것도 선택되지 않았을 때만 현재 스텝이 메인컬러
-          className += selectedStep === null ? ` ${styles.selected}` : ` ${styles.current}`;
+        // 상태에 따른 색상 클래스
+        let stateClass: string;
+        if (selectedIndex === null) {
+          // 기본 상태: 진행=갈색, 현재=주황, 미진행=회색
+          if (idx === currentStep) stateClass = styles.selected;     // 주황
+          else if (idx < currentStep) stateClass = styles.after;     // 갈색
+          else stateClass = styles.before;                           // 회색
         } else {
-          // after
-          className += isSelected ? ` ${styles.selected}` : ` ${styles.after}`;
+          // 선택 상태: 선택만 주황, 현재는 갈색, 나머지 전부 회색
+          if (idx === selectedIndex) stateClass = styles.selected;   // 주황
+          else if (idx === currentStep) stateClass = styles.current; // 갈색(현재)
+          else stateClass = styles.before;                           // 회색
         }
+
+        // 겹침 해결: 주황만 맨 위로 올려서 줄줄이 주황처럼 보이는 현상 방지
+        const z = stateClass === styles.selected ? 1000 : idx + 1;
 
         return (
           <div
-            key={index}
-            className={className}
-            onClick={() => handleStepClick(index, status)}
+            key={idx}
+            className={`${styles.step} ${pos} ${stateClass}`}
+            style={{ zIndex: z }}
+            onClick={() => handleClick(idx)}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) =>
+              (e.key === "Enter" || e.key === " ") && handleClick(idx)
+            }
           >
-            {step} Step
+            {idx + 1} Step
           </div>
         );
       })}
