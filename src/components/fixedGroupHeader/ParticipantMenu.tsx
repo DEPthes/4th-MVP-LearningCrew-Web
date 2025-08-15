@@ -17,10 +17,10 @@ export default function ParticipantMenu() {
   ];
 
   // 호스트 전용: Member 묶음 (참여자/신청자)
-  const hostItems = [
-    { name: "Member - 참여자", path: `/group/${groupId}/step/${stepId}/members` },
-    { name: "Member - 신청자", path: `/group/${groupId}/step/${stepId}/applicants` },
-  ];
+  // const hostItems = [
+  //   { name: "Member - 참여자", path: `/group/${groupId}/step/${stepId}/members` },
+  //   { name: "Member - 신청자", path: `/group/${groupId}/step/${stepId}/applicants` },
+  // ];
 
   // 지금 페이지와 일치하면 활성화
   const isActive = (path: string) => location.pathname.startsWith(path);
@@ -38,7 +38,7 @@ export default function ParticipantMenu() {
       ))}
 
       {/* Member 영역(호스트 전용으로 쓰더라도 지금은 항상 노출) */}
-      <div className={styles.member__group__label}>Member</div>
+      {/* <div className={styles.member__group__label}>Member</div>
       {hostItems.map((item) => (
         <button
           key={item.name}
@@ -47,7 +47,7 @@ export default function ParticipantMenu() {
         >
           {item.name}
         </button>
-      ))}
+      ))} */}
     </div>
   );
 }

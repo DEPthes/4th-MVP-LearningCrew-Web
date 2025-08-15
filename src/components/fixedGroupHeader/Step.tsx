@@ -59,7 +59,7 @@ export default function Step({ totalSteps, currentStep }: StepProps) {
           <div
             key={idx}
             className={`${styles.step} ${pos} ${stateClass}`}
-            style={{ zIndex: z }}
+            // style={{ zIndex: z }}
             onClick={() => handleClick(idx)}
             role="button"
             tabIndex={0}

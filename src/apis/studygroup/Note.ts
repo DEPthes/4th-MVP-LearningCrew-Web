@@ -1,6 +1,5 @@
 import axios from "axios";
-
-const Token = localStorage.getItem("accessToken");
+import { getAuthHeader } from "../auth/auth";
 
 interface NoteRequest {
  groupId: string;
@@ -31,9 +30,7 @@ export const postNote = async (data: NoteRequest) => {
    `/api/study-groups/${data.groupId}/steps/${data.stepId}/notes`,
    formData,
    {
-    headers: {
-     Authorization: `Bearer ${Token}`,
-    },
+    headers: getAuthHeader(),
    }
   );
   return response.data;
@@ -46,9 +43,7 @@ export const postNote = async (data: NoteRequest) => {
 export const getDetailNote = async (noteId: string) => {
  try {
   const response = await axios.get(`/api/notes/${noteId}`, {
-   headers: {
-    Authorization: `Bearer ${Token}`,
-   },
+   headers: getAuthHeader(),
   });
   return response.data;
  } catch (error) {
@@ -62,9 +57,7 @@ export const getSharedNoteList = async (data: SharedNoteListRequest) => {
   const response = await axios.get(
    `/api/study-groups/${data.groupId}/steps/${data.stepId}/notes`,
    {
-    headers: {
-     Authorization: `Bearer ${Token}`,
-    },
+    headers: getAuthHeader(),
    }
   );
   console.log(response.data);
@@ -80,9 +73,7 @@ export const getMyNote = async (data: SharedNoteListRequest) => {
   const response = await axios.get(
    `/api/study-groups/${data.groupId}/steps/${data.stepId}/notes/my`,
    {
-    headers: {
-     Authorization: `Bearer ${Token}`,
-    },
+    headers: getAuthHeader(),
    }
   );
   return response.data;

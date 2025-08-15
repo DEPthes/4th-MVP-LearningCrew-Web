@@ -1,14 +1,11 @@
 import axios from "axios";
-
-const Token = localStorage.getItem("accessToken");
+import { getAuthHeader } from "../auth/auth";
 
 //내 그룹 목록 조회
 export const getJoinGroup = async () => {
  try {
   const response = await axios.get("/api/study-groups/my/membered", {
-   headers: {
-    Authorization: `Bearer ${Token}`,
-   },
+   headers: getAuthHeader(),
   });
   console.log(response.data);
   return response.data;
@@ -23,9 +20,7 @@ export const getJoinGroup = async () => {
 export const getHostedGroup = async () => {
  try {
   const response = await axios.get("/api/study-groups/my/owned", {
-   headers: {
-    Authorization: `Bearer ${Token}`,
-   },
+   headers: getAuthHeader(),
   });
   return response.data;
  } catch (error) {
@@ -37,9 +32,7 @@ export const getHostedGroup = async () => {
 export const getAppliedGroup = async () => {
  try {
   const response = await axios.get("/api/study-groups/my/applications", {
-   headers: {
-    Authorization: `Bearer ${Token}`,
-   },
+   headers: getAuthHeader(),
   });
   console.log(response.data);
   return response.data;

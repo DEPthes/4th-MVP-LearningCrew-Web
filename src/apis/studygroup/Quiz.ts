@@ -1,4 +1,5 @@
 import axios from "axios";
+import { getAuthHeader } from "../auth/auth";
 
 interface QuizRequest {
  groupId: string;
@@ -16,17 +17,13 @@ interface QuizSubmitRequest {
  answers: AnswerProps[];
 }
 
-const Token = localStorage.getItem("accessToken");
-
 //퀴즈 내용 불러오기
 export const getQuiz = async (data: QuizRequest) => {
  try {
   const response = await axios.get(
    `/api/study-groups/${data.groupId}/steps/${data.stepId}/quiz`,
    {
-    headers: {
-     Authorization: `Bearer ${Token}`,
-    },
+    headers: getAuthHeader(),
    }
   );
   return response.data;
@@ -44,9 +41,7 @@ export const postQuiz = async (data: QuizSubmitRequest) => {
     answers: data.answers,
    },
    {
-    headers: {
-     Authorization: `Bearer ${Token}`,
-    },
+    headers: getAuthHeader(),
    }
   );
   return response.data;
@@ -60,9 +55,7 @@ export const getQuizResult = async (groupId: string) => {
   const response = await axios.get(
    `/api/study-groups/${groupId}/steps/records`,
    {
-    headers: {
-     Authorization: `Bearer ${Token}`,
-    },
+    headers: getAuthHeader(),
    }
   );
   return response.data;
