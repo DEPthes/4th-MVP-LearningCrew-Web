@@ -29,6 +29,7 @@ interface GroupListPageProps {
   headerBelow?: ReactNode;
   headerButton?: ReactNode;
   isGroup?: boolean;
+  loading?: boolean;
   sortLabel?: string;
   onSortChange?: (label: string) => void;
   onCardClick?: (id: number) => void;
@@ -42,6 +43,7 @@ export default function GroupListPage({
   headerBelow,
   headerButton,
   isGroup = true,
+  loading,
   sortLabel = "최신순",
   onSortChange,
 }: GroupListPageProps) {
@@ -97,7 +99,11 @@ export default function GroupListPage({
         )}
 
         {groupList.length === 0 ? (
-          <div className={styles.empty}>검색 결과가 없어요.</div>
+          loading ? (
+            <div className={styles.empty}>로딩 중...</div>
+          ) : (
+            <div className={styles.empty}>검색 결과가 없어요.</div>
+          )
         ) : (
           <div className={styles.cardGrid}>
             {groupList.map(group => (

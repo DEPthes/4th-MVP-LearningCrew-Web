@@ -84,7 +84,6 @@ const transformGroupData = async (apiData: GroupListResponse | AppliedGroupListR
 export default function MyGroup() {
   const [list, setList] = useState<TransformedGroupData[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
   const [params] = useSearchParams();
   const navigate = useNavigate();
@@ -99,7 +98,6 @@ export default function MyGroup() {
     const fetchGroups = async () => {
       try {
         setLoading(true);
-        setError(null);
 
         let response: GroupListResponse | AppliedGroupListResponse;
         switch (type) {
@@ -117,7 +115,6 @@ export default function MyGroup() {
         const transformedData = await transformGroupData(response, type);
         setList(transformedData);
       } catch (err) {
-        setError(err instanceof Error ? err.message : '그룹 목록을 불러오는데 실패했습니다.');
         console.error('그룹 목록 조회 실패:', err);
       } finally {
         setLoading(false);
@@ -157,14 +154,6 @@ export default function MyGroup() {
     ? <span className={styles.searchTitle}>{`'${rawQ.trim()}' 검색 결과`}</span>
     : <span className={styles.defaultTitle}>내 그룹 리스트</span>;
 
-  if (loading) {
-    return <div>로딩 중...</div>;
-  }
-
-  if (error) {
-    return <div>에러: {error}</div>;
-  }
-
   return (
     <div>
       <GroupListPage
@@ -172,6 +161,7 @@ export default function MyGroup() {
         groupList={filtered}
         showSort
         onBookmarkClick={handleBookmarkClick}
+        loading={loading}
         headerBelow={
           <div className={styles.headerBelowRow}>
             <GroupTypeTabs value={type} onChange={handleTypeChange} />

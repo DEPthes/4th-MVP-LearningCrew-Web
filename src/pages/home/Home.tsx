@@ -6,7 +6,7 @@ import styles from "../../styles/home/Home.module.css";
 import {
   fetchStudyGroups,
   type StudyGroupItem,
-  fetchStudyGroup, 
+  fetchStudyGroup,
 } from "../../apis/common/studyGroups";
 import CATEGORY_NAME_TO_ID from "../../constants/categoryNameToId";
 import { mapSort, type SortLabel } from "../../utils/mapSort";
@@ -183,7 +183,7 @@ export const Home = () => {
       />
 
       {loading && <div className={styles.loading}>불러오는 중...</div>}
-      {errorMsg && <div className={styles.error}>{errorMsg}</div>}
+      {errorMsg && <div className={styles.error}>불러오는데 실패했어요</div>}
 
       {!loading && !errorMsg && (
         <GroupListPage
