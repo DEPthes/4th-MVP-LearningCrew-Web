@@ -3,12 +3,12 @@ import GroupCard from '../../components/common/GroupCard';
 import GroupTitle from '../../components/common/GroupTitle';
 import { Pagenation } from '../../components/common/Pagenation';
 import { Sort } from '../../components/common/Sort';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { ReactNode } from 'react';
 
 interface GroupItem {
   id: number;
-  image: string;
+  image: string;       
   label: string;
   count: string;
   title: string;
@@ -26,6 +26,10 @@ interface GroupListPageProps {
   onBookmarkClick?: (id: number) => void;
   headerBelow?: ReactNode;
   headerButton?: ReactNode;
+  // ✅ 추가된 prop
+  isGroup?: boolean;                  
+  sortLabel?: string;                  
+  onSortChange?: (label: string) => void; 
 }
 
 export default function GroupListPage({
@@ -35,9 +39,21 @@ export default function GroupListPage({
   onBookmarkClick,
   headerBelow,
   headerButton,
+  isGroup = false,
+  sortLabel = "최신순",
+  onSortChange,
 }: GroupListPageProps) {
-  const [sort, setSort] = useState('최신순');
+  const [sort, setSort] = useState(sortLabel);
   const [currentPage, setCurrentPage] = useState(1);
+
+  useEffect(() => {
+    setSort(sortLabel);
+  }, [sortLabel]);
+
+  const handleSetSort = (next: string) => {
+    setSort(next);
+    onSortChange?.(next);
+  };
 
   return (
     <div className={styles.pageWrapper}>
@@ -47,7 +63,7 @@ export default function GroupListPage({
           <div>
             {showSort && (
               <div className={styles.sortWrapper}>
-                <Sort sort={sort} setSort={setSort} />
+                <Sort sort={sort} setSort={handleSetSort} isGroup={isGroup} />
               </div>
             )}
             {headerButton && (
@@ -80,7 +96,7 @@ export default function GroupListPage({
         {groupList.length > 0 && (
           <Pagenation
             currentPage={currentPage}
-            totalPages={1}
+            totalPages={1}             
             setCurrentPage={setCurrentPage}
           />
         )}
