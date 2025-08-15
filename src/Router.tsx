@@ -1,4 +1,3 @@
-// src/Router.tsx
 import { BrowserRouter, Routes, Route, useParams, Navigate } from "react-router-dom";
 import { Home } from "./pages/home/Home";
 import Layout from "./components/layout/Layout";
@@ -76,7 +75,7 @@ export const Router = () => {
 
             <Route
               path="MyGroupStudy"
-              element={<MyGroupStudy title="예시제목" content="예시내용입니다." />}
+              element={<MyGroupStudy />}
             />
             <Route path="myNote" element={<MyNote />} />
             <Route path="myNote/write" element={<MyNoteWrite />} />
@@ -96,7 +95,7 @@ export const Router = () => {
         <Route path="/group/:groupId/participants" element={<HostGroupParticipantsPage />} />
         <Route path="/HostGroupStudy" element={<HostGroupStudy />} />
         <Route path="/HostGroupStudyWriting" element={<HostGroupStudyWriting />} />
-        <Route path="/MyGroupStudy" element={<MyGroupStudy title="예시제목" content="예시내용입니다." />} />
+        <Route path="/MyGroupStudy" element={<MyGroupStudy />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/welcome" element={<WelcomePage />} />
