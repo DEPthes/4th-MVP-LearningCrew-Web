@@ -5,6 +5,7 @@ import FixedBanner from "../fixedGroupHeader/FixedBanner";
 import ParticipantMenu from "../fixedGroupHeader/ParticipantMenu";
 import styles from "./GroupLayout.module.css";
 
+
 export default function GroupLayout() {
   // 라우트가 /groups/:groupId 형태라고 가정
   const { groupId: groupIdParam } = useParams<{ groupId: string }>();
@@ -26,8 +27,6 @@ export default function GroupLayout() {
 
   return (
     <>
-      <Navbar />
-
       {/* ✅ FixedBanner에 groupId 전달 */}
       <FixedBanner groupId={groupId} />
 
