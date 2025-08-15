@@ -1,4 +1,5 @@
-import { BrowserRouter, Routes, Route, useParams } from "react-router-dom";
+// src/Router.tsx
+import { BrowserRouter, Routes, Route, useParams, Navigate } from "react-router-dom";
 import { Home } from "./pages/home/Home";
 import Layout from "./components/layout/Layout";
 import MinimalLayout from "./components/layout/MinimalLayout";
@@ -70,7 +71,13 @@ export const Router = () => {
         {/* 그룹 전용 레이아웃 */}
         <Route element={<Layout />}>
           <Route path="/group/:groupId/step/:stepId" element={<GroupLayout />}>
-            <Route path="MyGroupStudy" element={<MyGroupStudy title="예시제목" content="예시내용입니다." />} />
+            {/* 기본 진입 시 Study로 리다이렉트 */}
+            <Route index element={<Navigate to="MyGroupStudy" replace />} />
+
+            <Route
+              path="MyGroupStudy"
+              element={<MyGroupStudy title="예시제목" content="예시내용입니다." />}
+            />
             <Route path="myNote" element={<MyNote />} />
             <Route path="myNote/write" element={<MyNoteWrite />} />
             <Route path="shareNote" element={<ShareNoteList />} />

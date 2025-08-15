@@ -1,5 +1,6 @@
 // src/components/fixedGroupHeader/FixedBanner.tsx
 import { useEffect, useMemo, useState } from "react";
+import { useParams } from "react-router-dom";
 import styles from "../../styles/fixedGroupHeader/FixedBanner.module.css";
 import bookmark1 from "../../assets/bookmark1.svg";
 import BookmarkOn from "../../assets/BookmarkOn.svg";
@@ -37,42 +38,41 @@ export default function FixedBanner({
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
 
-  // 최초 진입 시 내 신청 상태 불러오기
+  // URL의 stepId(1-based)를 읽어서 0-based로 변환
+  const { stepId: stepIdParam } = useParams<{ stepId: string }>();
+  const currentStepIndex = Math.max(0, (Number(stepIdParam) || 1) - 1);
+
+  const syncMyState = async () => {
+    try {
+      const my = await getMyApplicationForGroup(groupId);
+      setJoinState((my?.state as JoinUiState) ?? "NONE");
+    } catch {
+      setJoinState("NONE");
+    }
+  };
+
+  // 최초 진입 시 내 상태 조회
   useEffect(() => {
     let mounted = true;
     (async () => {
-      try {
-        setErrorMsg("");
-        const my = await getMyApplicationForGroup(groupId);
-        if (!mounted) return;
-        setJoinState((my?.state as JoinUiState) ?? "NONE");
-      } catch {
-        if (mounted) {
-          setJoinState("NONE");
-          setErrorMsg("");
-        }
-      }
+      await syncMyState();
+      if (!mounted) return;
     })();
     return () => {
       mounted = false;
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [groupId]);
 
-  // 대기중(PENDING)일 땐 주기적으로 상태 재확인(선택)
+  // 대기중이면 10초마다 새로고침
   useEffect(() => {
     if (joinState !== "PENDING") return;
-    const id = setInterval(async () => {
-      try {
-        const my = await getMyApplicationForGroup(groupId);
-        setJoinState((my?.state as JoinUiState) ?? "NONE");
-      } catch {
-        /* ignore */
-      }
+    const id = setInterval(() => {
+      syncMyState().catch(() => undefined);
     }, 10000);
     return () => clearInterval(id);
-  }, [joinState, groupId]);
+  }, [joinState]);
 
-  // 버튼 라벨
   const joinButtonLabel = useMemo(() => {
     if (loading) return "처리 중...";
     switch (joinState) {
@@ -80,7 +80,7 @@ export default function FixedBanner({
       case "REJECTED":
         return "가입 신청";
       case "PENDING":
-        return "가입 취소"; // ✅ 신청 중이면 취소
+        return "가입 취소";
       case "APPROVED":
         return "탈퇴";
       default:
@@ -89,30 +89,25 @@ export default function FixedBanner({
   }, [joinState, loading]);
 
   const isLeaveStyle = joinState === "PENDING" || joinState === "APPROVED";
+  const handleBookmarkClick = () => setBookmarked((v) => !v);
 
-  const handleBookmarkClick = () => setBookmarked((p) => !p);
-
-  // ✅ 핵심: 상태별로 신청/취소/탈퇴 동작
   const handleJoinClick = async () => {
     try {
       setLoading(true);
       setErrorMsg("");
 
-      // 1) 아직 신청 안 했거나 거절된 상태 → '가입 신청'
       if (joinState === "NONE" || joinState === "REJECTED") {
         await applyToStudyGroup(groupId);
-        setJoinState("PENDING"); // 낙관적 업데이트
+        setJoinState("PENDING");
         return;
       }
 
-      // 2) 신청 대기(PENDING) → '가입 취소'
       if (joinState === "PENDING") {
         await cancelMyApplication(groupId);
-        setJoinState("NONE"); // 신청 취소 후 초기 상태
+        setJoinState("NONE");
         return;
       }
 
-      // 3) 승인됨(APPROVED) → '탈퇴'
       if (joinState === "APPROVED") {
         await leaveStudyGroup(groupId);
         setJoinState("NONE");
@@ -124,11 +119,12 @@ export default function FixedBanner({
         e?.message ||
         "요청 처리 중 오류가 발생했어요.";
       setErrorMsg(msg);
-      // 실패 시 서버 상태 재조회로 동기화
       try {
         const my = await getMyApplicationForGroup(groupId);
-        setJoinState((my?.state as JoinUiState) ?? "NONE");
-      } catch {/* ignore */}
+        setJoinState((my?.state as any) ?? "NONE");
+      } catch {
+        /* ignore */
+      }
     } finally {
       setLoading(false);
     }
@@ -160,13 +156,13 @@ export default function FixedBanner({
             </div>
             <div className={styles.container__6}>
               <button
-                    type="button"
-                    className={`${styles.Bookmark} ${bookmarked ? styles.active : ""}`}
-                    onClick={handleBookmarkClick}
-                    aria-pressed={bookmarked}
-                    aria-label={bookmarked ? "북마크 해제" : "북마크 추가"}
-                  >
-                    <img src={bookmarked ? BookmarkOn : bookmark1} alt="북마크" />
+                type="button"
+                className={styles.Bookmark}
+                onClick={handleBookmarkClick}
+                aria-pressed={bookmarked}
+                aria-label={bookmarked ? "북마크 해제" : "북마크 추가"}
+              >
+                <img src={bookmarked ? BookmarkOn : bookmark1} alt="북마크" />
               </button>
               <button
                 disabled={loading}
@@ -191,8 +187,10 @@ export default function FixedBanner({
           </div>
         </div>
       </div>
+
+      {/* ✅ URL의 stepId(1-based)를 0-based로 변환하여 전달 */}
       <div className={styles.step__wrapper}>
-        <Step totalSteps={6} currentStep={2} />
+        <Step totalSteps={10} currentStep={currentStepIndex} />
       </div>
     </div>
   );

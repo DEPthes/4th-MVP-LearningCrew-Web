@@ -1,12 +1,13 @@
 // src/apis/auth/auth.ts
-import { api } from "../common/client";
 import { tokenStore } from "../common/token";
 import type { Tokens } from "../common/token";
+import axios from "axios"
 
+// 서버가 토큰을 { accessToken, refreshToken? } 또는 { token: { ... } } 형태로 줄 수 있어 대비
 type LoginResponse = Tokens | { token: Tokens };
 
 export const login = async (email: string, password: string) => {
-  const { data } = await api.post<LoginResponse>(
+  const { data } = await axios.post<LoginResponse>(
     "/api/auth/login",
     { email, password },
     { headers: { "Content-Type": "application/json" } }
@@ -20,16 +21,21 @@ export const login = async (email: string, password: string) => {
 };
 
 export const refreshTokens = async (refreshToken: string) => {
-  const { data } = await api.post<Tokens>("/api/auth/token/refresh", { refreshToken });
+  const { data } = await axios.post<Tokens>("/api/auth/token/refresh", {
+    refreshToken,
+  });
   tokenStore.set(data);
   return data;
 };
 
 export const logout = async () => {
+  // 서버에 별도 로그아웃 엔드포인트 없다면 로컬만 정리
   tokenStore.clear();
 };
 
 export const nicknameConfirm = async (nickname: string) => {
-  const { data } = await api.get("/api/auth/nickname-exist", { params: { nickname } });
+  const { data } = await axios.get("/api/auth/nickname-exist", {
+    params: { nickname },
+  });
   return data;
 };
