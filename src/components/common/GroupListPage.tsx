@@ -3,8 +3,10 @@ import GroupCard from '../../components/common/GroupCard';
 import GroupTitle from '../../components/common/GroupTitle';
 import { Pagenation } from '../../components/common/Pagenation';
 import { Sort } from '../../components/common/Sort';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { ReactNode } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { getStudyGroup } from '../../apis/studygroup/StudyGroup';
 
 interface GroupItem {
   id: number;
@@ -38,6 +40,22 @@ export default function GroupListPage({
 }: GroupListPageProps) {
   const [sort, setSort] = useState('최신순');
   const [currentPage, setCurrentPage] = useState(1);
+  const navigate = useNavigate();
+
+  //임시
+  const handleGroupClick = (groupId: number) => {
+    const fetchCurrentStepId = async () => {
+      try {
+        if (groupId) {
+          const response = await getStudyGroup(groupId.toString());
+          navigate(`/group/${groupId}/step/${response.currentStep}/MyGroupStudy`);
+        }
+      } catch (error) {
+        console.error('현재 스텝 아이디 조회 실패:', error);
+      }
+    };
+    fetchCurrentStepId();
+  }
 
   return (
     <div className={styles.pageWrapper}>
@@ -47,7 +65,7 @@ export default function GroupListPage({
           <div>
             {showSort && (
               <div className={styles.sortWrapper}>
-                <Sort sort={sort} setSort={setSort} />
+                <Sort sort={sort} setSort={setSort} isGroup={true} />
               </div>
             )}
             {headerButton && (
@@ -67,12 +85,14 @@ export default function GroupListPage({
         ) : (
           <div className={styles.cardGrid}>
             {groupList.map(group => (
-              <GroupCard
-                key={group.id}
-                {...group}
-                type={group.type}
-                onBookmarkClick={() => onBookmarkClick?.(group.id)}
-              />
+              <div onClick={() => handleGroupClick(group.id)}>
+                <GroupCard
+                  key={group.id}
+                  {...group}
+                  type={group.type}
+                  onBookmarkClick={() => onBookmarkClick?.(group.id)}
+                />
+              </div>
             ))}
           </div>
         )}

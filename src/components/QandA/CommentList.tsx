@@ -13,7 +13,7 @@ interface FileProps {
 interface CreatedProps {
   id: number;
   nickname: string;
-  profileImage: string | null;
+  profileImage: FileProps;
 }
 
 interface DataProps {
@@ -33,6 +33,7 @@ export const CommentList = ({ comments }: CommentListProps) => {
   const [sort, setSort] = useState<string>("최신순");
   const [sortedComments, setSortedComments] = useState<DataProps[] | undefined>(comments);
   const [imageUrls, setImageUrls] = useState<{ [key: string]: string }>({});
+  const [profileImageUrl, setProfileImageUrl] = useState<string | null>();
 
   useEffect(() => {
     if (!comments || !Array.isArray(comments)) {
@@ -57,6 +58,15 @@ export const CommentList = ({ comments }: CommentListProps) => {
         const imageUrlMap: { [key: string]: string } = {};
 
         for (const comment of comments) {
+          if (comment.createdBy.profileImage.uuid) {
+            try {
+              const response = await getImage(comment.createdBy.profileImage.uuid);
+              setProfileImageUrl(response);
+            } catch (error) {
+              console.error(`프로필 이미지 로드 실패: ${comment.createdBy.profileImage.uuid}`, error);
+            }
+          }
+
           if (comment.attachedImages && comment.attachedImages.length > 0) {
             for (const image of comment.attachedImages) {
               try {
@@ -110,9 +120,9 @@ export const CommentList = ({ comments }: CommentListProps) => {
                 style={{ borderBottom: index + 1 === sortedComments.length ? "none" : "2px solid var(--Gray4)" }}
               >
                 <div className={styles.comment__content__each__header}>
-                  {comment.createdBy.profileImage ?
+                  {profileImageUrl ?
                     <>
-                      <img src={comment.createdBy.profileImage} />
+                      <img src={profileImageUrl} />
                     </>
                     :
                     <div className={styles.comment__profile__none}>
