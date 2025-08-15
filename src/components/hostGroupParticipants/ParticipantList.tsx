@@ -1,16 +1,52 @@
-import styles from "../../styles/hostGroupParticipants/ParticipantList.module.css"
+import styles from "../../styles/hostGroupParticipants/ParticipantList.module.css";
 
-export default function ParticipantList() {
-    return(
-        <>
-        <div className={styles.list__wrapper}>
-            <div className={styles.th__wrapper}>
-                <div className={styles.th__nickname}>합격하고 싶은 사람</div>
-                <div className={styles.th__gender}>남</div>
-                <div className={styles.th__date}>2025.07.14</div>
-            </div>
-            <button className={styles.button}>삭제</button>
-        </div>
-        </>
-    )
+export type RowMode = "applicant" | "participant";
+
+interface RowProps {
+  mode: RowMode;
+  nickname: string;
+  gender?: string;
+  dateLabel: string;
+  onApprove?: () => void;
+  onReject?: () => void;
+  onRemove?: () => void;
+  busy?: boolean;
+}
+
+export default function ParticipantList({
+  mode,
+  nickname,
+  gender,
+  dateLabel,
+  onApprove,
+  onReject,
+  onRemove,
+  busy,
+}: RowProps) {
+  return (
+    <div className={styles.list__wrapper}>
+      <div className={styles.th__wrapper}>
+        <div className={styles.th__nickname}>{nickname}</div>
+        <div className={styles.th__gender}>{gender ?? "-"}</div>
+        <div className={styles.th__date}>{dateLabel}</div>
+      </div>
+
+      <div>
+        {mode === "applicant" ? (
+          <>
+            <button className={styles.button} disabled={busy} onClick={onApprove}>
+              승인
+            </button>
+            <button className={styles.button} disabled={busy} onClick={onReject}>
+              거절
+            </button>
+          </>
+        ) : (
+          <button className={styles.button} disabled={busy} onClick={onRemove}>
+            삭제
+          </button>
+        )}
+      </div>
+    </div>
+  );
 }

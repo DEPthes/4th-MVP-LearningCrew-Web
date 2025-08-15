@@ -15,50 +15,29 @@
   position: relative;
 }
 
+/* 왼쪽/가운데/오른쪽 형태 */
 .left {
-  clip-path: polygon(
-    0% 0%, 
-    85% 0%, 
-    100% 50%, 
-    85% 100%, 
-    0% 100%, 
-    0% 50%
-  );
+  clip-path: polygon(0% 0%, 85% 0%, 100% 50%, 85% 100%, 0% 100%, 0% 50%);
   border-top-left-radius: 999px;
   border-bottom-left-radius: 999px;
-  margin-right: -18px; /* 간격 더 좁게! */
+  margin-right: -18px;
 }
 
 .middle {
-  clip-path: polygon(
-    0% 0%, 
-    85% 0%, 
-    100% 50%, 
-    85% 100%, 
-    0% 100%, 
-    15% 50%
-  );
-  margin-right: -18px; /* 간격 더 좁게! */
+  clip-path: polygon(0% 0%, 85% 0%, 100% 50%, 85% 100%, 0% 100%, 15% 50%);
+  margin-right: -18px;
 }
 
-/* 오른쪽 끝 스텝 */
 .right {
-  clip-path: polygon(
-    0% 0%, 
-    100% 0%, 
-    100% 50%, 
-    100% 100%, 
-    0% 100%, 
-    15% 50%
-  );
+  clip-path: polygon(0% 0%, 100% 0%, 100% 50%, 100% 100%, 0% 100%, 15% 50%);
   border-top-right-radius: 999px;
   border-bottom-right-radius: 999px;
 }
 
-/* 상태별 색상 - 투명도 적용 */
+/* 상태별 기본 색 */
 .before {
   background-color: rgba(153, 153, 153, 0.8); /* 회색 */
-  color: #ffffff5d; /* 비활성 느낌의 텍스트 컬러 */
+  color: #ffffff5d; /* 비활성 텍스트 */
 }
 
 .after {
@@ -66,12 +45,14 @@
   color: var(--MainColor1);
 }
 
-.current { /* 현재 스텝이 '선택 해제된 상태'일 때 */
+/* '현재'가 선택 해제된 상태일 때(=다른 스텝을 선택한 상황) 보여줄 색 */
+.current {
   background-color: rgba(164, 78, 56, 0.8);
   color: var(--MainColor1);
 }
 
-.selected { /* 강조(메인 컬러) */
+/* 강조(메인 컬러) — 클릭된 before/after 또는 아무 것도 선택 안 했을 때의 current */
+.selected {
   background-color: var(--MainColor2) !important;
   color: var(--MainColor1) !important;
 }

@@ -1,5 +1,5 @@
-import { useState } from "react"
-import styles from "../../styles/fixedGroupHeader/Step.module.css"
+import { useState } from "react";
+import styles from "../../styles/fixedGroupHeader/Step.module.css";
 
 export type StepStatus = "before" | "current" | "after";
 export type StepPosition = "left" | "middle" | "right";
@@ -14,38 +14,40 @@ export default function Step({ totalSteps, currentStep }: StepProps) {
   const steps = Array.from({ length: totalSteps }, (_, i) => i + 1);
 
   const handleStepClick = (index: number, status: StepStatus) => {
-    if (status === "after") {
-      // 이전(진행 완료) 스텝 클릭: 그 스텝만 강조
-      setSelectedStep(index);
-    } else if (status === "current") {
-      // 현재 스텝 클릭: 기본 상태로 복귀
+    if (status === "current") {
+      // 현재 스텝 클릭 → 기본 상태(현재 스텝이 MainColor2)로 복귀
       setSelectedStep(null);
+      return;
     }
-    // before는 클릭해도 변화 없음
+    // before/after 스텝 클릭 → 그 스텝만 강조(MainColor2)
+    setSelectedStep(index);
   };
 
   return (
     <div className={styles.wrapper}>
       {steps.map((step, index) => {
+        // 상태 계산
         let status: StepStatus = "before";
         if (index < currentStep) status = "after";
         else if (index === currentStep) status = "current";
 
+        // 위치 계산
         let position: StepPosition = "middle";
         if (index === 0) position = "left";
         else if (index === totalSteps - 1) position = "right";
 
-        const isSelectedAfter = status === "after" && selectedStep === index;
+        const isSelected = selectedStep === index; // before/after 선택 여부
 
+        // 클래스 합성
         let className = `${styles.step} ${styles[position]}`;
-
         if (status === "before") {
-          className += ` ${styles.before}`;
+          className += isSelected ? ` ${styles.selected}` : ` ${styles.before}`;
         } else if (status === "current") {
-          // 아무 것도 선택되지 않은 기본 상태면 현재 스텝이 MainColor2
+          // 아무 것도 선택되지 않았을 때만 현재 스텝이 메인컬러
           className += selectedStep === null ? ` ${styles.selected}` : ` ${styles.current}`;
-        } else if (status === "after") {
-          className += isSelectedAfter ? ` ${styles.selected}` : ` ${styles.after}`;
+        } else {
+          // after
+          className += isSelected ? ` ${styles.selected}` : ` ${styles.after}`;
         }
 
         return (
