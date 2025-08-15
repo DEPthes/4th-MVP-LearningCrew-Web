@@ -2,7 +2,7 @@ import { useState } from "react"
 import Header from "../header/Header"
 import styles from "../../styles/login/Login.module.css"
 import { Link, useNavigate } from "react-router-dom"
-import axios from "axios"
+import { login } from "../../apis/auth/auth"
 
 export default function Login() {
   const [email, setEmail] = useState("")
@@ -12,26 +12,8 @@ export default function Login() {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
-
     try {
-      const response = await axios.post(
-        "/api/auth/login",
-        {
-          email,
-          password,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      )
-
-      const { accessToken, refreshToken } = response.data.token
-
-      localStorage.setItem("accessToken", accessToken)
-      localStorage.setItem("refreshToken", refreshToken)
-
+      await login(email, password)
       navigate("/mypage")
     } catch (err) {
       console.error("로그인 실패:", err)

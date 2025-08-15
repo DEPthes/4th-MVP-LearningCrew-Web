@@ -95,23 +95,31 @@
  margin-top: 32px;
 }
 
+/* 기본 북마크 버튼 */
 .Bookmark {
- display: flex;
- width: 42px;
- height: 42px;
- justify-content: center;
- align-items: center;
- border-radius: 8px;
- border: 1.4px solid var(--Gray4, #ededed);
- background: var(--gray-40, rgba(153, 153, 153, 0.4));
- cursor: pointer;
- box-sizing: border-box;
- padding: 0;
+  display: flex;
+  width: 42px;
+  height: 42px;
+  justify-content: center;
+  align-items: center;
+  border-radius: 8px;
+  border: 1.4px solid var(--Gray4, #ededed);
+  background: var(--gray-40, rgba(153, 153, 153, 0.4));
+  cursor: pointer;
+  box-sizing: border-box;
+  padding: 0;
 }
 
+/* 이미지 크기 */
 .Bookmark img {
- width: 24px; /* ✅ 버튼보다 약간 작게 */
- height: 24px;
+  width: 24px;
+  height: 24px;
+}
+
+/* ✅ 북마크 활성화 상태 */
+.Bookmark.active {
+  background-color: var(--main-color-240, rgba(255, 85, 44, 0.4));
+  border: 1.4px solid var(--Main-Color-2, #FF552C);
 }
 
 .button {

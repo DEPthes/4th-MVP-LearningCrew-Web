@@ -4,43 +4,53 @@ import styles from "../../styles/quiz/QuizQPageStyle.module.css";
 import ProgressQuizBackground from "../../assets/ProgressQuizBackground.svg";
 import Click from "../../assets/QuizCheck.svg";
 import UnClick from "../../assets/QuizNonCheck.svg";
-import { QuizDummy } from "../../assets/quizDummy";
+import { useQuiz } from "../../hooks/QuizContext";
+import { postQuiz } from "../../apis/studygroup/Quiz";
 
 export const QuizQ = () => {
-  const [currentQuestionId, setCurrentQuestionId] = useState<number>(1);
   const [selectedAnswers, setSelectedAnswers] = useState<{ [key: number]: number }>({});
   const [showError, setShowError] = useState<boolean>(false);
   const navigate = useNavigate();
   const { groupId } = useParams<{ groupId: string }>();
   const { stepId } = useParams<{ stepId: string }>();
 
-  const currentQuestion = QuizDummy.find(q => q.id === currentQuestionId);
-  const totalQuestions = QuizDummy.length;
-  const isFirstQuestion = currentQuestionId === 1;
-  const isLastQuestion = currentQuestionId === totalQuestions;
+  // Context에서 퀴즈 관련 상태와 함수들을 가져옴
+  const {
+    quizData,
+    currentQuizIndex,
+    setCurrentQuizIndex,
+    setScore,
+    setIsQuizCompleted
+  } = useQuiz();
 
-  const handleAnswerSelect = (answerId: number) => {
+  const currentQuestion = quizData[currentQuizIndex];
+  const totalQuestions = quizData.length;
+  const isFirstQuestion = currentQuizIndex === 0;
+  const isLastQuestion = currentQuizIndex === totalQuestions - 1;
+
+  const handleAnswerSelect = (optionNum: number) => {
+    console.log(currentQuizIndex, optionNum);
     setSelectedAnswers(prev => ({
       ...prev,
-      [currentQuestionId]: answerId
+      [currentQuizIndex]: optionNum
     }));
     setShowError(false);
   };
 
   const handlePrevious = () => {
     if (isFirstQuestion) {
-      navigate(`/group/${groupId}/quiz`);
+      navigate(`/group/${groupId}/step/${stepId}/quiz`);
       return;
     }
 
     if (!isFirstQuestion) {
-      setCurrentQuestionId(prev => prev - 1);
+      setCurrentQuizIndex(currentQuizIndex - 1);
       setShowError(false);
     }
   };
 
-  const handleNext = () => {
-    const hasSelectedAnswer = selectedAnswers[currentQuestionId] !== undefined;
+  const handleNext = async () => {
+    const hasSelectedAnswer = selectedAnswers[currentQuizIndex] !== undefined;
 
     if (!hasSelectedAnswer) {
       setShowError(true);
@@ -48,20 +58,38 @@ export const QuizQ = () => {
     }
 
     if (isLastQuestion) {
-      // 마지막 문제이고 모든 답을 선택했으면 결과 페이지로 이동
-      const allQuestionsAnswered = QuizDummy.every(q => selectedAnswers[q.id] !== undefined);
+      // 마지막 문제이고 모든 답을 선택했으면 결과 계산 후 결과 페이지로 이동
+      const allQuestionsAnswered = quizData.every((_, index) => selectedAnswers[index] !== undefined);
       if (allQuestionsAnswered) {
-        navigate(`/group/${groupId}/step/${stepId}/quiz`);
+        if (groupId && stepId) {
+          try {
+            const response = await postQuiz({
+              groupId: groupId,
+              stepId: stepId,
+              answers: quizData.map((question, index) => ({
+                quizId: question.id,
+                selectedOptions: [selectedAnswers[index]]
+              }))
+            })
+            setScore(response.correctCount);
+            setIsQuizCompleted(true);
+            navigate(`/group/${groupId}/step/${stepId}/quiz`);
+          } catch (error) {
+            console.error("퀴즈 제출 실패:", error);
+          }
+        }
       } else {
         setShowError(true);
       }
     } else {
-      setCurrentQuestionId(prev => prev + 1);
+      setCurrentQuizIndex(currentQuizIndex + 1);
       setShowError(false);
     }
   };
 
-  if (!currentQuestion) return null;
+  if (!currentQuestion || quizData.length === 0) {
+    return <div>퀴즈를 불러오는 중...</div>;
+  }
 
   return (
     <div className={styles.quizq__container}>
@@ -69,26 +97,26 @@ export const QuizQ = () => {
       <div className={styles.quizq__content}>
         <div className={styles.quizq__content__container}>
           <div className={styles.quizq__progress}>
-            <div className={styles.quizq__progress__number}>{currentQuestionId}/{totalQuestions}</div>
+            <div className={styles.quizq__progress__number}>{currentQuizIndex + 1}/{totalQuestions}</div>
           </div>
 
           <div className={styles.quizq__question}>
-            <p>{currentQuestion.problem}</p>
+            <p>{currentQuestion.quiz}</p>
           </div>
 
           <div className={styles.quizq__answers}>
-            {currentQuestion.answers.map((answer) => (
+            {currentQuestion.options.map((option) => (
               <div
-                key={answer.id}
+                key={option.optionNum}
                 className={styles.quizq__answer}
-                onClick={() => handleAnswerSelect(answer.id)}
+                onClick={() => handleAnswerSelect(option.optionNum)}
               >
                 <img
-                  src={selectedAnswers[currentQuestionId] === answer.id ? Click : UnClick}
+                  src={selectedAnswers[currentQuizIndex] === option.optionNum ? Click : UnClick}
                   alt="radio button"
                   className={styles.quizq__radio}
                 />
-                <p>{answer.content}</p>
+                <p>{option.content}</p>
               </div>
             ))}
           </div>
