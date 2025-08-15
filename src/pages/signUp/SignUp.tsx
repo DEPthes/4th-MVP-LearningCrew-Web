@@ -1,3 +1,4 @@
+// src/pages/signUp/SignUp.tsx
 import { useState } from "react"
 import Header from "../../components/header/Header"
 import styles from "../../styles/signUp/SignUp.module.css"
@@ -7,7 +8,9 @@ import BirthCalendar from "../../components/signUp/BirthCalendar"
 import Profile from "../../components/signUp/Profile"
 import Gender from "../../components/signUp/Gender"
 import { useNavigate } from "react-router-dom"
-import axios from "axios"
+
+import { api } from "../../apis/common/client"
+import { login as loginApi } from "../../apis/auth/auth"
 
 export default function SignUp() {
   const [email, setEmail] = useState("")
@@ -20,8 +23,12 @@ export default function SignUp() {
 
   const [emailMessage, setEmailMessage] = useState("*이메일을 입력하세요.")
   const [nicknameMessage, setNicknameMessage] = useState("*닉네임을 입력하세요.")
-  const [passwordMessage, setPasswordMessage] = useState("*영어 대소문자, 숫자, 특수기호 포함 최소 8자 이상")
-  const [confirmPasswordMessage, setConfirmPasswordMessage] = useState("*비밀번호를 다시 입력하세요.")
+  const [passwordMessage, setPasswordMessage] = useState(
+    "*영어 소문자, 숫자, 특수기호 포함 최소 8자 이상"
+  )
+  const [confirmPasswordMessage, setConfirmPasswordMessage] = useState(
+    "*비밀번호를 다시 입력하세요."
+  )
 
   const [emailValid, setEmailValid] = useState(false)
   const [nicknameValid, setNicknameValid] = useState(false)
@@ -29,16 +36,17 @@ export default function SignUp() {
   const [passwordsMatch, setPasswordsMatch] = useState(false)
 
   const [formError, setFormError] = useState("")
+  const [submitting, setSubmitting] = useState(false)
 
   const navigate = useNavigate()
 
-  // 영어 대문자 + 소문자 + 숫자 + 특수문자 각각 1자 이상, 총 8자 이상
+  // ✅ 영어 소문자 + 숫자 + 특수문자 각각 1자 이상, 총 8자 이상
   const passwordRegex =
-    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{8,}$/
+    /^(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{8,}$/
 
   const validatePassword = (value: string) => {
     if (value === "") {
-      setPasswordMessage("*영어 대소문자, 숫자, 특수기호 포함 최소 8자 이상")
+      setPasswordMessage("*영어 소문자, 숫자, 특수기호 포함 최소 8자 이상")
       setPasswordValid(false)
     } else if (passwordRegex.test(value)) {
       setPasswordMessage("*사용 가능한 비밀번호입니다.")
@@ -64,8 +72,7 @@ export default function SignUp() {
 
   const handleCheckEmail = async () => {
     try {
-      // 프로젝트에 따라 엔드포인트 다를 수 있어 현재 코드 유지
-      const res = await axios.get(`/api/auth/email-exist?email=${email}`)
+      const res = await api.get("/api/auth/email-exist", { params: { email } })
       if (res.data.exist) {
         setEmailMessage("*중복되는 아이디입니다.")
         setEmailValid(false)
@@ -81,7 +88,7 @@ export default function SignUp() {
 
   const handleCheckNickname = async () => {
     try {
-      const res = await axios.get(`/api/auth/nickname-exist?nickname=${nickname}`)
+      const res = await api.get("/api/auth/nickname-exist", { params: { nickname } })
       if (res.data.exist) {
         setNicknameMessage("*중복되는 닉네임입니다.")
         setNicknameValid(false)
@@ -110,6 +117,7 @@ export default function SignUp() {
     }
 
     setFormError("")
+    setSubmitting(true)
 
     try {
       const formData = new FormData()
@@ -120,14 +128,18 @@ export default function SignUp() {
       if (gender) formData.append("gender", gender)
       if (profileImage) formData.append("profile", profileImage)
 
-      await axios.post("/api/auth/register", formData, {
+      await api.post("/api/auth/register", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       })
+
+      await loginApi(email, password)
 
       navigate("/welcome")
     } catch (error) {
       console.error("회원가입 실패:", error)
       alert("회원가입에 실패했습니다.")
+    } finally {
+      setSubmitting(false)
     }
   }
 
@@ -164,7 +176,7 @@ export default function SignUp() {
               const v = e.target.value
               setPassword(v)
               validatePassword(v)
-              validateConfirmPassword(confirmPassword) // 재확인 문구도 즉시 갱신
+              validateConfirmPassword(confirmPassword)
               setFormError("")
             }}
           />
@@ -232,8 +244,9 @@ export default function SignUp() {
               type="button"
               className={styles.button}
               onClick={handleSignUp}
+              disabled={submitting}
             >
-              가입
+              {submitting ? "가입 중..." : "가입"}
             </button>
           </div>
         </div>

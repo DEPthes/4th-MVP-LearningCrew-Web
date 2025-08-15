@@ -1,5 +1,6 @@
 import styles from "../../styles/common/GroupCard.module.css";
 import { FaBookmark, FaRegBookmark } from "react-icons/fa";
+import { useCallback } from "react";
 
 interface GroupCardProps {
   label: string;
@@ -12,20 +13,34 @@ interface GroupCardProps {
   isBookmarked?: boolean;
   type?: 'joined' | 'hosted' | 'applied';
   onBookmarkClick?: () => void;
+  onClick?: () => void;
 }
 
 export default function GroupCard({
   label, count, title, subtitle, person,
-  categories, image, isBookmarked, onBookmarkClick
+  categories, image, isBookmarked, onBookmarkClick, onClick
 }: GroupCardProps) {
 
-  const handleBookmarkClick = (e: React.MouseEvent) => {
+  const handleBookmarkClick = useCallback((e: React.MouseEvent) => {
     e.stopPropagation();
     onBookmarkClick?.();
-  };
+  }, [onBookmarkClick]);
+
+  const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      onClick?.();
+    }
+  }, [onClick]);
 
   return (
-    <div className={styles.card}>
+    <article
+      className={styles.card}
+      role="button"
+      tabIndex={0}
+      onClick={onClick}
+      onKeyDown={handleKeyDown}
+    >
       <div className={styles.imageWrapper}>
         <img src={image} alt="카드 이미지" className={styles.image} />
         {isBookmarked ? (
@@ -48,6 +63,6 @@ export default function GroupCard({
           ))}
         </div>
       </div>
-    </div>
+    </article>
   );
 }
