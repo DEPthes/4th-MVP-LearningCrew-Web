@@ -1,3 +1,4 @@
+// src/Router.tsx
 import { BrowserRouter, Routes, Route, useParams, Navigate } from "react-router-dom";
 import { Home } from "./pages/home/Home";
 import Layout from "./components/layout/Layout";
@@ -29,17 +30,15 @@ import GroupLayout from "./components/layout/GroupLayout";
 import MyGroup from "./pages/myGroup/MyGroup";
 import MainLayout from "./components/layout/MainLayout";
 
-// --- Helper Pages to pass :groupId ---
+// --- Helper Pages to pass :groupId (기존 유지) ---
 const FixedBannerPage = () => {
   const { groupId } = useParams();
   return <FixedBanner groupId={Number(groupId)} />;
 };
-
 const HostGroupApplicantPage = () => {
   const { groupId } = useParams();
   return <HostGroupApplicant groupId={Number(groupId)} />;
 };
-
 const HostGroupParticipantsPage = () => {
   const { groupId } = useParams();
   return <HostGroupParticipants groupId={Number(groupId)} />;
@@ -69,14 +68,12 @@ export const Router = () => {
 
         {/* 그룹 전용 레이아웃 */}
         <Route element={<Layout />}>
+          {/* /group/:groupId 진입 시 기본 step 1로 이동 */}
+          <Route path="/group/:groupId" element={<Navigate to="/group/:groupId/step/1" replace />} />
           <Route path="/group/:groupId/step/:stepId" element={<GroupLayout />}>
-            {/* 기본 진입 시 Study로 리다이렉트 */}
+            {/* 기본은 Study 탭 */}
             <Route index element={<Navigate to="MyGroupStudy" replace />} />
-
-            <Route
-              path="MyGroupStudy"
-              element={<MyGroupStudy />}
-            />
+            <Route path="MyGroupStudy" element={<MyGroupStudy />} />
             <Route path="myNote" element={<MyNote />} />
             <Route path="myNote/write" element={<MyNoteWrite />} />
             <Route path="shareNote" element={<ShareNoteList />} />
@@ -88,20 +85,20 @@ export const Router = () => {
           </Route>
         </Route>
 
-        {/* 단독 컴포넌트 */}
+        {/* 단독 컴포넌트 (기존 유지) */}
         <Route path="/ParticipantMenu" element={<ParticipantMenu />} />
         <Route path="/group/:groupId/banner" element={<FixedBannerPage />} />
         <Route path="/group/:groupId/applicants" element={<HostGroupApplicantPage />} />
         <Route path="/group/:groupId/participants" element={<HostGroupParticipantsPage />} />
         <Route path="/HostGroupStudy" element={<HostGroupStudy />} />
         <Route path="/HostGroupStudyWriting" element={<HostGroupStudyWriting />} />
-        <Route path="/MyGroupStudy" element={<MyGroupStudy />} />
+        <Route path="MyGroupStudy" element={<MyGroupStudy />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/welcome" element={<WelcomePage />} />
         <Route path="/mypage/edit" element={<EditProfile />} />
 
-        {/* 404 처리 */}
+        {/* 404 */}
         <Route path="*" element={<div>404 Not Found</div>} />
       </Routes>
     </BrowserRouter>
