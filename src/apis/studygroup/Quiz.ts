@@ -50,6 +50,20 @@ export const postQuiz = async (data: QuizSubmitRequest) => {
  }
 };
 
+//퀴즈 생성
+export const postQuizCreate = async (data: QuizRequest) => {
+ try {
+  await axios.post(`/api/quiz/admin/run/target`, {
+   groupId: data.groupId,
+   stepId: data.stepId,
+   headers: getAuthHeader(),
+  });
+ } catch (error) {
+  throw error;
+ }
+};
+
+//퀴즈 결과 불러오기
 export const getQuizResult = async (groupId: string) => {
  try {
   const response = await axios.get(
