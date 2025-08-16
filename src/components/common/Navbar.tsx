@@ -10,7 +10,16 @@ import {
 } from "../../apis/auth/auth";
 import { getImage } from "../../apis/common/File";
 
-const DEFAULT_PROFILE = new URL("default-profile.svg", import.meta.env.BASE_URL).toString();
+const DEFAULT_PROFILE =
+  (() => {
+    try {
+      const base = (typeof import.meta !== "undefined" && (import.meta as any).env?.BASE_URL) || (typeof document !== "undefined" ? document.baseURI : "/");
+      return new URL("default-profile.svg", base).toString();
+    } catch {
+      return "/default-profile.svg";
+    }
+  })();
+
 
 export default function Navbar() {
   const navbarHeight = "116px";

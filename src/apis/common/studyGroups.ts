@@ -3,6 +3,9 @@ import { getAuthHeader } from "../auth/auth";
 
 export type SortOrder = "asc" | "desc";
 
+export type SortKey = "createdAt" | "startDate" | "endDate" | "memberCount" | "name";
+export type Order = SortOrder;
+
 export interface StudyGroupCategory {
   id: number;
   name: string;
@@ -34,6 +37,17 @@ export interface StudyGroupItem {
   } | null;
 }
 
+export interface StudyGroupStep {
+  step: number;
+  title?: string | null;
+  content?: string | null;
+}
+
+export interface StudyGroupDetail extends StudyGroupItem {
+  currentStep: number;
+  steps?: StudyGroupStep[];
+}
+
 export interface PageResponse<T> {
   content: T[];
   totalElements: number;
@@ -45,7 +59,7 @@ export interface PageResponse<T> {
 }
 
 export async function fetchStudyGroups(params: {
-  sort?: string;
+  sort?: SortKey;            
   order?: SortOrder;
   categoryId?: number;
   searchKeyword?: string;
@@ -76,8 +90,8 @@ export async function fetchStudyGroups(params: {
   return data;
 }
 
-export async function fetchStudyGroup(groupId: number): Promise<any> {
-  const { data } = await axios.get(`/api/study-groups/${groupId}`, {
+export async function fetchStudyGroup(groupId: number): Promise<StudyGroupDetail> {
+  const { data } = await axios.get<StudyGroupDetail>(`/api/study-groups/${groupId}`, {
     headers: getAuthHeader(),
   });
   return data;
