@@ -8,6 +8,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { getQandAList } from "../../apis/studygroup/QandA";
 import { Lock } from "../../components/common/Lock";
 import { getStudyGroup } from "../../apis/studygroup/StudyGroup";
+import { useGroupTab } from "../../hooks/GroupTabContext";
 
 export const QandAList = () => {
   const navigate = useNavigate();
@@ -19,6 +20,11 @@ export const QandAList = () => {
   const { groupId } = useParams<{ groupId: string }>();
   const { stepId } = useParams<{ stepId: string }>();
   const [qnaData, setQnaData] = useState<any[]>();
+  const { setCurrentTab } = useGroupTab();
+
+  useEffect(() => {
+    setCurrentTab('QandA');
+  }, [setCurrentTab]);
 
   useEffect(() => {
     const fetchStudyGroup = async () => {

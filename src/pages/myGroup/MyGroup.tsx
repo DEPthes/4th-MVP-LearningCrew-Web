@@ -32,7 +32,7 @@ const transformGroupData = async (apiData: GroupListResponse | AppliedGroupListR
         return {
           id: item.studyGroup.id,
           image: imageUrl,
-          label: '같이 공부해요',
+          label: item.studyGroup.summary,
           count: `${item.studyGroup.memberCount}/${item.studyGroup.maxMembers}`,
           title: item.studyGroup.name,
           subtitle: `${item.studyGroup.startDate} ~ ${item.studyGroup.endDate}`,
@@ -40,6 +40,7 @@ const transformGroupData = async (apiData: GroupListResponse | AppliedGroupListR
           categories: item.studyGroup.categories.map(cat => cat.name),
           isBookmarked: item.studyGroup.dibs,
           type: type,
+          totalPages: appliedData.page.totalPages,
         };
       })
     );
@@ -65,7 +66,7 @@ const transformGroupData = async (apiData: GroupListResponse | AppliedGroupListR
         return {
           id: group.id,
           image: imageUrl,
-          label: '같이 공부해요',
+          label: group.summary,
           count: `${group.memberCount}/${group.maxMembers}`,
           title: group.name,
           subtitle: `${group.startDate} ~ ${group.endDate}`,
@@ -73,6 +74,7 @@ const transformGroupData = async (apiData: GroupListResponse | AppliedGroupListR
           categories: group.categories.map(cat => cat.name),
           isBookmarked: group.dibs,
           type: type,
+          totalPages: groupData.page.totalPages,
         };
       })
     );
@@ -84,6 +86,9 @@ const transformGroupData = async (apiData: GroupListResponse | AppliedGroupListR
 export default function MyGroup() {
   const [list, setList] = useState<TransformedGroupData[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isLogin, setIsLogin] = useState<boolean>(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [sort, setSort] = useState("최신순");
 
   const [params] = useSearchParams();
   const navigate = useNavigate();
@@ -95,6 +100,9 @@ export default function MyGroup() {
 
   // 그룹 타입에 따라 API 호출
   useEffect(() => {
+    const apiSort = sort === "오래된순" ? "created_at" : sort === "관련도순" ? "relative" : sort === "가나다순" ? "alphabet" : "created_at";
+    const order = sort === "오래된순" ? "asc" : "desc";
+    const page = currentPage - 1;
     const fetchGroups = async () => {
       try {
         setLoading(true);
@@ -102,13 +110,27 @@ export default function MyGroup() {
         let response: GroupListResponse | AppliedGroupListResponse;
         switch (type) {
           case 'joined':
-            response = await getJoinGroup();
+            response = await getJoinGroup({ sort: apiSort, order, page });
             break;
           case 'hosted':
-            response = await getHostedGroup();
+            try {
+              response = await getHostedGroup({ sort: apiSort, order, page });
+              setIsLogin(true);
+            } catch (err) {
+              setIsLogin(false);
+              response = {
+                content: [],
+                page: {
+                  size: 0,
+                  number: 0,
+                  totalElements: 0,
+                  totalPages: 0,
+                },
+              }
+            }
             break;
           case 'applied':
-            response = await getAppliedGroup();
+            response = await getAppliedGroup({ sort: apiSort, order, page });
             break;
         }
 
@@ -120,9 +142,8 @@ export default function MyGroup() {
         setLoading(false);
       }
     };
-
     fetchGroups();
-  }, [type]);
+  }, [type, sort, currentPage]);
 
   const handleTypeChange = (next: GroupType) => {
     const nextParams = new URLSearchParams(params);
@@ -162,10 +183,14 @@ export default function MyGroup() {
         showSort
         onBookmarkClick={handleBookmarkClick}
         loading={loading}
+        number={currentPage}
+        setNumber={setCurrentPage}
+        sort={sort}
+        setSort={setSort}
         headerBelow={
           <div className={styles.headerBelowRow}>
             <GroupTypeTabs value={type} onChange={handleTypeChange} />
-            {type === 'hosted' && (
+            {type === 'hosted' && isLogin && (
               <div className={styles.createBtnWrapper}>
                 <CreateGroupButton to="/mygroup/create" />
               </div>

@@ -2,12 +2,14 @@
 import { useNavigate, useLocation, useParams } from "react-router-dom";
 import styles from "../../styles/fixedGroupHeader/ParticipantMenu.module.css";
 import ArrowLeft from "../../assets/ArrowLeft.svg";
+import { useGroupTab } from "../../hooks/GroupTabContext";
 
 export default function ParticipantMenu() {
   const navigate = useNavigate();
   const location = useLocation();
   const { groupId } = useParams<{ groupId: string }>();
   const { stepId } = useParams<{ stepId: string }>();
+  const { setCurrentTab } = useGroupTab();
 
   const menuItems = [
     { name: "Study", path: `/group/${groupId}/step/${stepId}/MyGroupStudy` },
@@ -40,6 +42,12 @@ export default function ParticipantMenu() {
     }
   };
 
+  const handleTabClick = (tabName: string, path: string) => {
+    // Context에 현재 탭 상태 업데이트
+    setCurrentTab(tabName as any);
+    navigate(path);
+  };
+
   return (
     <>
       {isDetailPath ? (
@@ -54,7 +62,7 @@ export default function ParticipantMenu() {
               <button
                 key={item.name}
                 className={`${styles.button} ${isActive ? styles.button__active : ""}`}
-                onClick={() => navigate(item.path)}
+                onClick={() => handleTabClick(item.name, item.path)}
               >
                 {item.name}
               </button>

@@ -3,11 +3,11 @@ import StartQuizBackground from "../../assets/StartQuizBackground.svg";
 import EndQuizBackground from "../../assets/EndQuizBackground.svg";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { getQuiz, getQuizResult } from "../../apis/studygroup/Quiz";
+import { getQuiz, getQuizResult, postQuizCreate } from "../../apis/studygroup/Quiz";
 import { Lock } from "../../components/common/Lock";
 import { useQuiz } from "../../hooks/QuizContext";
 import { getStudyGroup } from "../../apis/studygroup/StudyGroup";
-
+import { useGroupTab } from "../../hooks/GroupTabContext";
 
 export const Quiz = () => {
   const [isQuiz, setIsQuiz] = useState<boolean>(false); //퀴즈 생성 여부
@@ -17,6 +17,11 @@ export const Quiz = () => {
   const { groupId } = useParams<{ groupId: string }>();
   const { stepId } = useParams<{ stepId: string }>();
   const navigator = useNavigate();
+  const { setCurrentTab } = useGroupTab();
+
+  useEffect(() => {
+    setCurrentTab('quiz');
+  }, [setCurrentTab]);
 
   // Context에서 퀴즈 관련 상태와 함수들을 가져옴
   const {
@@ -43,6 +48,14 @@ export const Quiz = () => {
         const groupCurrentStep = response.currentStep;
         if (groupCurrentStep < parseInt(stepId ?? "0")) setCanAccessStep(false);
         setLoading(false);
+        if (groupCurrentStep - 1 === parseInt(stepId ?? "0") && !isQuiz) {
+          try {
+            await postQuizCreate({ groupId: groupId ?? "1", stepId: stepId ?? "1" });
+            console.log("퀴즈 생성 요청 성공");
+          } catch (error) {
+            console.error("퀴즈 생성 요청 실패:", error);
+          }
+        }
       } catch (error) {
         console.error("스터디 그룹을 가져오는데 실패했습니다:", error);
         setLoading(false);

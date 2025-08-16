@@ -5,6 +5,7 @@ import {
   fetchStudyGroup,
   type StudyGroupDetail,
 } from "../../apis/common/studyGroups";
+import { useGroupTab } from "../../hooks/GroupTabContext";
 
 type LocationState = {
   group?: StudyGroupDetail;
@@ -14,10 +15,16 @@ export default function MyGroupStudy() {
   const { groupId, stepId } = useParams<{ groupId: string; stepId: string }>();
   const location = useLocation();
   const passed = (location.state as LocationState | null)?.group ?? null;
+  const { setCurrentTab } = useGroupTab();
 
   const [group, setGroup] = useState<StudyGroupDetail | null>(passed);
   const [loading, setLoading] = useState<boolean>(!passed);
   const [error, setError] = useState<string | null>(null);
+
+  // 컴포넌트 마운트 시 MyGroupStudy 탭으로 설정
+  useEffect(() => {
+    setCurrentTab('MyGroupStudy');
+  }, [setCurrentTab]);
 
   useEffect(() => {
     if (!groupId || passed) return;
