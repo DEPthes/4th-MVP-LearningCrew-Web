@@ -25,7 +25,7 @@ export const Sort = ({ sort, setSort, isGroup }: SortProps) => {
 
   return (
     <div className={styles.sort__container}>
-      <div className={styles.sort__top}>
+      <div className={styles.sort__top} style={{ marginBottom: isGroup ? "0px" : "20px" }}>
         {sort}
         <button onClick={handleBtnClick} className={styles.sort__btn}>
           {isOpen ? <img src={UpArrow} />
@@ -33,7 +33,7 @@ export const Sort = ({ sort, setSort, isGroup }: SortProps) => {
         </button>
       </div>
       {isOpen ?
-        <div className={styles.sort__list}>
+        <div className={styles.sort__list} style={{ marginTop: isGroup ? "20px" : "0" }}>
           <div onClick={() => handleSortClick("최신순")} className={styles.sort__list__item}>
             {sort === "최신순" ?
               <img src={Click} />
