@@ -2,11 +2,18 @@ import { useNavigate, useParams } from "react-router-dom";
 import { postNote } from "../../apis/studygroup/Note";
 import { ContentEditor } from "../../components/common/ContentEditor";
 import styles from "../../styles/myNote/MyNoteWritePageStyle.module.css";
+import { useGroupTab } from "../../hooks/GroupTabContext";
+import { useEffect } from "react";
 
 export const MyNoteWrite = () => {
   const navigate = useNavigate();
   const { groupId } = useParams<{ groupId: string }>();
   const { stepId } = useParams<{ stepId: string }>();
+  const { setCurrentTab } = useGroupTab();
+
+  useEffect(() => {
+    setCurrentTab('myNote');
+  }, [setCurrentTab]);
 
   const handleSubmit = async (title: string, content: string, attachedFiles: File[], attachedImages: File[]) => {
     try {

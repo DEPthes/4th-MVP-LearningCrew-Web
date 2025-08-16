@@ -7,6 +7,7 @@ import { Lock } from "../../components/common/Lock";
 import { getStudyGroup } from "../../apis/studygroup/StudyGroup";
 import { getImage, getFile } from "../../apis/common/File";
 import { getQandAList } from "../../apis/studygroup/QandA";
+import { useGroupTab } from "../../hooks/GroupTabContext";
 
 interface AttachedFile {
   uuid: string;
@@ -50,6 +51,7 @@ export const MyNote = () => {
   const navigator = useNavigate();
   const { groupId } = useParams<{ groupId: string }>();
   const { stepId } = useParams<{ stepId: string }>();
+  const { setCurrentTab } = useGroupTab();
   const [myNote, setMyNote] = useState<MyNoteData | null>(null);
   const [loading, setLoading] = useState(true);
   const [canAccessGroup, setCanAccessGroup] = useState<boolean>(false);
@@ -57,6 +59,11 @@ export const MyNote = () => {
   const [isCurrentStep, setIsCurrentStep] = useState<boolean>(false);
   const [imageUrls, setImageUrls] = useState<{ [key: string]: any }>({});
   const [currentStep, setCurrentStep] = useState<number>(0);
+
+  // 컴포넌트 마운트 시 내 노트 탭으로 설정
+  useEffect(() => {
+    setCurrentTab('myNote');
+  }, [setCurrentTab]);
 
   //나중에 없애기 전역관리로....
   useEffect(() => {

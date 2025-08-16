@@ -6,6 +6,7 @@ import { useState, useEffect } from "react"
 import { getSharedNoteList } from "../../apis/studygroup/Note"
 import { Lock } from "../../components/common/Lock"
 import { getStudyGroup } from "../../apis/studygroup/StudyGroup"
+import { useGroupTab } from "../../hooks/GroupTabContext";
 
 export const ShareNoteList = () => {
   const navigate = useNavigate()
@@ -17,6 +18,11 @@ export const ShareNoteList = () => {
   const { groupId } = useParams<{ groupId: string }>();
   const { stepId } = useParams<{ stepId: string }>();
   const [currentStep, setCurrentStep] = useState<number>(0);
+  const { setCurrentTab } = useGroupTab();
+
+  useEffect(() => {
+    setCurrentTab('shareNote');
+  }, [setCurrentTab]);
 
   //나중에 없애기 전역관리로....
   useEffect(() => {

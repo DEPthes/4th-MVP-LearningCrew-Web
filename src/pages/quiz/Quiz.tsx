@@ -7,7 +7,7 @@ import { getQuiz, getQuizResult, postQuizCreate } from "../../apis/studygroup/Qu
 import { Lock } from "../../components/common/Lock";
 import { useQuiz } from "../../hooks/QuizContext";
 import { getStudyGroup } from "../../apis/studygroup/StudyGroup";
-
+import { useGroupTab } from "../../hooks/GroupTabContext";
 
 export const Quiz = () => {
   const [isQuiz, setIsQuiz] = useState<boolean>(false); //퀴즈 생성 여부
@@ -17,6 +17,11 @@ export const Quiz = () => {
   const { groupId } = useParams<{ groupId: string }>();
   const { stepId } = useParams<{ stepId: string }>();
   const navigator = useNavigate();
+  const { setCurrentTab } = useGroupTab();
+
+  useEffect(() => {
+    setCurrentTab('quiz');
+  }, [setCurrentTab]);
 
   // Context에서 퀴즈 관련 상태와 함수들을 가져옴
   const {
