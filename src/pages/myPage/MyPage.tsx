@@ -15,6 +15,16 @@ function formatGender(g: MeResponse["gender"]) {
   return "기타";
 }
 
+function formatBirthday(me: Partial<MeResponse> | any) {
+  const raw = me?.birthday ?? me?.birthDate ?? me?.dateOfBirth;
+  if (!raw) return "-";
+  const dt = new Date(raw);
+  if (isNaN(dt.getTime())) {
+    return String(raw);
+  }
+  return dt.toLocaleDateString("ko-KR", { year: "numeric", month: "2-digit", day: "2-digit" });
+}
+
 export default function MyPageHome() {
   const [me, setMe] = useState<MeResponse | null>(null);
   const [loading, setLoading] = useState(true);
@@ -29,7 +39,7 @@ export default function MyPageHome() {
       } catch (e: any) {
         const status = e?.response?.status;
         if (status === 401) {
-          setMe(null);            
+          setMe(null);
           setErr(null);
         } else {
           setErr(e?.response?.data?.message || "내 정보 불러오기에 실패했어요.");
@@ -45,7 +55,7 @@ export default function MyPageHome() {
     let revokeUrl: string | null = null;
 
     (async () => {
-      const uuid = me?.profileImage?.uuid;
+      const uuid = (me as any)?.profileImage?.uuid;
       const isImage = (me as any)?.profileImage?.handlingType === "IMAGE";
 
       if (!uuid || !isImage) {
@@ -192,7 +202,7 @@ export default function MyPageHome() {
                 </div>
                 <div className={styles.fieldRow}>
                   <label className={styles.label}>생년월일</label>
-                  <p className={styles.leftTextValue}>-</p>
+                  <p className={styles.leftTextValue}>{formatBirthday(me)}</p>
                 </div>
                 <div className={styles.fieldRow}>
                   <label className={styles.label}>성별</label>
