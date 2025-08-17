@@ -58,7 +58,6 @@ export const userStore = {
   },
 };
 
-// ------------------------- API -------------------------
 export const login = async (email: string, password: string) => {
   const { data } = await axios.post<LoginResponse>(
     "/api/auth/login",
@@ -75,7 +74,7 @@ export const login = async (email: string, password: string) => {
     const me = await fetchMyProfile();
     userStore.set(me || null);
   } catch {
-    // no-op
+    //
   }
 
   return tokens;

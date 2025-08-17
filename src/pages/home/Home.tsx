@@ -9,7 +9,6 @@ import {
   fetchStudyGroup,
 } from "../../apis/common/studyGroups";
 import CATEGORY_NAME_TO_ID from "../../constants/categoryNameToId";
-import { mapSort, type SortLabel } from "../../utils/mapSort";
 import { getImage } from "../../apis/common/File";
 
 type Card = {
@@ -45,11 +44,12 @@ function toCardSkeleton(item: StudyGroupItem): Card {
 
 export const Home = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>("전체");
-  const [sortLabel, setSortLabel] = useState<SortLabel>("최신순");
 
   const [params] = useSearchParams();
   const rawQ = params.get("q") ?? "";
   const q = rawQ.trim();
+
+  const [sort, setSort] = useState<"최신순" | "오래된순" | "관련도순" | "가나다순">("최신순");
 
   const page = 0;
   const size = 12;
@@ -72,11 +72,40 @@ export const Home = () => {
         setLoading(true);
         setErrorMsg(null);
 
-        const categoryId = CATEGORY_NAME_TO_ID[selectedCategory];
-        const { sort, order } = mapSort(sortLabel);
+        const categoryId =
+          selectedCategory === "전체"
+            ? undefined
+            : CATEGORY_NAME_TO_ID[selectedCategory];
+
+        let sortKey: any = "created_at";
+        let order: "asc" | "desc" | undefined = "desc";
+
+        switch (sort) {
+          case "최신순":
+            sortKey = "created_at";
+            order = "desc";
+            break;
+          case "오래된순":
+            sortKey = "created_at";
+            order = "asc";
+            break;
+          case "가나다순":
+            sortKey = "alphabet";
+            order = undefined;
+            break;
+          case "관련도순":
+            if (q) {
+              sortKey = "relative";
+              order = undefined;
+            } else {
+              sortKey = "created_at";
+              order = "desc";
+            }
+            break;
+        }
 
         const res = await fetchStudyGroups({
-          sort,
+          sort: sortKey,
           order,
           categoryId,
           searchKeyword: q || undefined,
@@ -86,17 +115,24 @@ export const Home = () => {
 
         if (!alive || requestIdRef.current !== myRequestId) return;
 
-        const skels = res.content.map(toCardSkeleton);
+        const items: StudyGroupItem[] = Array.isArray(res?.content)
+          ? res.content
+          : Array.isArray(res)
+          ? (res as any)
+          : [];
+
+        const skels = items.map(toCardSkeleton);
         setCards(skels);
 
         const loaded = await Promise.all(
-          res.content.map(async (item, idx) => {
+          items.map(async (item, idx) => {
             const base = skels[idx];
             const uuid = item.groupImage?.uuid;
-            if (!uuid) return base;
+            const fileName = item.groupImage?.fileName;
+            if (!uuid || !fileName) return base;
 
             try {
-              const url = await getImage(uuid, item.groupImage?.fileName);
+              const url = await getImage(uuid, fileName);
               if (url.startsWith("blob:")) {
                 createdUrlsRef.current.push(url);
               }
@@ -128,7 +164,7 @@ export const Home = () => {
       createdUrlsRef.current.forEach((u) => URL.revokeObjectURL(u));
       createdUrlsRef.current = [];
     };
-  }, [selectedCategory, q, sortLabel, page, size]);
+  }, [selectedCategory, q, sort, page, size]);
 
   const filtered = useMemo(() => {
     if (!q && selectedCategory === "전체") return cards;
@@ -157,7 +193,6 @@ export const Home = () => {
     setCards((prev) =>
       prev.map((v) => (v.id === id ? { ...v, isBookmarked: !v.isBookmarked } : v))
     );
-    // TODO: 찜 토글 API 연동
   };
 
   const handleCardClick = async (id: number) => {
@@ -192,8 +227,8 @@ export const Home = () => {
           showSort
           onBookmarkClick={handleBookmarkClick}
           isGroup
-          sortLabel={sortLabel}
-          onSortChange={(label) => setSortLabel(label as SortLabel)}
+          sort={sort}
+          setSort={setSort}
           onCardClick={handleCardClick}
         />
       )}
