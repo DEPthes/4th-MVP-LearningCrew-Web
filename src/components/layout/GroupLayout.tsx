@@ -3,10 +3,13 @@ import { Outlet, useParams } from "react-router-dom";
 import FixedBanner from "../fixedGroupHeader/FixedBanner";
 import ParticipantMenu from "../fixedGroupHeader/ParticipantMenu";
 import styles from "./GroupLayout.module.css";
+import { useIsGroupOwner } from "../../hooks/useMyGroup";
 
 export default function GroupLayout() {
   const { groupId: groupIdParam } = useParams<{ groupId: string }>();
   const groupId = Number(groupIdParam);
+
+  const {isOwner} = useIsGroupOwner(groupIdParam!);
 
   // groupId 검증
   if (!groupIdParam || Number.isNaN(groupId)) {
@@ -22,7 +25,7 @@ export default function GroupLayout() {
   return (
     <>
       {/* 상단 고정 배너 */}
-      <FixedBanner groupId={groupId} />
+      <FixedBanner groupId={groupId} isOwner = {isOwner}/>
 
       <div className={styles.layout__wrapper}>
         <div className={styles.menu__container}>
