@@ -175,3 +175,9 @@
   font: var(--BodyMRegular);
   color: var(--Gray1);
 }
+
+.profileImage{
+  border: solid 1px var(--Gray2);
+  object-fit: cover;
+  border-radius: 50%;
+}
