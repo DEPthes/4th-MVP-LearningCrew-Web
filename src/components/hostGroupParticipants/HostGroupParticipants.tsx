@@ -1,5 +1,7 @@
+// src/components/hostGroupParticipants/HostGroupParticipants.tsx
 import styles from "../../styles/hostGroupParticipants/HostGroupParticipants.module.css";
 import { useEffect, useMemo, useState } from "react";
+import { useParams } from "react-router-dom";
 import ParticipantList from "./ParticipantList";
 import { Sort } from "../common/Sort";
 import { Pagenation } from "../common/Pagenation";
@@ -29,10 +31,13 @@ const fmt = (iso?: string) => {
 };
 
 interface Props {
-  groupId: number;
+  groupId?: number; // URL 또는 prop
 }
 
-export default function HostGroupParticipants({ groupId }: Props) {
+export default function HostGroupParticipants({ groupId: propId }: Props) {
+  const { groupId: gid } = useParams<{ groupId: string }>();
+  const groupId = propId ?? Number(gid);
+
   const [activeTab, setActiveTab] = useState<Tab>("participant");
   const [sort, setSort] = useState("최신순");
   const [currentPage, setCurrentPage] = useState(1);
@@ -42,9 +47,10 @@ export default function HostGroupParticipants({ groupId }: Props) {
   const [rows, setRows] = useState<(Application | Member)[]>([]);
   const [totalPages, setTotalPages] = useState(1);
 
-  const apiSort = useMemo(() => {
-    return sort === "최신순" ? "createdAt,desc" : "createdAt,asc";
-  }, [sort]);
+  const apiSort = useMemo(
+    () => (sort === "최신순" ? "createdAt,desc" : "createdAt,asc"),
+    [sort]
+  );
 
   const fetchList = async () => {
     setLoading(true);
@@ -72,7 +78,7 @@ export default function HostGroupParticipants({ groupId }: Props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTab, currentPage, apiSort, groupId]);
 
-  // 신청자 탭일 때 10초마다 자동 갱신(선택): 실시간 반영 도움
+  // 신청자 탭일 때 10초마다 자동 갱신
   useEffect(() => {
     if (activeTab !== "applicant") return;
     const id = setInterval(fetchList, 10000);
@@ -80,37 +86,79 @@ export default function HostGroupParticipants({ groupId }: Props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTab, currentPage, apiSort, groupId]);
 
-  const handleApprove = async (userId: number) => {
-    try {
-      setLoading(true);
-      await approveApplication(groupId, userId);
-      await fetchList();
-    } catch (e: any) {
-      alert(e?.message ?? "승인 중 오류가 발생했어요.");
-    } finally {
-      setLoading(false);
-    }
+  /** ✅ 공통: 현재 rows에서 특정 유저 제거(옵티미스틱) */
+  const removeRowByUserId = (uid: number) => {
+    setRows(prev =>
+      prev.filter((r) => {
+        const u = (r as any)?.user?.id;
+        return u !== uid;
+      })
+    );
   };
 
-  const handleReject = async (userId: number) => {
-    try {
-      setLoading(true);
-      await rejectApplication(groupId, userId);
-      await fetchList();
-    } catch (e: any) {
-      alert(e?.message ?? "거절 중 오류가 발생했어요.");
-    } finally {
-      setLoading(false);
-    }
+  const refetchCurrent = async () => {
+    await fetchList();
   };
 
+  // HostGroupParticipants.tsx 안에서 이 두 함수만 교체
+
+/** ✅ 승인: 신청자 목록에서 즉시 제거(옵티미스틱) */
+const handleApprove = async (userId: number) => {
+  try {
+    setLoading(true);
+    await approveApplication(groupId, userId);
+
+    // 1) 화면에서 즉시 제거 (신청자 탭에서 사라짐)
+    setRows(prev =>
+      prev.filter(r => (r as any)?.user?.id !== userId)
+    );
+
+    // 2) (선택) 최신 상태 보정: 현재 탭이 신청자면 재조회
+    if (activeTab === "applicant") {
+      await fetchList();
+    }
+  } catch (e: any) {
+    const msg = e?.response?.data?.message || e?.message || "승인 중 오류가 발생했어요.";
+    alert(msg);
+  } finally {
+    setLoading(false);
+  }
+};
+
+/** ✅ 거절: 신청자 목록에서 즉시 제거(옵티미스틱) */
+const handleReject = async (userId: number) => {
+  try {
+    setLoading(true);
+    await rejectApplication(groupId, userId);
+
+    // 1) 화면에서 즉시 제거
+    setRows(prev =>
+      prev.filter(r => (r as any)?.user?.id !== userId)
+    );
+
+    // 2) (선택) 보정용 재조회
+    if (activeTab === "applicant") {
+      await fetchList();
+    }
+  } catch (e: any) {
+    const msg = e?.response?.data?.message || e?.message || "거절 중 오류가 발생했어요.";
+    alert(msg);
+  } finally {
+    setLoading(false);
+  }
+};
+
+  /** ✅ 삭제: 참여자 목록에서 제거 → 현재 탭 재조회 */
   const handleRemove = async (userId: number) => {
     try {
       setLoading(true);
       await expelMember(groupId, userId);
-      await fetchList();
+      removeRowByUserId(userId);          // 옵티미스틱 제거
+      await refetchCurrent();
     } catch (e: any) {
-      alert(e?.message ?? "삭제 중 오류가 발생했어요.");
+      const msg =
+        e?.response?.data?.message || e?.message || "삭제 중 오류가 발생했어요.";
+      alert(msg);
     } finally {
       setLoading(false);
     }

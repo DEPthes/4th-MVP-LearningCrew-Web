@@ -117,10 +117,10 @@
   height: 24px;
 }
 
-/* ✅ 활성(클릭) 상태 */
-.BookmarkActive {
-  background-color: var(--main-color-240, rgba(255, 85, 44, 0.4));
+/* 클릭(활성) 상태 */
+.Bookmark[aria-pressed="true"] {
   border: 1.4px solid var(--Main-Color-2, #FF552C);
+  background: var(--main-color-240, rgba(255, 85, 44, 0.40));
 }
 
 .button {

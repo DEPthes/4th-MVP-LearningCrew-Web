@@ -1,6 +1,6 @@
 // src/components/fixedGroupHeader/FixedBanner.tsx
 import { useEffect, useMemo, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import styles from "../../styles/fixedGroupHeader/FixedBanner.module.css";
 import bookmark1 from "../../assets/bookmark1.svg";
 import BookmarkOn from "../../assets/BookmarkOn.svg";
@@ -13,37 +13,79 @@ import {
   leaveStudyGroup,
 } from "../../apis/Group/StudyGroupApplication";
 import type { ApplicationState } from "../../apis/Group/StudyGroupApplication";
+import { closeStudyGroup } from "../../apis/Group/StudyGroupManage";
+import { getStudyGroupDetail, type StudyGroupDetail } from "../../apis/Group/StudyGroup";
+import { getStudyByStep, type StepStudy } from "../../apis/Group/StudyGroupStep";
 
 type JoinUiState = "NONE" | ApplicationState;
 
 interface FixedBannerProps {
   groupId: number;
-  hostNickname?: string;
-  memberCount?: number;
-  maxMembers?: number;
-  startDate?: string;
-  endDate?: string;
   isOwner: boolean;
 }
 
-export default function FixedBanner({
-  groupId,
-  hostNickname = "@아무개",
-  memberCount = 14,
-  maxMembers = 16,
-  startDate = "25.07.11",
-  endDate = "25.08.20",
-  isOwner,
-}: FixedBannerProps) {
+export default function FixedBanner({ groupId, isOwner }: FixedBannerProps) {
+  const navigate = useNavigate();
+  const { stepId: stepIdParam } = useParams<{ stepId: string }>();
+
+  // 그룹/스텝 데이터
+  const [group, setGroup] = useState<StudyGroupDetail | null>(null);
+  const [stepInfo, setStepInfo] = useState<StepStudy | null>(null);
+
+  // 북마크 & 가입 버튼
   const [bookmarked, setBookmarked] = useState(false);
   const [joinState, setJoinState] = useState<JoinUiState>("NONE");
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
 
-  // URL의 stepId(1-based)를 읽어서 0-based로 변환
-  const { stepId: stepIdParam } = useParams<{ stepId: string }>();
-  const currentStepIndex = Math.max(0, (Number(stepIdParam) || 1) - 1);
+  // 스텝바 표시용
+  const totalSteps = group?.steps?.length ?? 10;
+  const currentStepIndex =
+    Math.max(0, (Number(stepIdParam) || group?.currentStep || 1) - 1);
 
+  const fmt = (d?: string) => (d ? d.replaceAll("-", ".") : "");
+
+  // 그룹 상세
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      try {
+        const detail = await getStudyGroupDetail(groupId);
+        if (!mounted) return;
+        setGroup(detail);
+        setBookmarked(Boolean(detail.dibs));
+      } catch {
+        setGroup(null);
+      }
+    })();
+    return () => {
+      mounted = false;
+    };
+  }, [groupId]);
+
+  // 현재 스텝 정보
+  useEffect(() => {
+    const step = Number(stepIdParam);
+    if (!step || Number.isNaN(step)) {
+      setStepInfo(null);
+      return;
+    }
+    let mounted = true;
+    (async () => {
+      try {
+        const data = await getStudyByStep(groupId, step);
+        if (!mounted) return;
+        setStepInfo(data);
+      } catch {
+        setStepInfo(null);
+      }
+    })();
+    return () => {
+      mounted = false;
+    };
+  }, [groupId, stepIdParam]);
+
+  // 내 가입 상태
   const syncMyState = async () => {
     try {
       const my = await getMyApplicationForGroup(groupId);
@@ -52,21 +94,11 @@ export default function FixedBanner({
       setJoinState("NONE");
     }
   };
-
-  // 최초 진입 시 내 상태 조회
   useEffect(() => {
-    let mounted = true;
-    (async () => {
-      await syncMyState();
-      if (!mounted) return;
-    })();
-    return () => {
-      mounted = false;
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    syncMyState().catch(() => undefined);
   }, [groupId]);
 
-  // 대기중이면 10초마다 새로고침
+  // 신청 대기 중이면 주기 갱신
   useEffect(() => {
     if (joinState !== "PENDING") return;
     const id = setInterval(() => {
@@ -91,6 +123,7 @@ export default function FixedBanner({
   }, [joinState, loading]);
 
   const isLeaveStyle = joinState === "PENDING" || joinState === "APPROVED";
+
   const handleBookmarkClick = () => setBookmarked((v) => !v);
 
   const handleJoinClick = async () => {
@@ -103,30 +136,35 @@ export default function FixedBanner({
         setJoinState("PENDING");
         return;
       }
-
       if (joinState === "PENDING") {
         await cancelMyApplication(groupId);
         setJoinState("NONE");
         return;
       }
-
       if (joinState === "APPROVED") {
         await leaveStudyGroup(groupId);
         setJoinState("NONE");
         return;
       }
     } catch (e: any) {
-      const msg =
-        e?.response?.data?.message ||
-        e?.message ||
-        "요청 처리 중 오류가 발생했어요.";
+      const msg = e?.response?.data?.message || e?.message || "요청 처리 중 오류가 발생했어요.";
       setErrorMsg(msg);
-      try {
-        const my = await getMyApplicationForGroup(groupId);
-        setJoinState((my?.state as any) ?? "NONE");
-      } catch {
-        /* ignore */
-      }
+      syncMyState().catch(() => undefined);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleCloseGroup = async () => {
+    if (!confirm("정말로 이 스터디를 폐쇄할까요? 이 작업은 되돌릴 수 없어요.")) return;
+    try {
+      setLoading(true);
+      const status = await closeStudyGroup(groupId);
+      if (status === 204) alert("스터디가 폐쇄되었습니다.");
+      navigate("/mygroup", { replace: true });
+    } catch (e: any) {
+      const msg = e?.response?.data?.message || e?.message || "스터디 폐쇄에 실패했습니다.";
+      alert(msg);
     } finally {
       setLoading(false);
     }
@@ -138,42 +176,49 @@ export default function FixedBanner({
         <div className={styles.div__container}>
           <div className={styles.container__1}>
             <div className={styles.container__2}>
-              <div className={styles.title}>같이 공부 해요</div>
+              {/* 그룹명 */}
+              <div className={styles.title}>{group?.name ?? "같이 공부 해요"}</div>
+              {/* 소개 문구: 현재 스텝 제목이 있으면 우선 노출 */}
               <div className={styles.introduce}>
-                스터디가 처음이신 분들 함께해요!
+                {stepInfo?.title ?? group?.summary ?? "스터디가 처음이신 분들 함께해요!"}
               </div>
             </div>
+
             <div className={styles.container__3}>
-              <div className={styles.hostName}>{hostNickname}</div>
+              <div className={styles.hostName}>
+                {group?.owner?.nickname ? `@${group.owner.nickname}` : "@아무개"}
+              </div>
             </div>
+
             <div className={styles.container__4}>
               <div className={styles.study__people}>스터디 정원</div>
               <div className={styles.study__people__info}>
-                {memberCount}/{maxMembers}
+                {(group?.memberCount ?? 0)}/{group?.maxMembers ?? 0}
               </div>
             </div>
+
             <div className={styles.container__5}>
               <div className={styles.study__date}>스터디 일정</div>
               <div className={styles.study__date__info}>
-                {startDate}~{endDate}
+                {fmt(group?.startDate)}~{fmt(group?.endDate)}
               </div>
             </div>
+
             <div className={styles.container__6}>
               <button
                 type="button"
-                className={styles.Bookmark}
+                className={`${styles.Bookmark} ${bookmarked ? styles.BookmarkActive : ""}`}
                 onClick={handleBookmarkClick}
                 aria-pressed={bookmarked}
                 aria-label={bookmarked ? "북마크 해제" : "북마크 추가"}
               >
                 <img src={bookmarked ? BookmarkOn : bookmark1} alt="북마크" />
               </button>
+
               {!isOwner ? (
                 <button
                   disabled={loading}
-                  className={`${styles.button} ${
-                    isLeaveStyle ? styles.leaveButton : ""
-                  }`}
+                  className={`${styles.button} ${isLeaveStyle ? styles.leaveButton : ""}`}
                   onClick={handleJoinClick}
                 >
                   {joinButtonLabel}
@@ -181,10 +226,8 @@ export default function FixedBanner({
               ) : (
                 <button
                   disabled={loading}
-                  className={`${styles.button} ${
-                    isLeaveStyle ? styles.leaveButton : ""
-                  }`}
-                  onClick={handleJoinClick}
+                  className={`${styles.button} ${styles.leaveButton}`}
+                  onClick={handleCloseGroup}
                 >
                   폐쇄
                 </button>
@@ -206,9 +249,8 @@ export default function FixedBanner({
         </div>
       </div>
 
-      {/* ✅ URL의 stepId(1-based)를 0-based로 변환하여 전달 */}
       <div className={styles.step__wrapper}>
-        <Step totalSteps={10} currentStep={currentStepIndex} />
+        <Step totalSteps={totalSteps} currentStep={currentStepIndex} />
       </div>
     </div>
   );
