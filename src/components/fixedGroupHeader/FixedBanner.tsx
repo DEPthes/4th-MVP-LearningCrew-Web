@@ -23,6 +23,7 @@ interface FixedBannerProps {
   maxMembers?: number;
   startDate?: string;
   endDate?: string;
+  isOwner: boolean;
 }
 
 export default function FixedBanner({
@@ -32,6 +33,7 @@ export default function FixedBanner({
   maxMembers = 16,
   startDate = "25.07.11",
   endDate = "25.08.20",
+  isOwner,
 }: FixedBannerProps) {
   const [bookmarked, setBookmarked] = useState(false);
   const [joinState, setJoinState] = useState<JoinUiState>("NONE");
@@ -137,7 +139,9 @@ export default function FixedBanner({
           <div className={styles.container__1}>
             <div className={styles.container__2}>
               <div className={styles.title}>같이 공부 해요</div>
-              <div className={styles.introduce}>스터디가 처음이신 분들 함께해요!</div>
+              <div className={styles.introduce}>
+                스터디가 처음이신 분들 함께해요!
+              </div>
             </div>
             <div className={styles.container__3}>
               <div className={styles.hostName}>{hostNickname}</div>
@@ -164,13 +168,27 @@ export default function FixedBanner({
               >
                 <img src={bookmarked ? BookmarkOn : bookmark1} alt="북마크" />
               </button>
-              <button
-                disabled={loading}
-                className={`${styles.button} ${isLeaveStyle ? styles.leaveButton : ""}`}
-                onClick={handleJoinClick}
-              >
-                {joinButtonLabel}
-              </button>
+              {!isOwner ? (
+                <button
+                  disabled={loading}
+                  className={`${styles.button} ${
+                    isLeaveStyle ? styles.leaveButton : ""
+                  }`}
+                  onClick={handleJoinClick}
+                >
+                  {joinButtonLabel}
+                </button>
+              ) : (
+                <button
+                  disabled={loading}
+                  className={`${styles.button} ${
+                    isLeaveStyle ? styles.leaveButton : ""
+                  }`}
+                  onClick={handleJoinClick}
+                >
+                  폐쇄
+                </button>
+              )}
             </div>
           </div>
 

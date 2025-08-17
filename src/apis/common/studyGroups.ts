@@ -1,4 +1,5 @@
 import axios from "axios";
+import { getAuthHeader } from "../auth/auth";
 
 function readStoredToken(): string | null {
   const keys = [
@@ -33,13 +34,6 @@ function readStoredToken(): string | null {
 
   const m = raw.match(/([A-Za-z0-9-_]+?\.[A-Za-z0-9-_]+?\.[A-Za-z0-9-_]+)/);
   return m ? m[1] : raw.replace(/^Bearer\s+/i, "");
-}
-
-function authHeaders() {
-  const token = readStoredToken();
-  const headers: Record<string, string> = { Accept: "application/json" };
-  if (token) headers.Authorization = `Bearer ${token}`;
-  return headers;
 }
 
 //타입
@@ -181,7 +175,7 @@ export type StudyGroupDetail = {
 
 export async function fetchStudyGroup(id: number): Promise<StudyGroupDetail> {
   const { data } = await axios.get(`/api/study-groups/${id}`, {
-    headers: authHeaders(),
+    headers: getAuthHeader(),
   });
   return data as StudyGroupDetail;
 }
