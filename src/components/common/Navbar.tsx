@@ -1,4 +1,4 @@
-import { NavLink, Link, useLocation,useNavigate  } from "react-router-dom";
+import { NavLink, Link, useLocation, useNavigate } from "react-router-dom";
 import styles from "../../styles/common/Navbar.module.css";
 import SearchBar from "../common/SearchBar";
 import { useSearchKeyword } from "../../hooks/SearchKeywordContext";
@@ -9,19 +9,19 @@ import {
   hasAccessToken,
   type UserProfile,
 } from "../../apis/auth/auth";
+import { tokenStore, isJwtExpired } from "../../apis/common/token"; 
 import { getImage } from "../../apis/common/File";
 
-const DEFAULT_PROFILE =
-  (() => {
-    try {
-      const base =
-        (typeof import.meta !== "undefined" && (import.meta as any).env?.BASE_URL) ||
-        (typeof document !== "undefined" ? document.baseURI : "/");
-      return new URL("default-profile.svg", base).toString();
-    } catch {
-      return "/default-profile.svg";
-    }
-  })();
+const DEFAULT_PROFILE = (() => {
+  try {
+    const base =
+      (typeof import.meta !== "undefined" && (import.meta as any).env?.BASE_URL) ||
+      (typeof document !== "undefined" ? document.baseURI : "/");
+    return new URL("default-profile.svg", base).toString();
+  } catch {
+    return "/default-profile.svg";
+  }
+})();
 
 export default function Navbar() {
   const navbarHeight = "116px";
@@ -31,21 +31,23 @@ export default function Navbar() {
   const [user, setUser] = useState<UserProfile | null>(null);
   const [profileSrc, setProfileSrc] = useState<string>(DEFAULT_PROFILE);
 
-const navigate = useNavigate();
+  const navigate = useNavigate();
 
-const emitSearch = (query: string) => {
-  setSearchKeyword(query); 
-  navigate({
-    pathname,
-    search: query ? `?q=${encodeURIComponent(query)}` : "", 
-  });
-};
+  const emitSearch = (query: string) => {
+    setSearchKeyword(query);
+    navigate({
+      pathname,
+      search: query ? `?q=${encodeURIComponent(query)}` : "",
+    });
+  };
 
   const isMyGroupActive =
     pathname.startsWith("/mygroup") || pathname.startsWith("/group/");
 
   const reevaluateAuth = async () => {
-    if (!hasAccessToken()) {
+    const tokens = tokenStore.get();
+    const access = tokens?.accessToken;
+    if (!hasAccessToken() || !access || isJwtExpired(access)) {
       setUser(null);
       setProfileSrc(DEFAULT_PROFILE);
       userStore.clear?.();
@@ -55,7 +57,6 @@ const emitSearch = (query: string) => {
     const cached = userStore.get();
     if (cached) {
       setUser(cached);
-      return;
     }
 
     try {
@@ -79,20 +80,34 @@ const emitSearch = (query: string) => {
     reevaluateAuth();
   }, [pathname]);
 
-
   useEffect(() => {
     const onLogout = () => {
       setUser(null);
       setProfileSrc(DEFAULT_PROFILE);
       userStore.clear?.();
     };
+    const onTokenChanged = () => reevaluateAuth();
+    const onFocus = () => reevaluateAuth();
+    const onVisibility = () => {
+      if (document.visibilityState === "visible") reevaluateAuth();
+    };
+
     window.addEventListener("auth:logout", onLogout);
-    return () => window.removeEventListener("auth:logout", onLogout);
+    window.addEventListener("auth:tokenChanged", onTokenChanged);
+    window.addEventListener("focus", onFocus);
+    document.addEventListener("visibilitychange", onVisibility);
+
+    return () => {
+      window.removeEventListener("auth:logout", onLogout);
+      window.removeEventListener("auth:tokenChanged", onTokenChanged);
+      window.removeEventListener("focus", onFocus);
+      document.removeEventListener("visibilitychange", onVisibility);
+    };
   }, []);
 
+  // 프로필 이미지 결정
   useEffect(() => {
     let alive = true;
-
     (async () => {
       let next = DEFAULT_PROFILE;
 
@@ -116,8 +131,7 @@ const emitSearch = (query: string) => {
 
   return (
     <>
-      <div style={{ height: navbarHeight }}></div>
-
+      <div style={{ height: navbarHeight }} />
       <nav className={styles.navbar}>
         <div className={styles.container}>
           <div className={styles.logoSection}>
@@ -136,9 +150,7 @@ const emitSearch = (query: string) => {
             </NavLink>
 
             <NavLink
-              onClick={() => {
-                setType("joined");
-              }}
+              onClick={() => setType("joined")}
               to={`/mygroup?type=${type}`}
               className={() =>
                 `${styles.menuItem} ${isMyGroupActive ? styles.active : ""}`
@@ -159,7 +171,6 @@ const emitSearch = (query: string) => {
 
           <div className={styles.rightSection}>
             <SearchBar placeholder="스터디 이름을 검색해 보세요" onSearch={emitSearch} />
-
             {user ? (
               <img
                 src={profileSrc}

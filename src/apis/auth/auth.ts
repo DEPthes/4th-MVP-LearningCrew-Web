@@ -59,7 +59,7 @@ export const userStore = {
 };
 
 export const login = async (email: string, password: string) => {
-  const { data } = await axios.post<LoginResponse>(
+  const { data } = await api.post<LoginResponse>(
     "/api/auth/login",
     { email, password },
     { headers: { "Content-Type": "application/json" } }
@@ -104,7 +104,7 @@ export const logout = async () => {
 
 export const fetchMyProfile = async (): Promise<UserProfile | null> => {
   try {
-    const { data } = await axios.get<UserProfile>("/api/users/me", {
+    const { data } = await api.get<UserProfile>("/api/users/me", {
       headers: { ...getAuthHeader() },
     });
     return data ?? null;

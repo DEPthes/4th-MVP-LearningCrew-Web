@@ -1,5 +1,6 @@
 import axios from "axios";
 import { tokenStore } from "./token";
+import { userStore } from "..//auth/auth";
 
 const baseURL = import.meta.env.DEV ? "" : import.meta.env.VITE_BASE_URL;
 
@@ -18,21 +19,31 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-// 401(만료/미인증)
+let isLoggingOut = false; 
+
 api.interceptors.response.use(
   (res) => res,
   (error) => {
     const status = error?.response?.status;
-    if (status === 401) {
+
+    if (status === 401 && !isLoggingOut) {
+      isLoggingOut = true;
       try {
-        tokenStore.clear?.();
+        userStore.clear?.();
       } catch {}
-      if (typeof window !== "undefined") {
-        window.dispatchEvent(new CustomEvent("auth:logout"));
-      }
+      try {
+        clearTokens?.();
+      } catch {}
+
+      window.dispatchEvent(new Event("auth:logout"));
+      window.dispatchEvent(new Event("auth:tokenChanged"));
+
+      setTimeout(() => {
+        isLoggingOut = false;
+      }, 500);
     }
+
     return Promise.reject(error);
   }
 );
-
 export default api;
