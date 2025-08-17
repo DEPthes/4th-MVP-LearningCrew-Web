@@ -1,23 +1,31 @@
 import axios from "axios";
 import { getAuthHeader } from "../auth/auth";
 
+// 정렬 타입
 export type SortOrder = "asc" | "desc";
-
 export type SortKey = "createdAt" | "startDate" | "endDate" | "memberCount" | "name";
-export type Order = SortOrder;
 
 export interface StudyGroupCategory {
   id: number;
   name: string;
 }
 
+export interface FileMeta {
+  uuid: string;
+  fileName: string;
+  size?: number;
+  handlingType?: string;
+}
+
 export interface StudyGroupOwner {
   id: number;
   nickname: string;
-  profileImage?: {
-    uuid: string;
-    fileName: string;
-  } | null;
+  email?: string;
+  role?: string;
+  gender?: "MALE" | "FEMAIL" | "OTHER" | string;
+  profileImage?: FileMeta | null;
+  createdAt?: string;
+  lastModifiedAt?: string;
 }
 
 export interface StudyGroupItem {
@@ -31,19 +39,19 @@ export interface StudyGroupItem {
   categories?: StudyGroupCategory[];
   owner?: StudyGroupOwner | null;
   dibs?: boolean;
-  groupImage?: {
-    uuid: string;
-    fileName: string;
-  } | null;
+  groupImage?: FileMeta | null;
 }
 
 export interface StudyGroupStep {
   step: number;
   title?: string | null;
   content?: string | null;
+  endDate?: string;
 }
 
 export interface StudyGroupDetail extends StudyGroupItem {
+  createdAt?: string;
+  lastModifiedAt?: string;
   currentStep: number;
   steps?: StudyGroupStep[];
 }
@@ -58,8 +66,9 @@ export interface PageResponse<T> {
   last: boolean;
 }
 
+// 스터디 그룹 목록 조회
 export async function fetchStudyGroups(params: {
-  sort?: SortKey;            
+  sort?: SortKey;
   order?: SortOrder;
   categoryId?: number;
   searchKeyword?: string;
@@ -90,6 +99,7 @@ export async function fetchStudyGroups(params: {
   return data;
 }
 
+// 스터디 그룹 상세 조회
 export async function fetchStudyGroup(groupId: number): Promise<StudyGroupDetail> {
   const { data } = await axios.get<StudyGroupDetail>(`/api/study-groups/${groupId}`, {
     headers: getAuthHeader(),

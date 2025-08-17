@@ -108,6 +108,7 @@
   cursor: pointer;
   box-sizing: border-box;
   padding: 0;
+  transition: background-color .2s ease, border-color .2s ease;
 }
 
 /* 이미지 크기 */
@@ -116,8 +117,8 @@
   height: 24px;
 }
 
-/* ✅ 북마크 활성화 상태 */
-.Bookmark.active {
+/* ✅ 활성(클릭) 상태 */
+.BookmarkActive {
   background-color: var(--main-color-240, rgba(255, 85, 44, 0.4));
   border: 1.4px solid var(--Main-Color-2, #FF552C);
 }

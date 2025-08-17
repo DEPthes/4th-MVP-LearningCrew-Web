@@ -30,17 +30,23 @@ import GroupLayout from "./components/layout/GroupLayout";
 import MyGroup from "./pages/myGroup/MyGroup";
 import MainLayout from "./components/layout/MainLayout";
 
-// --- Helper Pages to pass :groupId (기존 유지) ---
+// ✅ 소유자 여부 훅 추가
+import { useIsGroupOwner } from "./hooks/useMyGroup";
+
+// --- Helper Pages to pass :groupId ---
 const FixedBannerPage = () => {
-  const { groupId } = useParams();
-  return <FixedBanner groupId={Number(groupId)} />;
+  const { groupId } = useParams<{ groupId: string }>();
+  const { isOwner } = useIsGroupOwner(groupId!);
+  return <FixedBanner groupId={Number(groupId)} isOwner={!!isOwner} />;
 };
+
 const HostGroupApplicantPage = () => {
-  const { groupId } = useParams();
+  const { groupId } = useParams<{ groupId: string }>();
   return <HostGroupApplicant groupId={Number(groupId)} />;
 };
+
 const HostGroupParticipantsPage = () => {
-  const { groupId } = useParams();
+  const { groupId } = useParams<{ groupId: string }>();
   return <HostGroupParticipants groupId={Number(groupId)} />;
 };
 
@@ -68,31 +74,35 @@ export const Router = () => {
 
         {/* 그룹 전용 레이아웃 */}
         <Route element={<Layout />}>
-          {/* /group/:groupId 진입 시 기본 step 1로 이동 */}
-          <Route path="/group/:groupId" element={<Navigate to="/group/:groupId/step/1" replace />} />
-          <Route path="/group/:groupId/step/:stepId" element={<GroupLayout />}>
-            {/* 기본은 Study 탭 */}
-            <Route index element={<Navigate to="MyGroupStudy" replace />} />
-            <Route path="MyGroupStudy" element={<MyGroupStudy />} />
-            <Route path="myNote" element={<MyNote />} />
-            <Route path="myNote/write" element={<MyNoteWrite />} />
-            <Route path="shareNote" element={<ShareNoteList />} />
-            <Route path="shareNoteDetail/:noteId" element={<ShareNoteDetail />} />
-            <Route path="QandA" element={<QandAList />} />
-            <Route path="QandA/write" element={<QandAWrite />} />
-            <Route path="QandADetail/:qId" element={<QandADetail />} />
-            <Route path="quiz" element={<Quiz />} />
+          <Route path="/group/:groupId">
+            {/* ✅ 상대경로로 기본 step/1로 리다이렉트 */}
+            <Route index element={<Navigate to="step/1" replace />} />
+            <Route path="step/:stepId" element={<GroupLayout />}>
+              {/* 기본은 Study 탭 */}
+              <Route index element={<Navigate to="MyGroupStudy" replace />} />
+              <Route path="MyGroupStudy" element={<MyGroupStudy />} />
+              <Route path="myNote" element={<MyNote />} />
+              <Route path="myNote/write" element={<MyNoteWrite />} />
+              <Route path="shareNote" element={<ShareNoteList />} />
+              <Route path="shareNoteDetail/:noteId" element={<ShareNoteDetail />} />
+              <Route path="QandA" element={<QandAList />} />
+              <Route path="QandA/write" element={<QandAWrite />} />
+              <Route path="QandADetail/:qId" element={<QandADetail />} />
+              <Route path="quiz" element={<Quiz />} />
+            </Route>
           </Route>
         </Route>
 
-        {/* 단독 컴포넌트 (기존 유지) */}
+        {/* 단독 컴포넌트 */}
         <Route path="/ParticipantMenu" element={<ParticipantMenu />} />
         <Route path="/group/:groupId/banner" element={<FixedBannerPage />} />
         <Route path="/group/:groupId/applicants" element={<HostGroupApplicantPage />} />
         <Route path="/group/:groupId/participants" element={<HostGroupParticipantsPage />} />
         <Route path="/HostGroupStudy" element={<HostGroupStudy />} />
         <Route path="/HostGroupStudyWriting" element={<HostGroupStudyWriting />} />
+        {/* ⛔️ 최상위 MyGroupStudy 라우트는 충돌 소지 있어 제거 권장 (필요하면 남겨도 무방)
         <Route path="MyGroupStudy" element={<MyGroupStudy />} />
+        */}
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/welcome" element={<WelcomePage />} />
