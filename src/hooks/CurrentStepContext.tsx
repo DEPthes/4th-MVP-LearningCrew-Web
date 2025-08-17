@@ -8,7 +8,7 @@ interface CurrentStepContextType {
 const CurrentStepContext = createContext<CurrentStepContextType | undefined>(undefined);
 
 export function CurrentStepProvider({ children }: { children: ReactNode }) {
-  const [groupCurrentStep, setCurrentStep] = useState<number>(1);
+  const [groupCurrentStep, setCurrentStep] = useState<number>(0);
 
   return (
     <CurrentStepContext.Provider value={{

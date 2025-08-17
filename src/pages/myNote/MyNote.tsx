@@ -95,10 +95,8 @@ export const MyNote = () => {
         try {
           await getQandAList({ groupId: groupId ?? "1", stepId: stepId ?? "1" });
           setLoading(false);
-          setCanAccessGroup(true);
         } catch (error) {
           setLoading(false);
-          setCanAccessGroup(false);
         }
       };
       fetchList();

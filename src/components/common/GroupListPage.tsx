@@ -75,7 +75,7 @@ export default function GroupListPage({
       } catch (error) {
         console.error('현재 스텝 아이디 조회 실패:', error);
         navigate(`/group/${groupId}/step/1/MyGroupStudy`);
-        setCurrentStep(1);
+        setCurrentStep(0);
       }
     };
     fetchCurrentStepId();

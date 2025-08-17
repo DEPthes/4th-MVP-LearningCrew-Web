@@ -9,18 +9,15 @@ import studyBackground from "../../assets/studyackground.jpg"
 
 import {
   applyToStudyGroup,
-  cancelMyApplication,
-  getMyApplicationForGroup,
   leaveStudyGroup,
 } from "../../apis/Group/StudyGroupApplication";
-import type { ApplicationState } from "../../apis/Group/StudyGroupApplication";
 import { closeStudyGroup } from "../../apis/Group/StudyGroupManage";
 import { getStudyGroupDetail, type StudyGroupDetail } from "../../apis/Group/StudyGroup";
 import { getStudyByStep, type StepStudy } from "../../apis/Group/StudyGroupStep";
 import { toggleGroupDibs } from "../../apis/Group/StudyGroupDibs";
+import { getJoinGroup } from "../../apis/home/GroupList";
+import { getAppliedGroup } from "../../apis/home/GroupList";
 import { getImage } from "../../apis/common/File";
-
-type JoinUiState = "NONE" | ApplicationState;
 
 interface FixedBannerProps {
   groupId: number;
@@ -35,12 +32,16 @@ export default function FixedBanner({ groupId, isOwner }: FixedBannerProps) {
   const [group, setGroup] = useState<StudyGroupDetail | null>(null);
   const [stepInfo, setStepInfo] = useState<StepStudy | null>(null);
   const [groupImg, setGroupImg] = useState<string | null>(null);
+
+  // 사용자 가입 그룹 확인
+  const [isMember, setIsMember] = useState(false);
+  const [hasApplied, setHasApplied] = useState(false);
+
   // 북마크 & 가입 버튼
   const [bookmarked, setBookmarked] = useState(false);
   const [bookmarking, setBookmarking] = useState(false);
-  const [joinState, setJoinState] = useState<JoinUiState>("NONE");
+  const [canAccess, setCanAccess] = useState(true);
   const [loading, setLoading] = useState(false);
-  const [isCancelling, setIsCancelling] = useState(false); // 취소 중 가드
 
   // 스텝바
   const totalSteps = group?.steps?.length ?? 10;
@@ -85,46 +86,69 @@ export default function FixedBanner({ groupId, isOwner }: FixedBannerProps) {
     return () => { mounted = false; };
   }, [groupId, stepIdParam]);
 
-  // 내 가입 상태 동기화 (취소 중엔 덮어쓰지 않음)
-  const syncMyState = async () => {
-    if (isCancelling) return;
-    try {
-      const my = await getMyApplicationForGroup(groupId);
-      setJoinState((my?.state as JoinUiState) ?? "NONE");
-    } catch {
-      setJoinState("NONE");
-    }
-  };
+  // 사용자 가입 그룹 확인
   useEffect(() => {
-    syncMyState().catch(() => undefined);
+    let mounted = true;
+    (async () => {
+      try {
+        const response = await getJoinGroup();
+        if (!mounted) return;
+
+        // response.content 배열에서 현재 groupId가 있는지 확인
+        const hasGroup = response.content?.some((group: any) => group.id === groupId);
+        setIsMember(Boolean(hasGroup));
+      } catch (error) {
+        console.error('가입 그룹 확인 실패:', error);
+        if (mounted) {
+          // API 호출 실패 시 북마크 제거
+          setBookmarked(false);
+          setCanAccess(false);
+          setGroup((g) => (g ? { ...g, dibs: false } : g));
+        }
+      } finally {
+        if (mounted) {
+        }
+      }
+    })();
+    return () => { mounted = false; };
   }, [groupId]);
 
-  // PENDING일 때만 폴링 (취소 중엔 중단)
+  // 사용자 가입 신청 상태 확인
   useEffect(() => {
-    if (joinState !== "PENDING" || isCancelling) return;
-    const id = setInterval(() => {
-      syncMyState().catch(() => undefined);
-    }, 10000);
-    return () => clearInterval(id);
-  }, [joinState, isCancelling]);
+    let mounted = true;
+    (async () => {
+      try {
+        const response = await getAppliedGroup();
+        if (!mounted) return;
+
+        // response.content 배열에서 현재 groupId가 있는지 확인
+        const hasApplied = response.content?.some((group: any) => group.studyGroup.id === groupId);
+        setHasApplied(Boolean(hasApplied));
+        console.log(hasApplied)
+      } catch (error) {
+        console.error('가입 신청 상태 확인 실패:', error);
+        if (mounted) {
+          setHasApplied(false);
+        }
+      }
+    })();
+    return () => { mounted = false; };
+  }, [groupId]);
 
   const joinButtonLabel = useMemo(() => {
     if (loading) return "처리 중...";
-    switch (joinState) {
-      case "NONE":
-        return "탈퇴"
-      case "REJECTED":
-        return "가입 신청";
-      case "PENDING":
-        return "가입 취소";
-      case "APPROVED":
-        return "탈퇴";
-      default:
-        return "가입 신청";
-    }
-  }, [joinState, loading]);
 
-  const isLeaveStyle = joinState === "PENDING" || joinState === "APPROVED";
+    // 멤버인 경우 "탈퇴" 표시
+    if (isMember) return "탈퇴";
+
+    // 가입 신청한 경우 "가입 취소" 표시
+    if (hasApplied) return "가입 취소";
+
+    // 그 외의 경우 "가입 신청" 표시
+    return "가입 신청";
+  }, [loading, isMember, hasApplied]);
+
+  const isLeaveStyle = isMember || hasApplied;
 
   /** 찜 토글 */
   const handleBookmarkClick = async () => {
@@ -150,42 +174,33 @@ export default function FixedBanner({ groupId, isOwner }: FixedBannerProps) {
     try {
       setLoading(true);
 
-      if (joinState === "NONE" || joinState === "REJECTED") {
-        await applyToStudyGroup(groupId);
-        setJoinState("PENDING");
+      // 멤버인 경우 탈퇴 처리
+      if (isMember) {
+        await leaveStudyGroup(groupId);
+        navigate("/mygroup?type=joined");
+        setIsMember(false);
         return;
       }
-
-      if (joinState === "PENDING") {
-        // 즉시 '가입 신청'으로 전환(낙관적), 400/404/405는 조용히 무시
-        setIsCancelling(true);
-        setJoinState("NONE");
+      console.log(hasApplied)
+      // 가입 신청한 경우 취소 처리
+      if (hasApplied) {
         try {
-          await cancelMyApplication(groupId);
-        } catch (e: any) {
-          const s = e?.response?.status;
-          if (!(s === 400 || s === 404 || s === 405)) {
-            setJoinState("PENDING");
-            const msg = e?.response?.data?.message || e?.message || "가입 취소에 실패했어요.";
-            alert(msg);
-          }
-        } finally {
-          setIsCancelling(false);
+          // 가입 신청 취소 api 연결
+          navigate("/mygroup?type=joined");
+        } catch (error) {
+          console.error('가입 신청 취소 실패:', error);
+          const msg = "가입 신청 취소에 실패했습니다.";
+          alert(msg);
         }
         return;
       }
 
-      if (joinState === "APPROVED") {
-        await leaveStudyGroup(groupId);
-        setJoinState("NONE");
-        return;
-      }
+      // 가입 신청 처리
+      await applyToStudyGroup(groupId);
+      setHasApplied(true);
     } catch (e: any) {
       const msg = e?.response?.data?.message || e?.message || "요청 처리 중 오류가 발생했어요.";
       alert(msg);
-      if (!isCancelling) {
-        syncMyState().catch(() => undefined);
-      }
     } finally {
       setLoading(false);
     }
@@ -264,16 +279,18 @@ export default function FixedBanner({ groupId, isOwner }: FixedBannerProps) {
             </div>
 
             <div className={styles.container__6}>
-              <button
-                type="button"
-                className={`${styles.Bookmark} ${bookmarked ? styles.BookmarkActive : ""}`}
-                onClick={handleBookmarkClick}
-                aria-pressed={bookmarked}
-                aria-label={bookmarked ? "북마크 해제" : "북마크 추가"}
-                disabled={bookmarking}
-              >
-                <img src={bookmarked ? BookmarkOn : bookmark1} alt="북마크" />
-              </button>
+              {canAccess && (
+                <button
+                  type="button"
+                  className={`${styles.Bookmark} ${bookmarked ? styles.BookmarkActive : ""}`}
+                  onClick={handleBookmarkClick}
+                  aria-pressed={bookmarked}
+                  aria-label={bookmarked ? "북마크 해제" : "북마크 추가"}
+                  disabled={bookmarking}
+                >
+                  <img src={bookmarked ? BookmarkOn : bookmark1} alt="북마크" />
+                </button>
+              )}
 
               {!isOwner ? (
                 <button
