@@ -16,17 +16,17 @@ const items: { key: GroupType; label: string }[] = [
   { key: "applied", label: "가입 신청 그룹" },
 ];
 
-const navigate = useNavigate();
-const { searchKeyword, type } = useSearchKeyword();
-useEffect(() => {
-  navigate({
-    search: searchKeyword ? `?q=${encodeURIComponent(searchKeyword)}&type=${type}` : `?type=${type}`,
-  });
-}, [searchKeyword]);
-
 export default function GroupTypeTabs({ value }: Props) {
-  const { setType } = useSearchKeyword();
+
   const navigate = useNavigate();
+  const { searchKeyword, type, setType } = useSearchKeyword();
+
+  useEffect(() => {
+    navigate({
+      search: searchKeyword ? `?q=${encodeURIComponent(searchKeyword)}&type=${type}` : `?type=${type}`,
+    });
+  }, [searchKeyword]);
+
   return (
     <div className={styles.tabs}>
       {items.map(({ key, label }) => {

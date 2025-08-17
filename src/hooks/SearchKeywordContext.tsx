@@ -36,7 +36,7 @@ export function SearchKeywordProvider({ children }: { children: ReactNode }) {
 
 export function useSearchKeyword() {
   const context = useContext(SearchKeywordContext);
-  if (context === undefined) {
+  if (context === undefined || context === null) {
     throw new Error('useSearchKeyword must be used within a SearchKeywordProvider');
   }
   return context;

@@ -11,11 +11,11 @@ function App() {
     <>
       <QueryClientProvider client={queryClient}>
         <SearchKeywordProvider>
-          <QuizProvider>
-            <GroupTabProvider>
+          <GroupTabProvider>
+            <QuizProvider>
               <Router />
-            </GroupTabProvider>
-          </QuizProvider>
+            </QuizProvider>
+          </GroupTabProvider>
         </SearchKeywordProvider>
       </QueryClientProvider>
     </>

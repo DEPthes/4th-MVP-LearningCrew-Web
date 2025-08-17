@@ -30,7 +30,7 @@ export const GroupTabProvider = ({ children }: GroupTabProviderProps) => {
 
 export const useGroupTab = () => {
   const context = useContext(GroupTabContext);
-  if (context === undefined) {
+  if (context === undefined || context === null) {
     throw new Error('useGroupTab must be used within a GroupTabProvider');
   }
   return context;
