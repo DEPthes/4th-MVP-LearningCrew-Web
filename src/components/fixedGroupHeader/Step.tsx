@@ -13,6 +13,7 @@ export default function Step({ totalSteps, currentStep }: StepProps) {
   const navigate = useNavigate();
   const { groupId, stepId } = useParams<{ groupId: string; stepId: string }>();
   const { currentTab } = useGroupTab();
+
   // 선택된 스텝(0-based). null이면 기본 모드(현재 스텝 강조).
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const steps = Array.from({ length: totalSteps }, (_, i) => i);
@@ -22,10 +23,29 @@ export default function Step({ totalSteps, currentStep }: StepProps) {
     setSelectedIndex(null);
   }, [stepId]);
 
+  // ✅ 라우팅용 탭 이름을 안전하게 정규화
+  // - Study → MyGroupStudy 로 강제 매핑 (404 방지)
+  // - 빈값이거나 알 수 없으면 MyGroupStudy 기본값
+  const getSafeTab = () => {
+    const t = (currentTab || "").toLowerCase();
+    if (t === "study" || t === "mygroupstudy") return "MyGroupStudy";
+    // 필요하면 다른 탭도 허용
+    if (t === "mynote") return "myNote";
+    if (t === "sharenote") return "shareNote";
+    if (t === "q&a" || t === "qandA".toLowerCase()) return "QandA";
+    if (t === "quiz") return "quiz";
+    return "MyGroupStudy";
+  };
+
   const handleClick = (index: number) => {
     if (index === currentStep) setSelectedIndex(null);
     else setSelectedIndex(index);
-    navigate(`/group/${groupId}/step/${index + 1}/${currentTab}`);
+
+    const safeTab = getSafeTab();
+    const target = `/group/${groupId}/step/${index + 1}/${safeTab}`;
+    // 디버그용 로그: 실제 이동 경로 확인
+    console.log("[Step] navigate to:", target, "(from tab:", currentTab, "→ safe:", safeTab, ")");
+    navigate(target);
   };
 
   return (
@@ -37,9 +57,6 @@ export default function Step({ totalSteps, currentStep }: StepProps) {
         else if (idx === totalSteps - 1) pos = styles.right;
 
         // 상태별 색상 규칙
-        // - 기본:  미진행=회색, 현재=주황, 진행완료=갈색
-        // - 선택:  "선택된 것만" 주황으로 바꾸고,
-        //           진행완료는 계속 갈색, 현재도 갈색, 그 외(미진행)는 회색
         let stateClass: string;
         if (selectedIndex === null) {
           if (idx === currentStep) stateClass = styles.selected;     // 주황
@@ -52,15 +69,10 @@ export default function Step({ totalSteps, currentStep }: StepProps) {
           else stateClass = styles.before;                           // 회색
         }
 
-        // 겹칠 때 오른쪽 카드가 왼쪽 카드 위에 오도록 z-index를 증가시키고,
-        // 선택된 것만 가장 위로 올림(색 번짐 방지)
-        // const z = stateClass === styles.selected ? 1000 : idx + 1;
-
         return (
           <div
             key={idx}
             className={`${styles.step} ${pos} ${stateClass}`}
-            // style={{ zIndex: z }}
             onClick={() => handleClick(idx)}
             role="button"
             tabIndex={0}

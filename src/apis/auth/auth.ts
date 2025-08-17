@@ -1,7 +1,12 @@
+// src/apis/auth/auth.ts
 import axios from "axios";
-import api from "../common/client";                 
 import { tokenStore } from "../common/token";
-import type { Tokens } from "../common/token";
+
+// ----- Types -----
+export type Tokens = {
+  accessToken: string;
+  refreshToken: string;
+};
 
 export type UserProfile = {
   id: number;
@@ -13,6 +18,7 @@ export type UserProfile = {
 
 type LoginResponse = Tokens | { token: Tokens };
 
+// ----- Helpers -----
 export const getAuthHeader = () => {
   try {
     const raw = localStorage.getItem("auth_tokens");
@@ -36,6 +42,7 @@ export const hasAccessToken = () => {
   }
 };
 
+// ----- User store (localStorage) -----
 const USER_KEY = "auth_user";
 export const userStore = {
   get(): UserProfile | null {
@@ -58,24 +65,22 @@ export const userStore = {
   },
 };
 
+// ----- API -----
 export const login = async (email: string, password: string) => {
-  const { data } = await api.post<LoginResponse>(
+  const { data } = await axios.post<LoginResponse>(
     "/api/auth/login",
     { email, password },
     { headers: { "Content-Type": "application/json" } }
   );
 
-  const tokens: Tokens =
-    (data as any)?.token ? ((data as any).token as Tokens) : (data as Tokens);
-
+  const tokens: Tokens = (data as any)?.token ? (data as any).token : (data as Tokens);
   tokenStore.set(tokens);
 
+  // 로그인 직후 내 정보도 저장(실패해도 무시)
   try {
     const me = await fetchMyProfile();
     userStore.set(me || null);
-  } catch {
-    //
-  }
+  } catch {}
 
   return tokens;
 };
@@ -90,21 +95,22 @@ export const refreshTokens = async (refreshToken: string) => {
 
 export const logout = async () => {
   try {
-    await api.post("/api/auth/logout");        
+    await axios.post("/api/auth/logout");
   } catch {
-   //
+    // 서버 세션 없어도 로컬 정리는 수행
   } finally {
     try { tokenStore.clear?.(); } catch {}
     try { userStore.clear?.(); } catch {}
     if (typeof window !== "undefined") {
       window.dispatchEvent(new CustomEvent("auth:logout"));
+      window.dispatchEvent(new CustomEvent("auth:tokenChanged"));
     }
   }
 };
 
 export const fetchMyProfile = async (): Promise<UserProfile | null> => {
   try {
-    const { data } = await api.get<UserProfile>("/api/users/me", {
+    const { data } = await axios.get<UserProfile>("/api/users/me", {
       headers: { ...getAuthHeader() },
     });
     return data ?? null;
