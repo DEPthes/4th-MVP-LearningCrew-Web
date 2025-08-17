@@ -193,7 +193,6 @@ export const Home = () => {
           setSelectedCategory(label);
         }}
       />
-
       <GroupListPage
         title={title}
         groupList={filtered}

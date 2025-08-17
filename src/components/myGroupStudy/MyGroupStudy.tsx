@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useLocation, useParams } from "react-router-dom";
 import styles from "../../styles/myGroupStudy/MyGroupStudy.module.css";
+import { Lock } from "../common/Lock";
 import {
   fetchStudyGroup,
   type StudyGroupDetail,
@@ -62,25 +63,11 @@ export default function MyGroupStudy() {
     );
   }
 
-  if (error) {
-    return (
-      <div className={styles.wrapper}>
-        <div className={styles.noteBox}>
-          <h2 className={styles.noteTitle}>에러</h2>
-          <p className={styles.noteContent}>{error}</p>
-        </div>
-      </div>
-    );
-  }
-
   if (!group) {
     return (
-      <div className={styles.wrapper}>
-        <div className={styles.noteBox}>
-          <h2 className={styles.noteTitle}>그룹 정보를 찾을 수 없어요</h2>
-          <p className={styles.noteContent}>다시 시도해 주세요.</p>
-        </div>
-      </div>
+      <>
+        <Lock />
+      </>
     );
   }
 
@@ -89,11 +76,17 @@ export default function MyGroupStudy() {
     step?.content ?? group.summary ?? "이 스텝에 대한 내용이 없습니다.";
 
   return (
-    <div className={styles.wrapper}>
-      <div className={styles.noteBox}>
-        <h2 className={styles.noteTitle}>{title}</h2>
-        <div className={styles.noteContent} dangerouslySetInnerHTML={{ __html: content }} />
-      </div>
-    </div>
+    <>
+      {error || !group ? (
+        <Lock text="아직 확인할 수 없습니다" />
+      ) : (
+        <div className={styles.wrapper}>
+          <div className={styles.noteBox}>
+            <h2 className={styles.noteTitle}>{title}</h2>
+            <div className={styles.noteContent} dangerouslySetInnerHTML={{ __html: content }} />
+          </div>
+        </div>
+      )}
+    </>
   );
 }

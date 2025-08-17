@@ -94,4 +94,5 @@ export interface TransformedGroupData {
  categories: string[];
  isBookmarked: boolean;
  type: "joined" | "hosted" | "applied";
+ state?: string;
 }

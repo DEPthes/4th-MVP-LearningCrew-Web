@@ -18,6 +18,7 @@ import { toggleGroupDibs } from "../../apis/Group/StudyGroupDibs";
 import { getJoinGroup } from "../../apis/home/GroupList";
 import { getAppliedGroup } from "../../apis/home/GroupList";
 import { getImage } from "../../apis/common/File";
+import { fetchStudyGroups, type StudyGroupItem } from "../../apis/common/studyGroups";
 
 interface FixedBannerProps {
   groupId: number;
@@ -32,6 +33,9 @@ export default function FixedBanner({ groupId, isOwner }: FixedBannerProps) {
   const [group, setGroup] = useState<StudyGroupDetail | null>(null);
   const [stepInfo, setStepInfo] = useState<StepStudy | null>(null);
   const [groupImg, setGroupImg] = useState<string | null>(null);
+
+  // fetchStudyGroups로 가져온 그룹 정보
+  const [groupFromList, setGroupFromList] = useState<StudyGroupItem | null>(null);
 
   // 사용자 가입 그룹 확인
   const [isMember, setIsMember] = useState(false);
@@ -122,9 +126,8 @@ export default function FixedBanner({ groupId, isOwner }: FixedBannerProps) {
         if (!mounted) return;
 
         // response.content 배열에서 현재 groupId가 있는지 확인
-        const hasApplied = response.content?.some((group: any) => group.studyGroup.id === groupId);
-        setHasApplied(Boolean(hasApplied));
-        console.log(hasApplied)
+        const hasApplied = response.content?.filter((group: any) => group.studyGroup.id === groupId);
+        setHasApplied(hasApplied.state === "PENDING" ? true : false);
       } catch (error) {
         console.error('가입 신청 상태 확인 실패:', error);
         if (mounted) {
@@ -199,7 +202,7 @@ export default function FixedBanner({ groupId, isOwner }: FixedBannerProps) {
       await applyToStudyGroup(groupId);
       setHasApplied(true);
     } catch (e: any) {
-      const msg = e?.response?.data?.message || e?.message || "요청 처리 중 오류가 발생했어요.";
+      const msg = e?.response?.data?.message ? "거절당한 그룹이에요" : e?.message || "요청 처리 중 오류가 발생했어요.";
       alert(msg);
     } finally {
       setLoading(false);
@@ -221,23 +224,43 @@ export default function FixedBanner({ groupId, isOwner }: FixedBannerProps) {
     }
   };
 
+  // fetchStudyGroups로 그룹 정보 가져오기
   useEffect(() => {
-    if (!group?.groupImage) return;
+    const fetchGroup = async () => {
+      const response = await fetchStudyGroups({ page: 0, size: 1000 });
+      console.log(response.content)
+      const items: StudyGroupItem[] = Array.isArray(response?.content)
+        ? response.content
+        : Array.isArray(response)
+          ? (response as any)
+          : [];
+      const foundGroup = items.find(item => item.id === groupId);
+      if (foundGroup) {
+        setGroupFromList(foundGroup);
+        // setCurrentStep(foundGroup.currentStep ?? 0);
+        console.log(foundGroup)
+      }
+    };
+    fetchGroup();
+  }, [groupId]);
+
+  useEffect(() => {
+    if (!groupFromList?.groupImage) return;
 
     const fetchImages = async () => {
-      if (group?.groupImage) {
+      if (groupFromList?.groupImage) {
         try {
-          const response = await getImage(group.groupImage.uuid);
+          const response = await getImage(groupFromList.groupImage.uuid, groupFromList.groupImage.fileName);
           setGroupImg(response);
           console.log(response);
         } catch (error) {
-          console.error(`이미지 로드 실패: ${group.groupImage.fileName}`, error);
+          console.error(`이미지 로드 실패: ${groupFromList.groupImage.fileName}`, error);
         }
       }
     };
 
     fetchImages();
-  }, [group?.groupImage]);
+  }, [groupFromList?.groupImage]);
 
   return (
     <div className={styles.page__page__wrapper}>
@@ -250,31 +273,33 @@ export default function FixedBanner({ groupId, isOwner }: FixedBannerProps) {
         <div className={styles.div__container}>
           <div className={styles.container__1}>
             <div className={styles.container__2}>
-              {/* 그룹명 */}
-              <div className={styles.title}>{group?.name ?? "같이 공부 해요"}</div>
-              {/* 소개 문구: 현재 스텝 제목이 있으면 우선 노출 */}
+              {/* 그룹명: fetchStudyGroups에서 가져온 데이터 우선 사용 */}
+              <div className={styles.title}>
+                {groupFromList?.name ?? group?.name ?? "같이 공부 해요"}
+              </div>
+              {/* 소개 문구: fetchStudyGroups에서 가져온 데이터 우선 사용 */}
               <div className={styles.introduce}>
-                {stepInfo?.title ?? group?.summary ?? "스터디가 처음이신 분들 함께해요!"}
+                {stepInfo?.title ?? groupFromList?.summary ?? group?.summary ?? "스터디가 처음이신 분들 함께해요!"}
               </div>
             </div>
 
             <div className={styles.container__3}>
               <div className={styles.hostName}>
-                {group?.owner?.nickname ? `@${group.owner.nickname}` : "@아무개"}
+                {group?.owner?.nickname ? `@${group.owner.nickname}` : "@" + (groupFromList?.owner?.nickname ?? "아무개")}
               </div>
             </div>
 
             <div className={styles.container__4}>
               <div className={styles.study__people}>스터디 정원</div>
               <div className={styles.study__people__info}>
-                {(group?.memberCount ?? 0)}/{group?.maxMembers ?? 0}
+                {(group?.memberCount ?? groupFromList?.memberCount ?? 0)}/{groupFromList?.maxMembers ?? group?.maxMembers ?? 0}
               </div>
             </div>
 
             <div className={styles.container__5}>
               <div className={styles.study__date}>스터디 일정</div>
               <div className={styles.study__date__info}>
-                {fmt(group?.startDate)}~{fmt(group?.endDate)}
+                {fmt(group?.startDate ?? groupFromList?.startDate)}~{fmt(group?.endDate ?? groupFromList?.endDate)}
               </div>
             </div>
 
@@ -312,10 +337,10 @@ export default function FixedBanner({ groupId, isOwner }: FixedBannerProps) {
             </div>
           </div>
 
-          {/* ✅ 카테고리 동적 렌더링 (하드코딩 제거) */}
-          {(group?.categories?.length ?? 0) > 0 && (
+          {/* 카테고리: fetchStudyGroups에서 가져온 데이터 우선 사용 */}
+          {(groupFromList?.categories?.length ?? group?.categories?.length ?? 0) > 0 && (
             <div className={styles.category__container} role="list">
-              {group!.categories!.map((c) => (
+              {(groupFromList?.categories ?? group?.categories ?? []).map((c) => (
                 <div key={c.id} className={styles.categories} role="listitem">
                   # {c.name}
                 </div>

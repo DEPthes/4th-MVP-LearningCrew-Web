@@ -18,6 +18,7 @@ const transformGroupData = async (apiData: GroupListResponse | AppliedGroupListR
         if (item.studyGroup.groupImage) {
           try {
             imageUrl = await getImage(item.studyGroup.groupImage.uuid);
+            console.log(item)
           } catch (error) {
             console.error(`이미지 로드 실패: ${item.studyGroup.groupImage.uuid}`, error);
           }
@@ -34,6 +35,7 @@ const transformGroupData = async (apiData: GroupListResponse | AppliedGroupListR
           isBookmarked: item.studyGroup.dibs,
           type: type,
           totalPages: appliedData.page.totalPages,
+          state: item.state,
         };
       })
     );
@@ -115,7 +117,11 @@ export default function MyGroup() {
         }
 
         const transformedData = await transformGroupData(response, type);
-        setList(transformedData);
+        if (type === 'applied') {
+          setList(transformedData.filter(item => item.state === "PENDING"));
+        } else {
+          setList(transformedData);
+        }
       } catch (err) {
         console.error('그룹 목록 조회 실패:', err);
       } finally {
