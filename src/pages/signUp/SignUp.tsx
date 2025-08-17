@@ -9,7 +9,7 @@ import Profile from "../../components/signUp/Profile"
 import Gender from "../../components/signUp/Gender"
 import { useNavigate } from "react-router-dom"
 
-import { api } from "../../apis/common/client"
+import axios from "axios"
 import { login as loginApi } from "../../apis/auth/auth"
 
 export default function SignUp() {
@@ -72,7 +72,7 @@ export default function SignUp() {
 
   const handleCheckEmail = async () => {
     try {
-      const res = await api.get("/api/auth/email-exist", { params: { email } })
+      const res = await axios.get("/api/auth/email-exist", { params: { email } })
       if (res.data.exist) {
         setEmailMessage("*중복되는 아이디입니다.")
         setEmailValid(false)
@@ -88,7 +88,7 @@ export default function SignUp() {
 
   const handleCheckNickname = async () => {
     try {
-      const res = await api.get("/api/auth/nickname-exist", { params: { nickname } })
+      const res = await axios.get("/api/auth/nickname-exist", { params: { nickname } })
       if (res.data.exist) {
         setNicknameMessage("*중복되는 닉네임입니다.")
         setNicknameValid(false)
@@ -128,7 +128,7 @@ export default function SignUp() {
       if (gender) formData.append("gender", gender)
       if (profileImage) formData.append("profile", profileImage)
 
-      await api.post("/api/auth/register", formData, {
+      await axios.post("/api/auth/register", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       })
 
