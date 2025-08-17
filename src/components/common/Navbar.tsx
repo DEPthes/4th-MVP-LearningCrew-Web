@@ -1,4 +1,4 @@
-import { NavLink, Link, useLocation } from "react-router-dom";
+import { NavLink, Link, useLocation,useNavigate  } from "react-router-dom";
 import styles from "../../styles/common/Navbar.module.css";
 import SearchBar from "../common/SearchBar";
 import { useSearchKeyword } from "../../hooks/SearchKeywordContext";
@@ -31,9 +31,15 @@ export default function Navbar() {
   const [user, setUser] = useState<UserProfile | null>(null);
   const [profileSrc, setProfileSrc] = useState<string>(DEFAULT_PROFILE);
 
-  const emitSearch = (query: string) => {
-    setSearchKeyword(query);
-  };
+const navigate = useNavigate();
+
+const emitSearch = (query: string) => {
+  setSearchKeyword(query); 
+  navigate({
+    pathname,
+    search: query ? `?q=${encodeURIComponent(query)}` : "", 
+  });
+};
 
   const isMyGroupActive =
     pathname.startsWith("/mygroup") || pathname.startsWith("/group/");
