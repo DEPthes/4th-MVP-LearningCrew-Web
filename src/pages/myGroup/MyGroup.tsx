@@ -10,25 +10,20 @@ import { getJoinGroup, getHostedGroup, getAppliedGroup } from '../../apis/home/G
 import { getImage } from '../../apis/common/File';
 import { useSearchKeyword } from '../../hooks/SearchKeywordContext';
 
-// API 데이터를 컴포넌트에서 사용할 수 있는 형태로 변환
 const transformGroupData = async (apiData: GroupListResponse | AppliedGroupListResponse, type: GroupType): Promise<TransformedGroupData[]> => {
   if (type === 'applied') {
-    // getAppliedGroup 응답 형식 처리
     const appliedData = apiData as AppliedGroupListResponse;
     const transformedData = await Promise.all(
       appliedData.content.map(async (item) => {
         let imageUrl = DefaultGroupImage;
-
-        // studyGroup.groupImage가 null이 아닌 경우 getImage로 실제 이미지 URL 가져오기
         if (item.studyGroup.groupImage) {
           try {
             imageUrl = await getImage(item.studyGroup.groupImage.uuid);
           } catch (error) {
             console.error(`이미지 로드 실패: ${item.studyGroup.groupImage.uuid}`, error);
-            imageUrl = DefaultGroupImage; // 실패 시 기본 이미지 사용
+            imageUrl = DefaultGroupImage;
           }
         }
-
         return {
           id: item.studyGroup.id,
           image: imageUrl,
@@ -44,25 +39,20 @@ const transformGroupData = async (apiData: GroupListResponse | AppliedGroupListR
         };
       })
     );
-
     return transformedData;
   } else {
-    // getJoinGroup, getHostedGroup 응답 형식 처리
     const groupData = apiData as GroupListResponse;
     const transformedData = await Promise.all(
       groupData.content.map(async (group) => {
         let imageUrl = DefaultGroupImage;
-
-        // groupImage가 null이 아닌 경우 getImage로 실제 이미지 URL 가져오기
         if (group.groupImage) {
           try {
             imageUrl = await getImage(group.groupImage.uuid);
           } catch (error) {
             console.error(`이미지 로드 실패: ${group.groupImage.uuid}`, error);
-            imageUrl = DefaultGroupImage; // 실패 시 기본 이미지 사용
+            imageUrl = DefaultGroupImage;
           }
         }
-
         return {
           id: group.id,
           image: imageUrl,
@@ -78,7 +68,6 @@ const transformGroupData = async (apiData: GroupListResponse | AppliedGroupListR
         };
       })
     );
-
     return transformedData;
   }
 };
@@ -94,7 +83,6 @@ export default function MyGroup() {
   const rawQ = searchKeyword ?? '';
   const q = rawQ.trim().toLowerCase();
 
-  // 그룹 타입에 따라 API 호출
   useEffect(() => {
     const apiSort = sort === "오래된순" ? "created_at" : sort === "관련도순" ? "relative" : sort === "가나다순" ? "alphabet" : "created_at";
     const order = sort === "오래된순" ? "asc" : "desc";
@@ -105,11 +93,11 @@ export default function MyGroup() {
         let response: GroupListResponse | AppliedGroupListResponse;
         switch (type) {
           case 'joined':
-            response = await getJoinGroup({ sort: apiSort, order, page, searchKeyword: searchKeyword ?? undefined });
+            response = await getJoinGroup({ sort: apiSort, order, page, searchKeyword: searchKeyword ? searchKeyword : rawQ.trim() ? rawQ.trim() : undefined });
             break;
           case 'hosted':
             try {
-              response = await getHostedGroup({ sort: apiSort, order, page, searchKeyword: searchKeyword ?? undefined });
+              response = await getHostedGroup({ sort: apiSort, order, page, searchKeyword: searchKeyword ? searchKeyword : rawQ.trim() ? rawQ.trim() : undefined });
               setIsLogin(true);
             } catch (err) {
               setIsLogin(false);
@@ -125,7 +113,7 @@ export default function MyGroup() {
             }
             break;
           case 'applied':
-            response = await getAppliedGroup({ sort: apiSort, order, page, searchKeyword: searchKeyword ?? undefined });
+            response = await getAppliedGroup({ sort: apiSort, order, page, searchKeyword: searchKeyword ? searchKeyword : rawQ.trim() ? rawQ.trim() : undefined });
             break;
         }
 

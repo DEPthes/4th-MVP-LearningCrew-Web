@@ -194,7 +194,7 @@ export const Home = () => {
           isGroup
           sortLabel={sortLabel}
           onSortChange={(label) => setSortLabel(label as SortLabel)}
-          onCardClick={handleCardClick} // ← 전달
+          onCardClick={handleCardClick}
         />
       )}
 
