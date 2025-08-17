@@ -95,8 +95,8 @@ export const Home = () => {
         const items: StudyGroupItem[] = Array.isArray(res?.content)
           ? res.content
           : Array.isArray(res)
-          ? (res as any)
-          : [];
+            ? (res as any)
+            : [];
 
         const skels = items.map(toCardSkeleton);
         setCards(skels);
@@ -194,21 +194,18 @@ export const Home = () => {
         }}
       />
 
-      {loading && <div className={styles.loading}>불러오는 중...</div>}
-      {errorMsg && <div className={styles.error}>불러오는데 실패했어요</div>}
-
-      {!loading && !errorMsg && (
-        <GroupListPage
-          title={title}
-          groupList={filtered}
-          showSort
-          onBookmarkClick={handleBookmarkClick}
-          isGroup               
-          sort={sort}
-          setSort={(v: string) => setSort(v as SortLabel)}
-          onCardClick={handleCardClick}
-        />
-      )}
+      <GroupListPage
+        title={title}
+        groupList={filtered}
+        showSort
+        loading={loading}
+        errorMsg={errorMsg ?? undefined}
+        onBookmarkClick={handleBookmarkClick}
+        isGroup
+        sort={sort}
+        setSort={(v: string) => setSort(v as SortLabel)}
+        onCardClick={handleCardClick}
+      />
 
       {!loading && !errorMsg && filtered.length === 0 && (
         <div className={styles.empty}>조건에 맞는 스터디가 없어요.</div>

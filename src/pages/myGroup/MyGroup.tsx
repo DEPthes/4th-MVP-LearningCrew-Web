@@ -85,7 +85,7 @@ export default function MyGroup() {
 
   useEffect(() => {
     const apiSort = sort === "오래된순" ? "created_at" : sort === "관련도순" ? "relative" : sort === "가나다순" ? "alphabet" : "created_at";
-    const order = sort === "오래된순" ? "asc" : "desc";
+    const order = sort === "가나다순" || sort === "오래된순" ? "asc" : "desc";
     const page = currentPage - 1;
     const fetchGroups = async () => {
       try {

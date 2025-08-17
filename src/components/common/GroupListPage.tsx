@@ -31,6 +31,7 @@ interface GroupListPageProps {
   onBookmarkClick?: (id: number) => void;
   isGroup?: boolean;
   loading?: boolean;
+  errorMsg?: string;
   sortLabel?: string;
   onSortChange?: (label: string) => void;
   onCardClick?: (id: number) => void;
@@ -51,6 +52,7 @@ export default function GroupListPage({
   onBookmarkClick,
   isGroup = true,
   loading,
+  errorMsg,
   totalPages,
   number,//currentPage
   setNumber,
@@ -102,7 +104,7 @@ export default function GroupListPage({
           loading ? (
             <div className={styles.empty}>로딩 중...</div>
           ) : (
-            <div className={styles.empty}>검색 결과가 없어요.</div>
+            <div className={styles.empty}>{errorMsg ?? "검색 결과가 없어요."}</div>
           )
         ) : (
           <div className={styles.cardGrid}>

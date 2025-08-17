@@ -18,7 +18,7 @@ export const getJoinGroup = async (data: PageInfo = {}) => {
   let response;
   if (!data.sort && !data.order) {
    response = await axios.get(
-    `/api/study-groups/my/membered?sort=created_at&order=desc&page=${page}&size=${size}`,
+    `/api/study-groups/my/membered?sort=created_at&page=${page}&size=${size}`,
     {
      headers: getAuthHeader(),
     }
