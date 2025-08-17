@@ -1,34 +1,77 @@
-import { useNavigate, useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
+// src/components/hostGroupStudy/HostGroupStudyWriting.tsx
+import { useNavigate, useParams, useLocation } from "react-router-dom";
+import { useEffect, useState, useMemo } from "react";
 import { ContentEditor } from "../common/ContentEditor";
-import { saveStudyByStep, getStudyByStep } from "../../apis/Group/StudyGroupStep";
+import {
+  saveStudyByStep,
+  getStudyByStep,
+  type StepStudy,
+  type Attachment,
+} from "../../apis/Group/StudyGroupStep";
+
+type LocationState = { initial?: StepStudy };
 
 export default function HostGroupStudyWriting() {
   const navigate = useNavigate();
   const { groupId, stepId } = useParams<{ groupId: string; stepId: string }>();
-
-  const [endDate, setEndDate] = useState("");
+  const { state } = useLocation() as { state?: LocationState };
 
   const gid = Number(groupId);
   const step = Number(stepId);
 
-  // 기존 데이터가 있으면 endDate만 프리필
+  const [endDate, setEndDate] = useState("");
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState(""); // html
+  const [fileList, setFileList] = useState<Attachment[]>([]);
+  const [imageList, setImageList] = useState<Attachment[]>([]);
+  const [loading, setLoading] = useState(false);
+
+  const initialFromState = state?.initial;
+
   useEffect(() => {
-    if (!gid || !step) return;
+    if (!Number.isFinite(gid) || !Number.isFinite(step)) return;
+
+    const fill = (data: StepStudy) => {
+      setEndDate(data.endDate ?? "");
+      setTitle(data.title ?? "");
+      setContent(data.content ?? "");
+      setFileList(data.fileList ?? []);
+      setImageList(data.imageList ?? []);
+    };
+
+    if (initialFromState) {
+      fill(initialFromState);
+      return;
+    }
+
     (async () => {
+      setLoading(true);
       try {
         const data = await getStudyByStep(gid, step);
-        if (data?.endDate) setEndDate(data.endDate);
-      } catch {
-        /* 최초 작성이면 404 가능 → 무시 */
+        if (data) fill(data);
+      } finally {
+        setLoading(false);
       }
     })();
-  }, [gid, step]);
+  }, [gid, step, initialFromState]);
 
-  const handleSubmit = async (title: string, content: string) => {
-    if (!gid || !step) return;
+  // ✅ ContentEditor가 호출하는 onSubmit 어댑터(시그니처 맞춤)
+  const handleEditorSubmit = async (
+    nextTitle: string,
+    nextContent: string,
+    _newFiles: File[],
+    _newImages: File[],
+  ) => {
+    if (!Number.isFinite(gid) || !Number.isFinite(step)) return;
     try {
-      await saveStudyByStep(gid, step, { endDate, title, content });
+      // TODO: _newFiles/_newImages 업로드 로직 붙이면 fileList/imageList 갱신
+      await saveStudyByStep(gid, step, {
+        endDate,
+        title: nextTitle,
+        content: nextContent,
+        fileList,   // 기존 첨부 유지 (업로드 붙이면 갱신)
+        imageList,  // 기존 첨부 유지
+      });
       alert("저장 완료!");
       navigate(`/group/${gid}/step/${step}/MyGroupStudy`, { replace: true });
     } catch (e: any) {
@@ -37,13 +80,21 @@ export default function HostGroupStudyWriting() {
     }
   };
 
+  // ✅ ContentEditor 프리필 값
+  const editorInitial = useMemo(
+    () => ({ title, content }),
+    [title, content]
+  );
+
   return (
     <div className="wrapper">
-      {/* endDate 입력 UI가 따로 있다면 여기에서 setEndDate 연결해서 사용 */}
       <ContentEditor
         wholeTitle="스터디 노트 작성하기"
         contentText="내 노트 내용"
-        onSubmit={handleSubmit}
+        onSubmit={handleEditorSubmit}
+        initialTitle={editorInitial.title}
+        initialContent={editorInitial.content}
+        loading={loading}
       />
     </div>
   );
