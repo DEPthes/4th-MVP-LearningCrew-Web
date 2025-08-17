@@ -45,7 +45,7 @@ export default function FavoriteGroupList() {
 
   const [cards, setCards] = useState<Card[]>([]);
   const [loading, setLoading] = useState(false);
-  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  //const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   const createdUrlsRef = useRef<string[]>([]);
   const requestIdRef = useRef(0);
@@ -57,7 +57,7 @@ export default function FavoriteGroupList() {
     (async () => {
       try {
         setLoading(true);
-        setErrorMsg(null);
+       // setErrorMsg(null);
 
         const { sort: sortKey, order } = mapSort(sort, !!q);
 
@@ -99,11 +99,11 @@ export default function FavoriteGroupList() {
         setCards(loaded);
       } catch (e: unknown) {
         if (!alive || requestIdRef.current !== myRequestId) return;
-        const msg =
-          e && typeof e === "object" && "message" in e
-            ? String((e as any).message)
-            : "즐겨찾기 목록을 불러오지 못했습니다.";
-        setErrorMsg(msg);
+        // const msg =
+        //   e && typeof e === "object" && "message" in e
+        //     ? String((e as any).message)
+        //     : "즐겨찾기 목록을 불러오지 못했습니다.";
+        // setErrorMsg(msg);
       } finally {
         if (alive && requestIdRef.current === myRequestId) {
           setLoading(false);
@@ -141,11 +141,11 @@ export default function FavoriteGroupList() {
       title={rawQ ? `'${rawQ}' 검색 결과` : "찜 그룹 리스트"}
       groupList={filtered}
       loading={loading}
-      error={errorMsg ?? undefined}
+      // error={errorMsg ?? undefined}
       isGroup
       showSort
       sort={sort}
-      setSort={setSort}
+      setSort={(s) => setSort(s as any)}
       onBookmarkClick={handleToggleBookmark}
     />
   );
