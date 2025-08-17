@@ -6,8 +6,6 @@ import { Pagenation } from "../common/Pagenation";
 
 import {
   getGroupApplications,
-  approveApplication,
-  rejectApplication,
 } from "../../apis/Group/StudyGroupApplication";
 import type { Application } from "../../apis/Group/StudyGroupApplication";
 
@@ -41,7 +39,6 @@ export default function HostGroupApplicant({ groupId }: Props) {
   const [activeTab, setActiveTab] = useState<Tab>("applicant");
   const [sort, setSort] = useState("최신순");
   const [currentPage, setCurrentPage] = useState(1);
-
   const [loading, setLoading] = useState(false);
   const [rows, setRows] = useState<(Application | Member)[]>([]);
   const [totalPages, setTotalPages] = useState(1);
@@ -88,7 +85,7 @@ export default function HostGroupApplicant({ groupId }: Props) {
   const handleApprove = async (userId: number) => {
     removeRowByUserId(userId);
     try {
-      await approveApplication(groupId, userId);
+      console.log("approveApplication");
     } catch (e: any) {
       const s = e?.response?.status;
       if (s === 400 || s === 404 || s === 409) return;
@@ -100,7 +97,6 @@ export default function HostGroupApplicant({ groupId }: Props) {
   const handleReject = async (userId: number) => {
     removeRowByUserId(userId);
     try {
-      await rejectApplication(groupId, userId);
     } catch (e: any) {
       const s = e?.response?.status;
       if (s === 400 || s === 404 || s === 409) return;

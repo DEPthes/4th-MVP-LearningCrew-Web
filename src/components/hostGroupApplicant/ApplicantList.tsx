@@ -1,5 +1,6 @@
 // src/components/hostGroupApplicant/ApplicantList.tsx
 import styles from "../../styles/hostGroupApplicant/ApplicantList.module.css";
+import { useNavigate } from "react-router-dom";
 
 export type RowMode = "applicant" | "participant";
 
@@ -24,6 +25,11 @@ export default function ApplicantList({
   onRemove,
   busy,
 }: RowProps) {
+  const navigate = useNavigate();
+  const handleClick = () => {
+    navigate(0);
+  }
+
   return (
     <div className={styles.list__wrapper}>
       <div className={styles.th__wrapper}>
@@ -35,15 +41,15 @@ export default function ApplicantList({
       <div className={styles.button__container}>
         {mode === "applicant" ? (
           <>
-            <button className={styles.approveButton} disabled={busy} onClick={onApprove}>
+            <button className={styles.approveButton} disabled={busy} onClick={() => { onApprove && onApprove(); handleClick(); }}>
               승인
             </button>
-            <button className={styles.rejectButton} disabled={busy} onClick={onReject}>
+            <button className={styles.rejectButton} disabled={busy} onClick={() => { onReject && onReject(); handleClick(); }}>
               거절
             </button>
           </>
         ) : (
-          <button className={styles.rejectButton} disabled={busy} onClick={onRemove}>
+          <button className={styles.rejectButton} disabled={busy} onClick={() => { onRemove && onRemove(); handleClick(); }}>
             삭제
           </button>
         )}

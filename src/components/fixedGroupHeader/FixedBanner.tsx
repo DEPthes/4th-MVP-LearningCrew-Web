@@ -304,7 +304,7 @@ export default function FixedBanner({ groupId, isOwner }: FixedBannerProps) {
             </div>
 
             <div className={styles.container__6}>
-              {canAccess && (
+              {canAccess ? (
                 <button
                   type="button"
                   className={`${styles.Bookmark} ${bookmarked ? styles.BookmarkActive : ""}`}
@@ -315,9 +315,11 @@ export default function FixedBanner({ groupId, isOwner }: FixedBannerProps) {
                 >
                   <img src={bookmarked ? BookmarkOn : bookmark1} alt="북마크" />
                 </button>
+              ) : (
+                <div style={{ width: "42px", height: "42px" }}></div>
               )}
 
-              {!isOwner ? (
+              {!isOwner && canAccess ? (
                 <button
                   disabled={loading}
                   className={`${styles.button} ${isLeaveStyle ? styles.leaveButton : ""}`}
@@ -325,7 +327,7 @@ export default function FixedBanner({ groupId, isOwner }: FixedBannerProps) {
                 >
                   {joinButtonLabel}
                 </button>
-              ) : (
+              ) : isOwner && canAccess ? (
                 <button
                   disabled={loading}
                   className={`${styles.button} ${styles.leaveButton}`}
@@ -333,6 +335,8 @@ export default function FixedBanner({ groupId, isOwner }: FixedBannerProps) {
                 >
                   폐쇄
                 </button>
+              ) : (
+                <div style={{ width: "128px", height: "42px" }}></div>
               )}
             </div>
           </div>
