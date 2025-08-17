@@ -2,7 +2,7 @@
 import styles from "../../styles/hostGroupParticipants/HostGroupParticipants.module.css";
 import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
-import ParticipantList from "./ParticipantList";
+import ParticipantRow from "./ParticipantList";
 import { Sort } from "../common/Sort";
 import { Pagenation } from "../common/Pagenation";
 
@@ -13,10 +13,7 @@ import {
 } from "../../apis/Group/StudyGroupApplication";
 import type { Application } from "../../apis/Group/StudyGroupApplication";
 
-import {
-  getGroupMembers,
-  expelMember,
-} from "../../apis/Group/Members";
+import { getGroupMembers, expelMember } from "../../apis/Group/Members";
 import type { Member } from "../../apis/Group/Members";
 
 type Tab = "participant" | "applicant";
@@ -30,6 +27,15 @@ const fmt = (iso?: string) => {
   return `${y}.${m}.${day}`;
 };
 
+// 영어 성별 → 한글
+const displayGender = (gender?: string) => {
+  if (!gender) return "-";
+  const g = String(gender).toUpperCase();
+  if (g === "MALE" || g === "남") return "남";
+  if (g === "FEMAIL" || g === "FEMALE" || g === "여") return "여"; // FEMAIL 타이포까지 대응
+  return "기타";
+};
+
 interface Props {
   groupId?: number; // URL 또는 prop
 }
@@ -38,7 +44,7 @@ export default function HostGroupParticipants({ groupId: propId }: Props) {
   const { groupId: gid } = useParams<{ groupId: string }>();
   const groupId = propId ?? Number(gid);
 
-  const [activeTab, setActiveTab] = useState<Tab>("participant");
+  const [activeTab, setActiveTab] = useState<Tab>("applicant");
   const [sort, setSort] = useState("최신순");
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize] = useState(10);
@@ -78,7 +84,7 @@ export default function HostGroupParticipants({ groupId: propId }: Props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTab, currentPage, apiSort, groupId]);
 
-  // 신청자 탭일 때 10초마다 자동 갱신
+  // 신청자 탭일 때 자동 새로고침(10초)
   useEffect(() => {
     if (activeTab !== "applicant") return;
     const id = setInterval(fetchList, 10000);
@@ -86,81 +92,50 @@ export default function HostGroupParticipants({ groupId: propId }: Props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTab, currentPage, apiSort, groupId]);
 
-  /** ✅ 공통: 현재 rows에서 특정 유저 제거(옵티미스틱) */
+  /** ✅ 현재 목록에서 특정 userId 제거(옵티미스틱) */
   const removeRowByUserId = (uid: number) => {
     setRows(prev =>
-      prev.filter((r) => {
-        const u = (r as any)?.user?.id;
+      prev.filter((r: any) => {
+        const u = r?.user?.id ?? r?.applicant?.id ?? r?.id;
         return u !== uid;
       })
     );
   };
 
-  const refetchCurrent = async () => {
-    await fetchList();
+  /** ✅ 승인: 즉시 제거, 이미 처리된 400/404/409는 성공 간주(다시 안 보임) */
+  const handleApprove = async (userId: number) => {
+    removeRowByUserId(userId); // 먼저 화면에서 삭제
+    try {
+      await approveApplication(groupId, userId);
+    } catch (e: any) {
+      const s = e?.response?.status;
+      if (s === 400 || s === 404 || s === 409) return; // 이미 처리됨 → 그대로 유지
+      await fetchList(); // 진짜 실패만 복구
+      alert(e?.response?.data?.message || e?.message || "승인 중 오류가 발생했어요.");
+    }
   };
 
-  // HostGroupParticipants.tsx 안에서 이 두 함수만 교체
-
-/** ✅ 승인: 신청자 목록에서 즉시 제거(옵티미스틱) */
-const handleApprove = async (userId: number) => {
-  try {
-    setLoading(true);
-    await approveApplication(groupId, userId);
-
-    // 1) 화면에서 즉시 제거 (신청자 탭에서 사라짐)
-    setRows(prev =>
-      prev.filter(r => (r as any)?.user?.id !== userId)
-    );
-
-    // 2) (선택) 최신 상태 보정: 현재 탭이 신청자면 재조회
-    if (activeTab === "applicant") {
-      await fetchList();
-    }
-  } catch (e: any) {
-    const msg = e?.response?.data?.message || e?.message || "승인 중 오류가 발생했어요.";
-    alert(msg);
-  } finally {
-    setLoading(false);
-  }
-};
-
-/** ✅ 거절: 신청자 목록에서 즉시 제거(옵티미스틱) */
-const handleReject = async (userId: number) => {
-  try {
-    setLoading(true);
-    await rejectApplication(groupId, userId);
-
-    // 1) 화면에서 즉시 제거
-    setRows(prev =>
-      prev.filter(r => (r as any)?.user?.id !== userId)
-    );
-
-    // 2) (선택) 보정용 재조회
-    if (activeTab === "applicant") {
-      await fetchList();
-    }
-  } catch (e: any) {
-    const msg = e?.response?.data?.message || e?.message || "거절 중 오류가 발생했어요.";
-    alert(msg);
-  } finally {
-    setLoading(false);
-  }
-};
-
-  /** ✅ 삭제: 참여자 목록에서 제거 → 현재 탭 재조회 */
-  const handleRemove = async (userId: number) => {
+  /** ✅ 거절: 즉시 제거, 이미 처리된 400/404/409는 성공 간주 */
+  const handleReject = async (userId: number) => {
+    removeRowByUserId(userId);
     try {
-      setLoading(true);
-      await expelMember(groupId, userId);
-      removeRowByUserId(userId);          // 옵티미스틱 제거
-      await refetchCurrent();
+      await rejectApplication(groupId, userId);
     } catch (e: any) {
-      const msg =
-        e?.response?.data?.message || e?.message || "삭제 중 오류가 발생했어요.";
-      alert(msg);
-    } finally {
-      setLoading(false);
+      const s = e?.response?.status;
+      if (s === 400 || s === 404 || s === 409) return;
+      await fetchList();
+      alert(e?.response?.data?.message || e?.message || "거절 중 오류가 발생했어요.");
+    }
+  };
+
+  /** ✅ 참여자 탭 삭제(추방): 즉시 제거, 실패 시 복구 */
+  const handleRemove = async (userId: number) => {
+    removeRowByUserId(userId);
+    try {
+      await expelMember(groupId, userId);
+    } catch (e: any) {
+      await fetchList();
+      alert(e?.response?.data?.message || e?.message || "삭제 중 오류가 발생했어요.");
     }
   };
 
@@ -201,29 +176,29 @@ const handleReject = async (userId: number) => {
       {!loading && rows.length === 0 && <div className={styles.empty}>목록이 없습니다.</div>}
 
       {!loading &&
-        rows.map((item, idx) => {
+        rows.map((item) => {
           if (activeTab === "applicant") {
             const a = item as Application;
             return (
-              <ParticipantList
-                key={`${a.user.id}-${idx}`}
+              <ParticipantRow
+                key={a.user.id}                                    // ✅ user.id로 고정
                 mode="applicant"
                 nickname={a.user.nickname}
-                gender={a.user.gender}
+                gender={displayGender(a.user.gender)}              // ✅ 남/여
                 dateLabel={fmt(a.createdAt)}
-                onApprove={() => handleApprove(a.user.id)}
-                onReject={() => handleReject(a.user.id)}
+                onApprove={() => handleApprove(a.user.id)}         // ✅ 즉시 제거
+                onReject={() => handleReject(a.user.id)}           // ✅ 즉시 제거
                 busy={loading}
               />
             );
           } else {
             const m = item as Member;
             return (
-              <ParticipantList
-                key={`${m.user.id}-${idx}`}
+              <ParticipantRow
+                key={m.user.id}
                 mode="participant"
                 nickname={m.user.nickname}
-                gender={m.user.gender}
+                gender={displayGender(m.user.gender)}
                 dateLabel={fmt(m.createdAt)}
                 onRemove={() => handleRemove(m.user.id)}
                 busy={loading}

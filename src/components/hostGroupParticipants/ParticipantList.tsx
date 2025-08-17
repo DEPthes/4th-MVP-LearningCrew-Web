@@ -1,3 +1,4 @@
+// src/components/hostGroupParticipants/ParticipantList.tsx
 import styles from "../../styles/hostGroupParticipants/ParticipantList.module.css";
 
 export type RowMode = "applicant" | "participant";

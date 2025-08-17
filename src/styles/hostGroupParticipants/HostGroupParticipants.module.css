@@ -27,8 +27,12 @@
 }
 
 .tab {
-    font: var(--HeadLineSMedium);
-    color: var(--Gray2);
+    color: var(--Gray2, #929498);
+    font-family: "S-Core Dream";
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
     background-color: #FFFFFF;
     border-style: none;
     margin-right: 24px;
@@ -61,25 +65,36 @@
 .header__th__nickname {
     margin-left: 6px;
     padding-left: 67.5px;
-    padding-right: 67.5px;
-    font: var(--HeadLineSMedium);
-    color: var(--Gray0);
+    padding-right: 55.5px;
+    color: var(--Gray0, #535558);
+    font-family: "S-Core Dream";
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
 }
 
 .header__th__gender {
     margin-left: 16px;
     padding-left: 20.5px;
     padding-right: 20.5px;
-    font: var(--HeadLineSMedium);
-    color: var(--Gray0);
+    font-family: "S-Core Dream";
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
 }
 
 .header__th__date {
     padding-left: 20.5px;
     padding-right: 20.5px;
     margin-left: 16px;
-    font: var(--HeadLineSMedium);
-    color: var(--Gray0);
+    font-family: "S-Core Dream";
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    margin-left: 28px;
 }
 
 .page__wrapper {
