@@ -3,7 +3,7 @@ import { getAuthHeader } from "../auth/auth";
 
 // 정렬 타입
 export type SortOrder = "asc" | "desc";
-export type SortKey = "createdAt" | "startDate" | "endDate" | "memberCount" | "name";
+export type SortKey = "created_at"  | "alphabet" | "relative";
 
 export interface StudyGroupCategory {
   id: number;

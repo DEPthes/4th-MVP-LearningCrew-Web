@@ -1,6 +1,3 @@
-// src/apis/common/token.ts
-
-// 서버가 내려주는 토큰 형태에 맞춰 사용
 export type Tokens = {
  accessToken: string;
  refreshToken?: string;
@@ -20,6 +17,7 @@ export const tokenStore = {
  set(tokens: Tokens) {
   try {
    localStorage.setItem(STORAGE_KEY, JSON.stringify(tokens));
+   window.dispatchEvent(new Event("auth:tokenChanged"));
   } catch {
    // ignore
   }
@@ -27,8 +25,20 @@ export const tokenStore = {
  clear() {
   try {
    localStorage.removeItem(STORAGE_KEY);
+   window.dispatchEvent(new Event("auth:tokenChanged"));
   } catch {
    // ignore
   }
  },
 };
+
+export function isJwtExpired(token: string): boolean {
+  try {
+    const [, payload] = token.split(".");
+    const { exp } = JSON.parse(atob(payload));
+    if (!exp) return true;
+    return Date.now() >= exp * 1000;
+  } catch {
+    return true; 
+  }
+}

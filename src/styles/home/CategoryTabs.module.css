@@ -2,12 +2,12 @@
   display: flex;
   justify-content:  space-between;
   align-items: center;
-  margin: 2rem auto;
+  margin: 3rem auto 0 auto;
   width: 100%;
   max-width: 1236px;
   min-width: 1000px;
   box-sizing: border-box;
-  margin: 2rem auto;
+
 }
 
 .tab {

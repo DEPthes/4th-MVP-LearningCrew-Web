@@ -10,8 +10,7 @@ import {
 } from "../../apis/common/studyGroups";
 import CATEGORY_NAME_TO_ID from "../../constants/categoryNameToId";
 import { getImage } from "../../apis/common/File";
-import type { SortLabel } from "../../utils/mapSort";
-
+import { mapSort, type SortLabel } from "../../utils/mapSort";
 
 type Card = {
   id: number;
@@ -51,7 +50,7 @@ export const Home = () => {
   const rawQ = params.get("q") ?? "";
   const q = rawQ.trim();
 
-  const [sort, setSort] = useState<"최신순" | "오래된순" | "관련도순" | "가나다순">("최신순");
+  const [sort, setSort] = useState<SortLabel>("최신순");
 
   const page = 0;
   const size = 12;
@@ -79,41 +78,17 @@ export const Home = () => {
             ? undefined
             : CATEGORY_NAME_TO_ID[selectedCategory];
 
-        let sortKey: any = "created_at";
-        let order: "asc" | "desc" | undefined = "desc";
+        const { sort: sortKey, order } = mapSort(sort, !!q);
 
-        switch (sort) {
-          case "최신순":
-            sortKey = "created_at";
-            order = "desc";
-            break;
-          case "오래된순":
-            sortKey = "created_at";
-            order = "asc";
-            break;
-          case "가나다순":
-            sortKey = "alphabet";
-            order = undefined;
-            break;
-          case "관련도순":
-            if (q) {
-              sortKey = "relative";
-              order = undefined;
-            } else {
-              sortKey = "created_at";
-              order = "desc";
-            }
-            break;
-        }
-
-        const res = await fetchStudyGroups({
+        const baseParams = {
           sort: sortKey,
-          order,
           categoryId,
           searchKeyword: q || undefined,
           page,
           size,
-        });
+        } as const;
+
+        const res = await fetchStudyGroups(order ? { ...baseParams, order } : baseParams);
 
         if (!alive || requestIdRef.current !== myRequestId) return;
 
@@ -228,7 +203,7 @@ export const Home = () => {
           groupList={filtered}
           showSort
           onBookmarkClick={handleBookmarkClick}
-          isGroup
+          isGroup               
           sort={sort}
           setSort={(v: string) => setSort(v as SortLabel)}
           onCardClick={handleCardClick}

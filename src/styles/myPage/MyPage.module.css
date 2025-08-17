@@ -86,6 +86,7 @@
  flex-direction: column;
  justify-content: flex-start;
  gap: 1.25rem;
+ margin-top: 25px;
 }
 
 .profileImage {
