@@ -26,9 +26,9 @@ interface GroupListPageProps {
   title: ReactNode;
   groupList: GroupItem[];
   showSort?: boolean;
-  onBookmarkClick?: (id: number) => void;
   headerBelow?: ReactNode;
   headerButton?: ReactNode;
+  onBookmarkClick?: (id: number) => void;
   isGroup?: boolean;
   loading?: boolean;
   sortLabel?: string;
@@ -46,9 +46,9 @@ export default function GroupListPage({
   title,
   groupList,
   showSort = true,
-  onBookmarkClick,
   headerBelow,
   headerButton,
+  onBookmarkClick,
   isGroup = true,
   loading,
   totalPages,
@@ -111,7 +111,7 @@ export default function GroupListPage({
                   key={group.id}
                   {...group}
                   type={group.type}
-                  onBookmarkClick={() => onBookmarkClick?.(group.id)}
+                  onBookmarkClick={onBookmarkClick}
                 />
               </div>
             ))}
