@@ -38,7 +38,7 @@ export default function Navbar() {
   useEffect(() => {
     navigate({
       pathname,
-      search: searchKeyword ? `?q=${encodeURIComponent(searchKeyword)}&type=${type}` : "",
+      search: searchKeyword ? `?q=${encodeURIComponent(searchKeyword)}&type=${type}` : `?type=${type}`,
     });
   }, [searchKeyword]);
 
