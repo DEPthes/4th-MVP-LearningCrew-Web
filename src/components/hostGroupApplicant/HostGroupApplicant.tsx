@@ -11,10 +11,7 @@ import {
 } from "../../apis/Group/StudyGroupApplication";
 import type { Application } from "../../apis/Group/StudyGroupApplication";
 
-import {
-  getGroupMembers,
-  expelMember,
-} from "../../apis/Group/Members";
+import { getGroupMembers, expelMember } from "../../apis/Group/Members";
 import type { Member } from "../../apis/Group/Members";
 
 type Tab = "participant" | "applicant";
@@ -32,8 +29,16 @@ const fmt = (iso?: string) => {
   return `${y}.${m}.${day}`;
 };
 
+const displayGender = (gender?: string) => {
+  if (!gender) return "-";
+  const g = String(gender).toUpperCase();
+  if (g === "MALE" || g === "남") return "남";
+  if (g === "FEMALE" || g === "여") return "여";
+  return "기타";
+};
+
 export default function HostGroupApplicant({ groupId }: Props) {
-  const [activeTab, setActiveTab] = useState<Tab>("participant");
+  const [activeTab, setActiveTab] = useState<Tab>("applicant");
   const [sort, setSort] = useState("최신순");
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize] = useState(10);
@@ -42,9 +47,10 @@ export default function HostGroupApplicant({ groupId }: Props) {
   const [rows, setRows] = useState<(Application | Member)[]>([]);
   const [totalPages, setTotalPages] = useState(1);
 
-  const apiSort = useMemo(() => {
-    return sort === "최신순" ? "createdAt,desc" : "createdAt,asc";
-  }, [sort]);
+  const apiSort = useMemo(
+    () => (sort === "최신순" ? "createdAt,desc" : "createdAt,asc"),
+    [sort]
+  );
 
   const fetchList = async () => {
     setLoading(true);
@@ -72,7 +78,6 @@ export default function HostGroupApplicant({ groupId }: Props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTab, currentPage, apiSort, groupId]);
 
-  // 신청자 탭이 열려 있을 땐 10초마다 목록 자동 갱신 → 누군가 신규 신청하면 바로 보임
   useEffect(() => {
     if (activeTab !== "applicant") return;
     const id = setInterval(fetchList, 10000);
@@ -80,39 +85,41 @@ export default function HostGroupApplicant({ groupId }: Props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTab, currentPage, apiSort, groupId]);
 
+  const removeRowByUserId = (uid: number) => {
+    setRows(prev => prev.filter((r: any) => (r?.user?.id ?? r?.applicant?.id ?? r?.id) !== uid));
+  };
+
   const handleApprove = async (userId: number) => {
+    removeRowByUserId(userId);
     try {
-      setLoading(true);
       await approveApplication(groupId, userId);
-      await fetchList();
     } catch (e: any) {
-      alert(e?.message ?? "승인 중 오류가 발생했어요.");
-    } finally {
-      setLoading(false);
+      const s = e?.response?.status;
+      if (s === 400 || s === 404 || s === 409) return;
+      await fetchList();
+      alert(e?.response?.data?.message || e?.message || "승인 중 오류가 발생했어요.");
     }
   };
 
   const handleReject = async (userId: number) => {
+    removeRowByUserId(userId);
     try {
-      setLoading(true);
       await rejectApplication(groupId, userId);
-      await fetchList();
     } catch (e: any) {
-      alert(e?.message ?? "거절 중 오류가 발생했어요.");
-    } finally {
-      setLoading(false);
+      const s = e?.response?.status;
+      if (s === 400 || s === 404 || s === 409) return;
+      await fetchList();
+      alert(e?.response?.data?.message || e?.message || "거절 중 오류가 발생했어요.");
     }
   };
 
   const handleRemove = async (userId: number) => {
+    removeRowByUserId(userId);
     try {
-      setLoading(true);
       await expelMember(groupId, userId);
-      await fetchList();
     } catch (e: any) {
-      alert(e?.message ?? "삭제 중 오류가 발생했어요.");
-    } finally {
-      setLoading(false);
+      await fetchList();
+      alert(e?.response?.data?.message || e?.message || "삭제 중 오류가 발생했어요.");
     }
   };
 
@@ -153,18 +160,18 @@ export default function HostGroupApplicant({ groupId }: Props) {
       {!loading && rows.length === 0 && <div className={styles.empty}>목록이 없습니다.</div>}
 
       {!loading &&
-        rows.map((item, idx) => {
+        rows.map((item) => {
           if (activeTab === "applicant") {
             const a = item as Application;
             return (
               <ApplicantRow
-                key={`${a.user.id}-${idx}`}
+                key={a.user.id}                         // ✅ user.id
                 mode="applicant"
                 nickname={a.user.nickname}
-                gender={a.user.gender}
+                gender={displayGender(a.user.gender)}   // ✅ 남/여
                 dateLabel={fmt(a.createdAt)}
-                onApprove={() => handleApprove(a.user.id)}
-                onReject={() => handleReject(a.user.id)}
+                onApprove={() => handleApprove(a.user.id)} // ✅ 즉시 제거
+                onReject={() => handleReject(a.user.id)}   // ✅ 즉시 제거
                 busy={loading}
               />
             );
@@ -172,10 +179,10 @@ export default function HostGroupApplicant({ groupId }: Props) {
             const m = item as Member;
             return (
               <ApplicantRow
-                key={`${m.user.id}-${idx}`}
+                key={m.user.id}
                 mode="participant"
                 nickname={m.user.nickname}
-                gender={m.user.gender}
+                gender={displayGender(m.user.gender)}
                 dateLabel={fmt(m.createdAt)}
                 onRemove={() => handleRemove(m.user.id)}
                 busy={loading}

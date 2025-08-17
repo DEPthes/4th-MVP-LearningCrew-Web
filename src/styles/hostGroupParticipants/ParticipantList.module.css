@@ -20,6 +20,7 @@
     height: 39px;
     margin-top: 12px;
     margin-bottom: 19px;
+    margin-left: 2px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -47,6 +48,7 @@
     justify-content: center;
     margin-top: 12px;
     margin-bottom: 19px;
+    padding-left: 40px;
 }
 
 .button {

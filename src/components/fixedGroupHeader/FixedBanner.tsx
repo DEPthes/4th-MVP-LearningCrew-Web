@@ -16,6 +16,7 @@ import type { ApplicationState } from "../../apis/Group/StudyGroupApplication";
 import { closeStudyGroup } from "../../apis/Group/StudyGroupManage";
 import { getStudyGroupDetail, type StudyGroupDetail } from "../../apis/Group/StudyGroup";
 import { getStudyByStep, type StepStudy } from "../../apis/Group/StudyGroupStep";
+import { toggleGroupDibs } from "../../apis/Group/StudyGroupDibs";
 
 type JoinUiState = "NONE" | ApplicationState;
 
@@ -34,11 +35,12 @@ export default function FixedBanner({ groupId, isOwner }: FixedBannerProps) {
 
   // 북마크 & 가입 버튼
   const [bookmarked, setBookmarked] = useState(false);
+  const [bookmarking, setBookmarking] = useState(false);
   const [joinState, setJoinState] = useState<JoinUiState>("NONE");
   const [loading, setLoading] = useState(false);
-  const [errorMsg, setErrorMsg] = useState("");
+  const [isCancelling, setIsCancelling] = useState(false); // 취소 중 가드
 
-  // 스텝바 표시용
+  // 스텝바
   const totalSteps = group?.steps?.length ?? 10;
   const currentStepIndex =
     Math.max(0, (Number(stepIdParam) || group?.currentStep || 1) - 1);
@@ -58,9 +60,7 @@ export default function FixedBanner({ groupId, isOwner }: FixedBannerProps) {
         setGroup(null);
       }
     })();
-    return () => {
-      mounted = false;
-    };
+    return () => { mounted = false; };
   }, [groupId]);
 
   // 현재 스텝 정보
@@ -80,13 +80,12 @@ export default function FixedBanner({ groupId, isOwner }: FixedBannerProps) {
         setStepInfo(null);
       }
     })();
-    return () => {
-      mounted = false;
-    };
+    return () => { mounted = false; };
   }, [groupId, stepIdParam]);
 
-  // 내 가입 상태
+  // 내 가입 상태 동기화 (취소 중엔 덮어쓰지 않음)
   const syncMyState = async () => {
+    if (isCancelling) return;
     try {
       const my = await getMyApplicationForGroup(groupId);
       setJoinState((my?.state as JoinUiState) ?? "NONE");
@@ -98,14 +97,14 @@ export default function FixedBanner({ groupId, isOwner }: FixedBannerProps) {
     syncMyState().catch(() => undefined);
   }, [groupId]);
 
-  // 신청 대기 중이면 주기 갱신
+  // PENDING일 때만 폴링 (취소 중엔 중단)
   useEffect(() => {
-    if (joinState !== "PENDING") return;
+    if (joinState !== "PENDING" || isCancelling) return;
     const id = setInterval(() => {
       syncMyState().catch(() => undefined);
     }, 10000);
     return () => clearInterval(id);
-  }, [joinState]);
+  }, [joinState, isCancelling]);
 
   const joinButtonLabel = useMemo(() => {
     if (loading) return "처리 중...";
@@ -124,23 +123,55 @@ export default function FixedBanner({ groupId, isOwner }: FixedBannerProps) {
 
   const isLeaveStyle = joinState === "PENDING" || joinState === "APPROVED";
 
-  const handleBookmarkClick = () => setBookmarked((v) => !v);
+  /** 찜 토글 */
+  const handleBookmarkClick = async () => {
+    if (bookmarking) return;
+    setBookmarking(true);
+    const prev = bookmarked;
+    setBookmarked(!prev);
+
+    try {
+      const serverDibs = await toggleGroupDibs(groupId);
+      setBookmarked(serverDibs);
+      setGroup((g) => (g ? { ...g, dibs: serverDibs } : g));
+    } catch (e: any) {
+      setBookmarked(prev);
+      const msg = e?.response?.data?.message || e?.message || "찜 처리에 실패했어요.";
+      alert(msg); // 화면에 배지로 렌더링하지 않음
+    } finally {
+      setBookmarking(false);
+    }
+  };
 
   const handleJoinClick = async () => {
     try {
       setLoading(true);
-      setErrorMsg("");
 
       if (joinState === "NONE" || joinState === "REJECTED") {
         await applyToStudyGroup(groupId);
         setJoinState("PENDING");
         return;
       }
+
       if (joinState === "PENDING") {
-        await cancelMyApplication(groupId);
+        // 즉시 '가입 신청'으로 전환(낙관적), 400/404/405는 조용히 무시
+        setIsCancelling(true);
         setJoinState("NONE");
+        try {
+          await cancelMyApplication(groupId);
+        } catch (e: any) {
+          const s = e?.response?.status;
+          if (!(s === 400 || s === 404 || s === 405)) {
+            setJoinState("PENDING");
+            const msg = e?.response?.data?.message || e?.message || "가입 취소에 실패했어요.";
+            alert(msg);
+          }
+        } finally {
+          setIsCancelling(false);
+        }
         return;
       }
+
       if (joinState === "APPROVED") {
         await leaveStudyGroup(groupId);
         setJoinState("NONE");
@@ -148,8 +179,10 @@ export default function FixedBanner({ groupId, isOwner }: FixedBannerProps) {
       }
     } catch (e: any) {
       const msg = e?.response?.data?.message || e?.message || "요청 처리 중 오류가 발생했어요.";
-      setErrorMsg(msg);
-      syncMyState().catch(() => undefined);
+      alert(msg);
+      if (!isCancelling) {
+        syncMyState().catch(() => undefined);
+      }
     } finally {
       setLoading(false);
     }
@@ -211,6 +244,7 @@ export default function FixedBanner({ groupId, isOwner }: FixedBannerProps) {
                 onClick={handleBookmarkClick}
                 aria-pressed={bookmarked}
                 aria-label={bookmarked ? "북마크 해제" : "북마크 추가"}
+                disabled={bookmarking}
               >
                 <img src={bookmarked ? BookmarkOn : bookmark1} alt="북마크" />
               </button>
@@ -235,17 +269,17 @@ export default function FixedBanner({ groupId, isOwner }: FixedBannerProps) {
             </div>
           </div>
 
-          {errorMsg && (
-            <div className={styles.error} role="alert" aria-live="assertive">
-              {errorMsg}
+          {/* ✅ 카테고리 동적 렌더링 (하드코딩 제거) */}
+          {(group?.categories?.length ?? 0) > 0 && (
+            <div className={styles.category__container} role="list">
+              {group!.categories!.map((c) => (
+                <div key={c.id} className={styles.categories} role="listitem">
+                  # {c.name}
+                </div>
+              ))}
             </div>
           )}
-
-          <div className={styles.category__container}>
-            <div className={styles.categories}># IT</div>
-            <div className={styles.categories}># 안드로이드</div>
-            <div className={styles.categories}># 프론트</div>
-          </div>
+          {/* ❌ 에러 텍스트 렌더링은 완전히 제거됨 */}
         </div>
       </div>
 
