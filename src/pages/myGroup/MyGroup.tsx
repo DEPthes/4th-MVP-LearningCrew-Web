@@ -1,6 +1,5 @@
 import GroupListPage from '../../components/common/GroupListPage';
 import { useMemo, useState, useEffect } from 'react';
-import { useSearchParams, useNavigate, useLocation } from 'react-router-dom';
 import GroupTypeTabs from '../../components/myGroup/GroupTypesTabs';
 import type { GroupType } from '../../components/myGroup/GroupTypesTabs';
 import CreateGroupButton from '../../components/myGroup/CreateGroupButton';
@@ -9,6 +8,7 @@ import DefaultGroupImage from '../../assets/DefaultGroup.svg';
 import type { GroupListResponse, AppliedGroupListResponse, TransformedGroupData } from '../../types/group';
 import { getJoinGroup, getHostedGroup, getAppliedGroup } from '../../apis/home/GroupList';
 import { getImage } from '../../apis/common/File';
+import { useSearchKeyword } from '../../hooks/SearchKeywordContext';
 
 // API 데이터를 컴포넌트에서 사용할 수 있는 형태로 변환
 const transformGroupData = async (apiData: GroupListResponse | AppliedGroupListResponse, type: GroupType): Promise<TransformedGroupData[]> => {
@@ -88,15 +88,11 @@ export default function MyGroup() {
   const [loading, setLoading] = useState(true);
   const [isLogin, setIsLogin] = useState<boolean>(false);
   const [currentPage, setCurrentPage] = useState(1);
+  const { searchKeyword, type } = useSearchKeyword();
   const [sort, setSort] = useState("최신순");
 
-  const [params] = useSearchParams();
-  const navigate = useNavigate();
-  const { pathname } = useLocation();
-
-  const rawQ = params.get('q') ?? '';
+  const rawQ = searchKeyword ?? '';
   const q = rawQ.trim().toLowerCase();
-  const type = (params.get('type') as GroupType) || 'joined';
 
   // 그룹 타입에 따라 API 호출
   useEffect(() => {
@@ -106,15 +102,14 @@ export default function MyGroup() {
     const fetchGroups = async () => {
       try {
         setLoading(true);
-
         let response: GroupListResponse | AppliedGroupListResponse;
         switch (type) {
           case 'joined':
-            response = await getJoinGroup({ sort: apiSort, order, page });
+            response = await getJoinGroup({ sort: apiSort, order, page, searchKeyword: searchKeyword ?? undefined });
             break;
           case 'hosted':
             try {
-              response = await getHostedGroup({ sort: apiSort, order, page });
+              response = await getHostedGroup({ sort: apiSort, order, page, searchKeyword: searchKeyword ?? undefined });
               setIsLogin(true);
             } catch (err) {
               setIsLogin(false);
@@ -130,7 +125,7 @@ export default function MyGroup() {
             }
             break;
           case 'applied':
-            response = await getAppliedGroup({ sort: apiSort, order, page });
+            response = await getAppliedGroup({ sort: apiSort, order, page, searchKeyword: searchKeyword ?? undefined });
             break;
         }
 
@@ -143,13 +138,11 @@ export default function MyGroup() {
       }
     };
     fetchGroups();
-  }, [type, sort, currentPage]);
+  }, [type, sort, currentPage, searchKeyword]);
 
-  const handleTypeChange = (next: GroupType) => {
-    const nextParams = new URLSearchParams(params);
-    nextParams.set('type', next);
-    navigate({ pathname, search: `?${nextParams.toString()}` });
-  };
+  // const handleTypeChange = (next: GroupType) => {
+  //   setType(next);
+  // };
 
   const filtered = useMemo(() => {
     return list.filter(item => {
@@ -163,14 +156,6 @@ export default function MyGroup() {
     });
   }, [list, q, type]);
 
-  const handleBookmarkClick = (id: number) => {
-    setList(prev =>
-      prev.map(g =>
-        g.id === id ? { ...g, isBookmarked: !g.isBookmarked } : g
-      )
-    );
-  };
-
   const title = rawQ.trim()
     ? <span className={styles.searchTitle}>{`'${rawQ.trim()}' 검색 결과`}</span>
     : <span className={styles.defaultTitle}>내 그룹 리스트</span>;
@@ -181,7 +166,6 @@ export default function MyGroup() {
         title={title}
         groupList={filtered}
         showSort
-        onBookmarkClick={handleBookmarkClick}
         loading={loading}
         number={currentPage}
         setNumber={setCurrentPage}
@@ -189,7 +173,7 @@ export default function MyGroup() {
         setSort={setSort}
         headerBelow={
           <div className={styles.headerBelowRow}>
-            <GroupTypeTabs value={type} onChange={handleTypeChange} />
+            <GroupTypeTabs value={type} />
             {type === 'hosted' && isLogin && (
               <div className={styles.createBtnWrapper}>
                 <CreateGroupButton to="/mygroup/create" />

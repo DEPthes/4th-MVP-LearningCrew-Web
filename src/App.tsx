@@ -2,6 +2,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { Router } from './Router';
 import { QuizProvider } from './hooks/QuizContext';
 import { GroupTabProvider } from './hooks/GroupTabContext';
+import { SearchKeywordProvider } from './hooks/SearchKeywordContext';
 
 function App() {
   const queryClient = new QueryClient();
@@ -9,11 +10,13 @@ function App() {
   return (
     <>
       <QueryClientProvider client={queryClient}>
-        <QuizProvider>
-          <GroupTabProvider>
-            <Router />
-          </GroupTabProvider>
-        </QuizProvider>
+        <SearchKeywordProvider>
+          <QuizProvider>
+            <GroupTabProvider>
+              <Router />
+            </GroupTabProvider>
+          </QuizProvider>
+        </SearchKeywordProvider>
       </QueryClientProvider>
     </>
   )
