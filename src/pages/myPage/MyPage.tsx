@@ -21,14 +21,19 @@ export default function MyPageHome() {
   const [err, setErr] = useState<string | null>(null);
   const [imgSrc, setImgSrc] = useState<string>(profilePlaceholder);
 
-
   useEffect(() => {
     (async () => {
       try {
         const data = await fetchMe();
         setMe(data);
       } catch (e: any) {
-        setErr(e?.response?.data?.message || "내 정보 불러오기에 실패했어요.");
+        const status = e?.response?.status;
+        if (status === 401) {
+          setMe(null);            
+          setErr(null);
+        } else {
+          setErr(e?.response?.data?.message || "내 정보 불러오기에 실패했어요.");
+        }
       } finally {
         setLoading(false);
       }
@@ -47,7 +52,6 @@ export default function MyPageHome() {
         setImgSrc(profilePlaceholder);
         return;
       }
-
       try {
         const url = await getImage(uuid);
         if (!alive) return;
@@ -75,8 +79,8 @@ export default function MyPageHome() {
   }, []);
 
   const handleLogout = async () => {
-    await logout();      
-    setMe(null);           
+    await logout();
+    setMe(null);
     setImgSrc(profilePlaceholder);
   };
 
@@ -129,6 +133,22 @@ export default function MyPageHome() {
     );
   }
 
+  // 비로그인/토큰만료 전용 화면
+  if (!me && !err) {
+    return (
+      <main className={styles.container}>
+        <section className={styles.logoutWrap}>
+          <div className={styles.logoutCard}>
+            <p className={styles.logoutTitle}>로그인 후 확인 가능합니다</p>
+            <p className={styles.logoutSub}>
+              원활한 서비스 이용을 위해서 로그인 후 이용해 주세요
+            </p>
+          </div>
+        </section>
+      </main>
+    );
+  }
+
   if (err) {
     return (
       <main className={styles.container}>
@@ -157,7 +177,6 @@ export default function MyPageHome() {
         <hr />
         <div className={styles.profileBox}>
           <div className={styles.profileContent}>
-            {/* 프로필 이미지 + 필드 */}
             <div className={styles.profileLeft}>
               <div className={styles.fieldRow}>
                 <label className={styles.label}>프로필 사진</label>
@@ -182,7 +201,6 @@ export default function MyPageHome() {
               </div>
             </div>
 
-            {/* ID, 비밀번호 */}
             <div className={styles.profileRight}>
               <div className={styles.fieldRow}>
                 <label className={styles.label}>ID</label>
