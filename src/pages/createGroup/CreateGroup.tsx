@@ -64,7 +64,7 @@ export const CreateGroup = () => {
     <div className={styles.creategroup__container}>
       <p className={styles.container__title}>내 그룹 개설하기</p>
 
-      <Container title="스터디 이름">
+      <Container title="그룹명">
         <Input
           holder="스터디 이름을 작성해 주세요."
           message="스터디 이름을 입력하세요."

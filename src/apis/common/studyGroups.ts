@@ -1,117 +1,82 @@
 import axios from "axios";
 import { getAuthHeader } from "../auth/auth";
 
-function readStoredToken(): string | null {
-  const keys = [
-    "accessToken",
-    "access_token",
-    "Authorization",
-    "authorization",
-    "token",
-    "jwt",
-  ];
-  let raw: string | null = null;
+// 정렬 타입
+export type SortOrder = "asc" | "desc";
+export type SortKey = "createdAt" | "startDate" | "endDate" | "memberCount" | "name";
 
-  for (const k of keys) {
-    raw = localStorage.getItem(k) || sessionStorage.getItem(k);
-    if (raw) break;
-  }
-  if (!raw && typeof document !== "undefined") {
-    const m = document.cookie.match(
-      /(?:^|;\s*)(accessToken|access_token|Authorization|authorization)=([^;]+)/
-    );
-    if (m) raw = decodeURIComponent(m[2]);
-  }
-  if (!raw) return null;
-
-  if (raw.trim().startsWith("{")) {
-    try {
-      const obj = JSON.parse(raw);
-      raw = obj?.accessToken || obj?.access_token || obj?.token || obj?.jwt || "";
-    } catch {/* */}
-  }
-  if (!raw) return null;
-
-  const m = raw.match(/([A-Za-z0-9-_]+?\.[A-Za-z0-9-_]+?\.[A-Za-z0-9-_]+)/);
-  return m ? m[1] : raw.replace(/^Bearer\s+/i, "");
-}
-
-//타입
-export type SortKey = "created_at" | "relative" | "alphabet";
-export type Order = "asc" | "desc";
-
-export type FileMeta = {
-  uuid: string;
-  fileName: string;
-  size: number;
-  handlingType: string;
-};
-
-export type StudyGroupCategory = { id: number; name: string };
-
-export type StudyGroupOwner = {
-  id: number;
-  email: string;
-  nickname: string;
-  role: string;
-  gender: "MALE" | "FEMAIL" | "OTHER" | string;
-  profileImage?: FileMeta | null;
-  createdAt: string;
-  lastModifiedAt: string;
-};
-
-export type StudyGroupItem = {
+export interface StudyGroupCategory {
   id: number;
   name: string;
-  summary: string;
-  maxMembers: number;
-  groupImage?: FileMeta | null;
-  categories: StudyGroupCategory[];
-  memberCount: number;
-  dibs: boolean;
+}
+
+export interface FileMeta {
+  uuid: string;
+  fileName: string;
+  size?: number;
+  handlingType?: string;
+}
+
+export interface StudyGroupOwner {
+  id: number;
+  nickname: string;
+  email?: string;
+  role?: string;
+  gender?: "MALE" | "FEMAIL" | "OTHER" | string;
+  profileImage?: FileMeta | null;
+  createdAt?: string;
+  lastModifiedAt?: string;
+}
+
+export interface StudyGroupItem {
+  id: number;
+  name: string;
+  summary?: string | null;
   startDate: string;
   endDate: string;
-  owner: StudyGroupOwner;
-  createdAt: string;
-  lastModifiedAt: string;
-};
+  memberCount: number;
+  maxMembers: number;
+  categories?: StudyGroupCategory[];
+  owner?: StudyGroupOwner | null;
+  dibs?: boolean;
+  groupImage?: FileMeta | null;
+}
 
-export type PageMeta = {
-  size: number;
+export interface StudyGroupStep {
+  step: number;
+  title?: string | null;
+  content?: string | null;
+  endDate?: string;
+}
+
+export interface StudyGroupDetail extends StudyGroupItem {
+  createdAt?: string;
+  lastModifiedAt?: string;
+  currentStep: number;
+  steps?: StudyGroupStep[];
+}
+
+export interface PageResponse<T> {
+  content: T[];
+  totalElements: number;
+  totalPages: number;
   number: number;
-  totalElements: number | string;
-  totalPages: number | string;
-};
+  size: number;
+  first: boolean;
+  last: boolean;
+}
 
-export type StudyGroupsResponse = {
-  content: StudyGroupItem[];
-  page: PageMeta;
-};
-
-export type FetchStudyGroupsParams = {
+// 스터디 그룹 목록 조회
+export async function fetchStudyGroups(params: {
   sort?: SortKey;
-  order?: Order;
+  order?: SortOrder;
   categoryId?: number;
   searchKeyword?: string;
   page?: number;
   size?: number;
-};
-
-//유틸 쿼리 
-function qs(params: Record<string, unknown>) {
-  const p = new URLSearchParams();
-  Object.entries(params).forEach(([k, v]) => {
-    if (v === undefined || v === null || v === "") return;
-    p.set(k, String(v));
-  });
-  const s = p.toString();
-  return s ? `?${s}` : "";
-}
-
-//목록 조회 (비인증)
-export async function fetchStudyGroups(params: FetchStudyGroupsParams = {}) {
+}): Promise<PageResponse<StudyGroupItem>> {
   const {
-    sort = "created_at",
+    sort = "createdAt",
     order = "desc",
     categoryId,
     searchKeyword,
@@ -119,63 +84,25 @@ export async function fetchStudyGroups(params: FetchStudyGroupsParams = {}) {
     size = 12,
   } = params;
 
-  const query = qs({ sort, order, categoryId, searchKeyword, page, size });
-  const url = `/api/study-groups${query}`;
+  const qs = new URLSearchParams();
+  if (sort) qs.set("sort", sort);
+  if (order) qs.set("order", order);
+  if (categoryId !== undefined) qs.set("categoryId", String(categoryId));
+  if (searchKeyword) qs.set("searchKeyword", searchKeyword);
+  qs.set("page", String(page));
+  qs.set("size", String(size));
 
-  const res = await fetch(url, {
-    method: "GET",
-    headers: { Accept: "application/json" },
-  });
-
-  if (!res.ok) {
-    const text = await res.text().catch(() => "");
-    throw new Error(`GET ${url} ${res.status} ${res.statusText} ${text}`);
-  }
-
-  return (await res.json()) as StudyGroupsResponse;
+  const { data } = await axios.get<PageResponse<StudyGroupItem>>(
+    `/api/study-groups?${qs.toString()}`,
+    { headers: getAuthHeader() }
+  );
+  return data;
 }
 
-//상세조회
-export type StudyGroupDetail = {
-  id: number;
-  name: string;
-  summary: string | null;
-  maxMembers: number;
-  groupImage?: {
-    uuid: string;
-    fileName: string;
-    size: number;
-    handlingType: "IMAGE" | "DOWNLOADABLE";
-  } | null;
-  categories: { id: number; name: string }[];
-  memberCount: number;
-  dibs: boolean;
-  startDate: string;
-  endDate: string;
-  owner: {
-    id: number;
-    email: string;
-    nickname: string;
-    role: string;
-    gender: string;
-    profileImage?: {
-      uuid: string;
-      fileName: string;
-      size: number;
-      handlingType: "IMAGE" | "DOWNLOADABLE";
-    } | null;
-    createdAt: string;
-    lastModifiedAt: string;
-  };
-  createdAt: string;
-  lastModifiedAt: string;
-  steps: { step: number; endDate: string; title: string; content: string }[];
-  currentStep: number;
-};
-
-export async function fetchStudyGroup(id: number): Promise<StudyGroupDetail> {
-  const { data } = await axios.get(`/api/study-groups/${id}`, {
+// 스터디 그룹 상세 조회
+export async function fetchStudyGroup(groupId: number): Promise<StudyGroupDetail> {
+  const { data } = await axios.get<StudyGroupDetail>(`/api/study-groups/${groupId}`, {
     headers: getAuthHeader(),
   });
-  return data as StudyGroupDetail;
+  return data;
 }

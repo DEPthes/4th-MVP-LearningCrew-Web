@@ -32,7 +32,7 @@ const QuizContext = createContext<QuizContextType | undefined>(undefined);
 
 export const useQuiz = () => {
   const context = useContext(QuizContext);
-  if (context === undefined) {
+  if (context === undefined || context === null) {
     throw new Error('useQuiz must be used within a QuizProvider');
   }
   return context;

@@ -2,11 +2,17 @@ import { useParams } from "react-router-dom";
 import { PostDetail } from "../../components/common/PostDetail";
 import { getDetailNote } from "../../apis/studygroup/Note";
 import { useState, useEffect } from "react";
+import { useGroupTab } from "../../hooks/GroupTabContext";
 
 export const ShareNoteDetail = () => {
   const { noteId } = useParams<{ noteId: string }>();
   const [noteData, setNoteData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const { setCurrentTab } = useGroupTab();
+
+  useEffect(() => {
+    setCurrentTab('shareNote');
+  }, [setCurrentTab]);
 
   useEffect(() => {
     const fetchNoteDetail = async () => {

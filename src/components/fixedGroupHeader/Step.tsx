@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import styles from "../../styles/fixedGroupHeader/Step.module.css";
+import { useGroupTab } from "../../hooks/GroupTabContext";
 
 interface StepProps {
   totalSteps: number;   // 전체 스텝 수
@@ -11,7 +12,7 @@ interface StepProps {
 export default function Step({ totalSteps, currentStep }: StepProps) {
   const navigate = useNavigate();
   const { groupId, stepId } = useParams<{ groupId: string; stepId: string }>();
-
+  const { currentTab } = useGroupTab();
   // 선택된 스텝(0-based). null이면 기본 모드(현재 스텝 강조).
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const steps = Array.from({ length: totalSteps }, (_, i) => i);
@@ -24,7 +25,7 @@ export default function Step({ totalSteps, currentStep }: StepProps) {
   const handleClick = (index: number) => {
     if (index === currentStep) setSelectedIndex(null);
     else setSelectedIndex(index);
-    navigate(`/group/${groupId}/step/${index + 1}`);
+    navigate(`/group/${groupId}/step/${index + 1}/${currentTab}`);
   };
 
   return (

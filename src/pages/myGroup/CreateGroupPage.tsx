@@ -74,8 +74,8 @@ export default function CreateGroupPage() {
       const next = has
         ? prev.filter((t) => t !== tag)
         : prev.length >= 3
-        ? prev
-        : [...prev, tag];
+          ? prev
+          : [...prev, tag];
 
       if (tag === "기타" && has) setCustomTag("");
 
@@ -130,23 +130,22 @@ export default function CreateGroupPage() {
 
         {/* 카테고리 */}
         <section className={styles.block}>
-            <label className={styles.label}>카테고리</label>
-            <div className={styles.hint}>*카테고리를 선택해주세요.(최대 3개)</div>
+          <label className={styles.label}>카테고리</label>
+          <div className={styles.hint}>*카테고리를 선택해주세요.(최대 3개)</div>
 
-            <div className={styles.tags}>
-                {TAG_OPTIONS.map((t) => (
-                <button
-                    key={t}
-                    type="button"
-                    className={`${styles.tag} ${
-                    selectedTags.includes(t) ? styles.tagActive : ""
-                    }`}
-                    onClick={() => toggleTag(t)}
-                >
-                    {t}
-                </button>
-                ))}
-            </div>
+          <div className={styles.tags}>
+            {TAG_OPTIONS.map((t) => (
+              <button
+                key={t}
+                type="button"
+                className={`${styles.tag} ${selectedTags.includes(t) ? styles.tagActive : ""
+                  }`}
+                onClick={() => toggleTag(t)}
+              >
+                {t}
+              </button>
+            ))}
+          </div>
 
           {/* 기타 */}
           {selectedTags.includes("기타") && (
@@ -166,7 +165,7 @@ export default function CreateGroupPage() {
 
         {/* 소개글 */}
         <section className={styles.block}>
-            <label className={styles.label}>소개글</label>
+          <label className={styles.label}>소개글</label>
           <Input
             holder="소개글을 작성해 주세요."
             message="소개글을 작성해주세요."
@@ -252,12 +251,12 @@ export default function CreateGroupPage() {
 
         {/* 개설 */}
         <div className={styles.submitWrapper}>
-        <Submit
+          <Submit
             isSubmitting={isSubmitting}
             canSubmit={canSubmit}
             onClick={handleSubmit(onSubmit)}
             text="개설"
-        />
+          />
         </div>
       </form>
     </div>

@@ -46,6 +46,7 @@
  font-size: 1.5rem;
  cursor: pointer;
  transition: color 0.2s ease;
+ z-index: 2;
 }
 
 .outlined {

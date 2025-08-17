@@ -3,7 +3,6 @@ import GroupCard from '../../components/common/GroupCard';
 import GroupTitle from '../../components/common/GroupTitle';
 import { Pagenation } from '../../components/common/Pagenation';
 import { Sort } from '../../components/common/Sort';
-import { useEffect, useState } from 'react';
 import type { ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getStudyGroup } from '../../apis/studygroup/StudyGroup';
@@ -19,36 +18,45 @@ interface GroupItem {
   categories?: string[];
   isBookmarked?: boolean;
   type?: 'joined' | 'hosted' | 'applied';
+  sort?: string;
+  setSort?: (sort: string) => void;
 }
 
 interface GroupListPageProps {
   title: ReactNode;
   groupList: GroupItem[];
   showSort?: boolean;
-  onBookmarkClick?: (id: number) => void;
   headerBelow?: ReactNode;
   headerButton?: ReactNode;
+  onBookmarkClick?: (id: number) => void;
   isGroup?: boolean;
   loading?: boolean;
   sortLabel?: string;
   onSortChange?: (label: string) => void;
   onCardClick?: (id: number) => void;
+  totalPages?: number;
+  currentPage?: number;
+  number?: number;
+  setNumber?: (page: number) => void;
+  sort?: string;
+  setSort?: (sort: string) => void;
 }
 
 export default function GroupListPage({
   title,
   groupList,
   showSort = true,
-  onBookmarkClick,
   headerBelow,
   headerButton,
+  onBookmarkClick,
   isGroup = true,
   loading,
-  sortLabel = "최신순",
-  onSortChange,
+  totalPages,
+  number,//currentPage
+  setNumber,
+  sort,
+  setSort,
 }: GroupListPageProps) {
-  const [sort, setSort] = useState(sortLabel);
-  const [currentPage, setCurrentPage] = useState(1);
   const navigate = useNavigate();
 
   //임시
@@ -61,19 +69,11 @@ export default function GroupListPage({
         }
       } catch (error) {
         console.error('현재 스텝 아이디 조회 실패:', error);
+        navigate(`/group/${groupId}/step/1/MyGroupStudy`);
       }
     };
     fetchCurrentStepId();
   }
-
-  useEffect(() => {
-    setSort(sortLabel);
-  }, [sortLabel]);
-
-  const handleSetSort = (next: string) => {
-    setSort(next);
-    onSortChange?.(next);
-  };
 
   return (
     <div className={styles.pageWrapper}>
@@ -83,7 +83,7 @@ export default function GroupListPage({
           <div>
             {showSort && (
               <div className={styles.sortWrapper}>
-                <Sort sort={sort} setSort={handleSetSort} isGroup={isGroup} />
+                <Sort sort={sort ?? "최신순"} setSort={setSort ?? (() => { })} isGroup={isGroup} />
               </div>
             )}
             {headerButton && (
@@ -107,12 +107,12 @@ export default function GroupListPage({
         ) : (
           <div className={styles.cardGrid}>
             {groupList.map(group => (
-              <div onClick={() => handleGroupClick(group.id)}>
+              <div onClick={() => handleGroupClick(group.id)} key={group.id}>
                 <GroupCard
                   key={group.id}
                   {...group}
                   type={group.type}
-                  onBookmarkClick={() => onBookmarkClick?.(group.id)}
+                  onBookmarkClick={onBookmarkClick}
                 />
               </div>
             ))}
@@ -121,9 +121,9 @@ export default function GroupListPage({
 
         {groupList.length > 0 && (
           <Pagenation
-            currentPage={currentPage}
-            totalPages={1}
-            setCurrentPage={setCurrentPage}
+            currentPage={number || 1}
+            totalPages={totalPages || 1}
+            setCurrentPage={setNumber || (() => { })}
           />
         )}
       </div>

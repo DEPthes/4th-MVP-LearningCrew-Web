@@ -1,10 +1,13 @@
 import styles from "../../styles/myGroup/GroupTypeTabs.module.css";
+import { useSearchKeyword } from "../../hooks/SearchKeywordContext";
+import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
 export type GroupType = "joined" | "hosted" | "applied";
 
 type Props = {
   value: GroupType;
-  onChange: (next: GroupType) => void;
+  // onChange: (next: GroupType) => void;
 };
 
 const items: { key: GroupType; label: string }[] = [
@@ -13,7 +16,17 @@ const items: { key: GroupType; label: string }[] = [
   { key: "applied", label: "가입 신청 그룹" },
 ];
 
-export default function GroupTypeTabs({ value, onChange }: Props) {
+export default function GroupTypeTabs({ value }: Props) {
+
+  const navigate = useNavigate();
+  const { searchKeyword, type, setType } = useSearchKeyword();
+
+  useEffect(() => {
+    navigate({
+      search: searchKeyword ? `?q=${encodeURIComponent(searchKeyword)}&type=${type}` : `?type=${type}`,
+    });
+  }, [searchKeyword]);
+
   return (
     <div className={styles.tabs}>
       {items.map(({ key, label }) => {
@@ -22,7 +35,11 @@ export default function GroupTypeTabs({ value, onChange }: Props) {
           <div
             key={key}
             className={`${styles.tab} ${active ? styles.active : ""}`}
-            onClick={() => onChange(key)}
+            onClick={() => {
+              // onChange(key);
+              setType(key);
+              navigate(`/mygroup?type=${key}`);
+            }}
           >
             <span className={styles.dot} />
             <span className={styles.label}>{label}</span>

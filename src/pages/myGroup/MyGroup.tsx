@@ -1,6 +1,5 @@
 import GroupListPage from '../../components/common/GroupListPage';
 import { useMemo, useState, useEffect } from 'react';
-import { useSearchParams, useNavigate, useLocation } from 'react-router-dom';
 import GroupTypeTabs from '../../components/myGroup/GroupTypesTabs';
 import type { GroupType } from '../../components/myGroup/GroupTypesTabs';
 import CreateGroupButton from '../../components/myGroup/CreateGroupButton';
@@ -9,30 +8,26 @@ import DefaultGroupImage from '../../assets/DefaultGroup.svg';
 import type { GroupListResponse, AppliedGroupListResponse, TransformedGroupData } from '../../types/group';
 import { getJoinGroup, getHostedGroup, getAppliedGroup } from '../../apis/home/GroupList';
 import { getImage } from '../../apis/common/File';
+import { useSearchKeyword } from '../../hooks/SearchKeywordContext';
 
-// API 데이터를 컴포넌트에서 사용할 수 있는 형태로 변환
 const transformGroupData = async (apiData: GroupListResponse | AppliedGroupListResponse, type: GroupType): Promise<TransformedGroupData[]> => {
   if (type === 'applied') {
-    // getAppliedGroup 응답 형식 처리
     const appliedData = apiData as AppliedGroupListResponse;
     const transformedData = await Promise.all(
       appliedData.content.map(async (item) => {
         let imageUrl = DefaultGroupImage;
-
-        // studyGroup.groupImage가 null이 아닌 경우 getImage로 실제 이미지 URL 가져오기
         if (item.studyGroup.groupImage) {
           try {
             imageUrl = await getImage(item.studyGroup.groupImage.uuid);
           } catch (error) {
             console.error(`이미지 로드 실패: ${item.studyGroup.groupImage.uuid}`, error);
-            imageUrl = DefaultGroupImage; // 실패 시 기본 이미지 사용
+            imageUrl = DefaultGroupImage;
           }
         }
-
         return {
           id: item.studyGroup.id,
           image: imageUrl,
-          label: '같이 공부해요',
+          label: item.studyGroup.summary,
           count: `${item.studyGroup.memberCount}/${item.studyGroup.maxMembers}`,
           title: item.studyGroup.name,
           subtitle: `${item.studyGroup.startDate} ~ ${item.studyGroup.endDate}`,
@@ -40,32 +35,28 @@ const transformGroupData = async (apiData: GroupListResponse | AppliedGroupListR
           categories: item.studyGroup.categories.map(cat => cat.name),
           isBookmarked: item.studyGroup.dibs,
           type: type,
+          totalPages: appliedData.page.totalPages,
         };
       })
     );
-
     return transformedData;
   } else {
-    // getJoinGroup, getHostedGroup 응답 형식 처리
     const groupData = apiData as GroupListResponse;
     const transformedData = await Promise.all(
       groupData.content.map(async (group) => {
         let imageUrl = DefaultGroupImage;
-
-        // groupImage가 null이 아닌 경우 getImage로 실제 이미지 URL 가져오기
         if (group.groupImage) {
           try {
             imageUrl = await getImage(group.groupImage.uuid);
           } catch (error) {
             console.error(`이미지 로드 실패: ${group.groupImage.uuid}`, error);
-            imageUrl = DefaultGroupImage; // 실패 시 기본 이미지 사용
+            imageUrl = DefaultGroupImage;
           }
         }
-
         return {
           id: group.id,
           image: imageUrl,
-          label: '같이 공부해요',
+          label: group.summary,
           count: `${group.memberCount}/${group.maxMembers}`,
           title: group.name,
           subtitle: `${group.startDate} ~ ${group.endDate}`,
@@ -73,10 +64,10 @@ const transformGroupData = async (apiData: GroupListResponse | AppliedGroupListR
           categories: group.categories.map(cat => cat.name),
           isBookmarked: group.dibs,
           type: type,
+          totalPages: groupData.page.totalPages,
         };
       })
     );
-
     return transformedData;
   }
 };
@@ -84,31 +75,45 @@ const transformGroupData = async (apiData: GroupListResponse | AppliedGroupListR
 export default function MyGroup() {
   const [list, setList] = useState<TransformedGroupData[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isLogin, setIsLogin] = useState<boolean>(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const { searchKeyword, type } = useSearchKeyword();
+  const [sort, setSort] = useState("최신순");
 
-  const [params] = useSearchParams();
-  const navigate = useNavigate();
-  const { pathname } = useLocation();
-
-  const rawQ = params.get('q') ?? '';
+  const rawQ = searchKeyword ?? '';
   const q = rawQ.trim().toLowerCase();
-  const type = (params.get('type') as GroupType) || 'joined';
 
-  // 그룹 타입에 따라 API 호출
   useEffect(() => {
+    const apiSort = sort === "오래된순" ? "created_at" : sort === "관련도순" ? "relative" : sort === "가나다순" ? "alphabet" : "created_at";
+    const order = sort === "오래된순" ? "asc" : "desc";
+    const page = currentPage - 1;
     const fetchGroups = async () => {
       try {
         setLoading(true);
-
         let response: GroupListResponse | AppliedGroupListResponse;
         switch (type) {
           case 'joined':
-            response = await getJoinGroup();
+            response = await getJoinGroup({ sort: apiSort, order, page, searchKeyword: searchKeyword ? searchKeyword : rawQ.trim() ? rawQ.trim() : undefined });
             break;
           case 'hosted':
-            response = await getHostedGroup();
+            try {
+              response = await getHostedGroup({ sort: apiSort, order, page, searchKeyword: searchKeyword ? searchKeyword : rawQ.trim() ? rawQ.trim() : undefined });
+              setIsLogin(true);
+            } catch (err) {
+              setIsLogin(false);
+              response = {
+                content: [],
+                page: {
+                  size: 0,
+                  number: 0,
+                  totalElements: 0,
+                  totalPages: 0,
+                },
+              }
+            }
             break;
           case 'applied':
-            response = await getAppliedGroup();
+            response = await getAppliedGroup({ sort: apiSort, order, page, searchKeyword: searchKeyword ? searchKeyword : rawQ.trim() ? rawQ.trim() : undefined });
             break;
         }
 
@@ -120,15 +125,12 @@ export default function MyGroup() {
         setLoading(false);
       }
     };
-
     fetchGroups();
-  }, [type]);
+  }, [type, sort, currentPage, searchKeyword]);
 
-  const handleTypeChange = (next: GroupType) => {
-    const nextParams = new URLSearchParams(params);
-    nextParams.set('type', next);
-    navigate({ pathname, search: `?${nextParams.toString()}` });
-  };
+  // const handleTypeChange = (next: GroupType) => {
+  //   setType(next);
+  // };
 
   const filtered = useMemo(() => {
     return list.filter(item => {
@@ -142,14 +144,6 @@ export default function MyGroup() {
     });
   }, [list, q, type]);
 
-  const handleBookmarkClick = (id: number) => {
-    setList(prev =>
-      prev.map(g =>
-        g.id === id ? { ...g, isBookmarked: !g.isBookmarked } : g
-      )
-    );
-  };
-
   const title = rawQ.trim()
     ? <span className={styles.searchTitle}>{`'${rawQ.trim()}' 검색 결과`}</span>
     : <span className={styles.defaultTitle}>내 그룹 리스트</span>;
@@ -160,12 +154,15 @@ export default function MyGroup() {
         title={title}
         groupList={filtered}
         showSort
-        onBookmarkClick={handleBookmarkClick}
         loading={loading}
+        number={currentPage}
+        setNumber={setCurrentPage}
+        sort={sort}
+        setSort={setSort}
         headerBelow={
           <div className={styles.headerBelowRow}>
-            <GroupTypeTabs value={type} onChange={handleTypeChange} />
-            {type === 'hosted' && (
+            <GroupTypeTabs value={type} />
+            {type === 'hosted' && isLogin && (
               <div className={styles.createBtnWrapper}>
                 <CreateGroupButton to="/mygroup/create" />
               </div>

@@ -4,12 +4,18 @@ import styles from "../../styles/QandA/QandADetailPageStyle.module.css";
 import { Comment } from "../../components/QandA/Comment"
 import { getQandADetail } from "../../apis/studygroup/QandA";
 import { useEffect, useState } from "react";
+import { useGroupTab } from "../../hooks/GroupTabContext";
 
 export const QandADetail = () => {
   const { qId } = useParams<{ qId: string }>();
   const { groupId } = useParams<{ groupId: string }>();
   const [qandADetail, setQandADetail] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const { setCurrentTab } = useGroupTab();
+
+  useEffect(() => {
+    setCurrentTab(`QandADetail:${qId}`);
+  }, [setCurrentTab]);
 
   useEffect(() => {
     const fetchQandADetail = async () => {

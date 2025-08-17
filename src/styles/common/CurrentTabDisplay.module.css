@@ -1,0 +1,33 @@
+.container {
+ display: flex;
+ flex-direction: column;
+ gap: 8px;
+ padding: 16px;
+ background-color: #f5f5f5;
+ border-radius: 8px;
+ margin: 16px 0;
+}
+
+.tabInfo,
+.groupInfo,
+.stepInfo {
+ display: flex;
+ align-items: center;
+ gap: 8px;
+}
+
+.label {
+ font-weight: 600;
+ color: #666;
+ min-width: 80px;
+}
+
+.tabName {
+ color: #007bff;
+ font-weight: 600;
+}
+
+.value {
+ color: #333;
+ font-family: monospace;
+}

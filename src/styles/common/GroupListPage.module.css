@@ -1,33 +1,33 @@
 .pageWrapper {
-  display: flex;
-  justify-content: center;
-  box-sizing: border-box;
+ display: flex;
+ justify-content: center;
+ box-sizing: border-box;
 }
 
 .container {
-  width: 100%;
-  max-width: 1236px;
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-  margin-left: auto;
-  margin-right: auto;
-  padding-top: 5vh;
-  padding-bottom: 5vh;
-  /* min-height: calc(100% - 120px);  */
+ width: 100%;
+ max-width: 1236px;
+ display: flex;
+ flex-direction: column;
+ gap: 2rem;
+ margin-left: auto;
+ margin-right: auto;
+ padding-top: 5vh;
+ padding-bottom: 5vh;
+ /* min-height: calc(100% - 120px);  */
 }
 
-.header{
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: nowrap;
-  min-width: 870px;
+.header {
+ display: flex;
+ justify-content: space-between;
+ align-items: center;
+ flex-wrap: nowrap;
+ min-width: 870px;
 }
 
 .sortWrapper {
-  position: relative;
-  z-index: 10;
+ position: relative;
+ z-index: 10;
 }
 
 /* 안됨
@@ -36,18 +36,18 @@
 } */
 
 .cardGrid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 3.1rem 1.5rem;
+ display: grid;
+ grid-template-columns: repeat(4, 1fr);
+ gap: 3.1rem 1.5rem;
 }
 
 .empty {
-  flex: 1; 
-  min-height: 400px; 
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  color: var(--SubColor1);
-  font: var(--BodyXLMedium);
+ flex: 1;
+ min-height: 400px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ text-align: center;
+ color: var(--SubColor1);
+ font: var(--BodyXLMedium);
 }

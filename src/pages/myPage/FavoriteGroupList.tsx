@@ -1,3 +1,5 @@
+import { useMemo } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import GroupListPage from '../../components/common/GroupListPage';
 import sample from '../../assets/sample.png';
 
@@ -14,5 +16,28 @@ const dummyData = Array.from({ length: 20 }, (_, i) => ({
 }));
 
 export default function FavoriteGroupList() {
-  return <GroupListPage title="찜 그룹 리스트" groupList={dummyData} />;
+  const [params] = useSearchParams();
+  const rawQ = params.get('q') ?? '';
+  const q = rawQ.trim().toLowerCase();
+
+  const filtered = useMemo(() => {
+    if (!q) return dummyData;
+    return dummyData.filter(item => {
+      const inTitle = item.title.toLowerCase().includes(q);
+      const inLabel = item.label.toLowerCase().includes(q);
+      const inTags = (item.tags ?? []).some(t => t.toLowerCase().includes(q));
+      return inTitle || inLabel || inTags;
+    });
+  }, [q]);
+
+  const title = rawQ.trim()
+    ? `'${rawQ.trim()}' 검색 결과`
+    : '찜 그룹 리스트';
+
+  return (
+    <GroupListPage
+      title={title}
+      groupList={filtered}
+    />
+  );
 }
