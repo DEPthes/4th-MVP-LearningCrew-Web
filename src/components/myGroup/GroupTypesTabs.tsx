@@ -1,6 +1,7 @@
 import styles from "../../styles/myGroup/GroupTypeTabs.module.css";
 import { useSearchKeyword } from "../../hooks/SearchKeywordContext";
 import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
 export type GroupType = "joined" | "hosted" | "applied";
 
@@ -14,6 +15,14 @@ const items: { key: GroupType; label: string }[] = [
   { key: "hosted", label: "주최 그룹" },
   { key: "applied", label: "가입 신청 그룹" },
 ];
+
+const navigate = useNavigate();
+const { searchKeyword, type } = useSearchKeyword();
+useEffect(() => {
+  navigate({
+    search: searchKeyword ? `?q=${encodeURIComponent(searchKeyword)}&type=${type}` : `?type=${type}`,
+  });
+}, [searchKeyword]);
 
 export default function GroupTypeTabs({ value }: Props) {
   const { setType } = useSearchKeyword();

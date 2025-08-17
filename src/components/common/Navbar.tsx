@@ -1,4 +1,4 @@
-import { NavLink, Link, useNavigate, useLocation } from "react-router-dom";
+import { NavLink, Link, useLocation } from "react-router-dom";
 import styles from "../../styles/common/Navbar.module.css";
 import SearchBar from "../common/SearchBar";
 import { useSearchKeyword } from "../../hooks/SearchKeywordContext";
@@ -24,9 +24,8 @@ const DEFAULT_PROFILE =
 
 export default function Navbar() {
   const navbarHeight = "116px";
-  const navigate = useNavigate();
   const { pathname } = useLocation();
-  const { searchKeyword, setSearchKeyword, type, setType } = useSearchKeyword();
+  const { setSearchKeyword, type, setType } = useSearchKeyword();
 
   const [user, setUser] = useState<UserProfile | null>(null);
   const [profileSrc, setProfileSrc] = useState<string>(DEFAULT_PROFILE);
@@ -34,13 +33,6 @@ export default function Navbar() {
   const emitSearch = (query: string) => {
     setSearchKeyword(query);
   };
-
-  useEffect(() => {
-    navigate({
-      pathname,
-      search: searchKeyword ? `?q=${encodeURIComponent(searchKeyword)}&type=${type}` : `?type=${type}`,
-    });
-  }, [searchKeyword]);
 
   const isMyGroupActive =
     pathname.startsWith("/mygroup") || pathname.startsWith("/group/");
@@ -115,7 +107,7 @@ export default function Navbar() {
               onClick={() => {
                 setType("joined");
               }}
-              to={`/mygroup`}
+              to={`/mygroup?type=${type}`}
               className={() =>
                 `${styles.menuItem} ${isMyGroupActive ? styles.active : ""}`
               }
