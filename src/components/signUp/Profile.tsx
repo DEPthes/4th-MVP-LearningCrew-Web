@@ -5,12 +5,13 @@ import PhotoCamera from "../../assets/PhotoCamera.svg";
 
 type ProfileProps = {
   onImageChange: (file: File | null) => void;
-  variant?: "rect" | "circle";       // 직사각 / 원형
-  aspectRatio?: number;              // 비율
-  labelText?: string;                // 상단 라벨
-  infoText?: string;                 // 용량 안내
-  helpText?: string;                 // 하단 안내 문구
-  placeholderSrc?: string;           // 기본 이미지
+  variant?: "rect" | "circle";
+  aspectRatio?: number;
+  labelText?: string;
+  infoText?: string;
+  helpText?: string;
+  placeholderSrc?: string;
+  initialImage?: string | null;
 };
 
 export default function Profile({
@@ -21,9 +22,18 @@ export default function Profile({
   labelText = "프로필 이미지 설정",
   infoText = "*프로필 사진은 최대 50MB까지 업로드 가능합니다.",
   helpText = "*프로필 사진을 업로드 하세요.",
+  initialImage = null,
 }: ProfileProps) {
-  const [preview, setPreview] = useState<string | null>(null);
+  const [preview, setPreview] = useState<string | null>(initialImage || null);
   const [errorMessage, setErrorMessage] = useState<string>(helpText);
+  const [hasLocalSelection, setHasLocalSelection] = useState(false); 
+  
+  // initialImage가 바뀌면(내 정보 로딩 완료 등) 사용자가 새 파일을 고르지 않았을 때만 반영
+  useEffect(() => {
+    if (!hasLocalSelection) {
+      setPreview(initialImage || null);
+    }
+  }, [initialImage, hasLocalSelection]);
 
   // helpText 변경 시 동기화
   useEffect(() => {
@@ -37,10 +47,10 @@ export default function Profile({
 
     if (file) {
       if (file.size > 50 * 1024 * 1024) {
-        // 50MB 초과
         setErrorMessage("*프로필 사진이 50MB를 초과하였습니다.");
         onImageChange(null);
         setPreview(null);
+        setHasLocalSelection(false);
         return;
       }
 
@@ -48,13 +58,15 @@ export default function Profile({
       reader.onloadend = () => {
         setPreview(reader.result as string);
         onImageChange(file);
-        setErrorMessage(helpText); // 초기화
+        setErrorMessage(helpText);
+        setHasLocalSelection(true);
       };
       reader.readAsDataURL(file);
     } else {
       onImageChange(null);
-      setPreview(null);
+      setPreview(initialImage || null); 
       setErrorMessage(helpText);
+      setHasLocalSelection(false);
     }
   };
 
@@ -65,7 +77,6 @@ export default function Profile({
       <div className={styles.label}>{labelText}</div>
       <div className={styles.info}>{infoText}</div>
 
-      {/* variant/aspectRatio 적용: rect면 직사각, circle이면 기존 */}
       <div
         className={`${styles.profile__wrapper} ${
           variant === "rect" ? styles.rect : styles.circle

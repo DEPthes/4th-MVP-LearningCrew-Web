@@ -156,3 +156,28 @@
  font: var(--ButtonLMedium);
  color: var(--PointColor);
 }
+
+.logoutWrap {
+  display: flex;
+  justify-content: center; 
+  align-items: center;     
+  min-height: 70vh;        
+}
+
+.logoutCard {
+  text-align: center;      
+}
+.logoutTitle {
+  font: var(--BodyXLMedium);
+  color: var(--SubColor1);
+}
+.logoutSub{
+  font: var(--BodyMRegular);
+  color: var(--Gray1);
+}
+
+.profileImage{
+  border: solid 1px var(--Gray2);
+  object-fit: cover;
+  border-radius: 50%;
+}

@@ -14,13 +14,14 @@ import { getImage } from "../../apis/common/File";
 const DEFAULT_PROFILE =
   (() => {
     try {
-      const base = (typeof import.meta !== "undefined" && (import.meta as any).env?.BASE_URL) || (typeof document !== "undefined" ? document.baseURI : "/");
+      const base =
+        (typeof import.meta !== "undefined" && (import.meta as any).env?.BASE_URL) ||
+        (typeof document !== "undefined" ? document.baseURI : "/");
       return new URL("default-profile.svg", base).toString();
     } catch {
       return "/default-profile.svg";
     }
   })();
-
 
 export default function Navbar() {
   const navbarHeight = "116px";
@@ -37,10 +38,11 @@ export default function Navbar() {
   const isMyGroupActive =
     pathname.startsWith("/mygroup") || pathname.startsWith("/group/");
 
-  useEffect(() => {
+  const reevaluateAuth = async () => {
     if (!hasAccessToken()) {
       setUser(null);
       setProfileSrc(DEFAULT_PROFILE);
+      userStore.clear?.();
       return;
     }
 
@@ -50,18 +52,42 @@ export default function Navbar() {
       return;
     }
 
-    (async () => {
+    try {
       const me = await fetchMyProfile();
-      if (me) userStore.set(me);
-      setUser(me);
-    })();
+      if (me) {
+        userStore.set(me);
+        setUser(me);
+      } else {
+        setUser(null);
+        setProfileSrc(DEFAULT_PROFILE);
+        userStore.clear?.();
+      }
+    } catch {
+      setUser(null);
+      setProfileSrc(DEFAULT_PROFILE);
+      userStore.clear?.();
+    }
+  };
+
+  useEffect(() => {
+    reevaluateAuth();
+  }, [pathname]);
+
+
+  useEffect(() => {
+    const onLogout = () => {
+      setUser(null);
+      setProfileSrc(DEFAULT_PROFILE);
+      userStore.clear?.();
+    };
+    window.addEventListener("auth:logout", onLogout);
+    return () => window.removeEventListener("auth:logout", onLogout);
   }, []);
 
   useEffect(() => {
     let alive = true;
 
     (async () => {
-
       let next = DEFAULT_PROFILE;
 
       if (user?.profileImageUrl) {

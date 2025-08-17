@@ -5,11 +5,13 @@ import profilePlaceholder from "../../assets/profile.svg";
 import { Link } from "react-router-dom";
 import { fetchMe, type MeResponse } from "../../apis/mypage/users";
 import { getImage } from "../../apis/common/File";
+import { logout } from "../../apis/auth/auth";
 
 function formatGender(g: MeResponse["gender"]) {
-  const key = (g || "").toUpperCase();
+  const key = (g || "").toString().toUpperCase();
   if (key === "MALE") return "남자";
   if (key === "FEMALE" || key === "FEMAIL") return "여자";
+  if (!g) return "-";
   return "기타";
 }
 
@@ -17,7 +19,6 @@ export default function MyPageHome() {
   const [me, setMe] = useState<MeResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState<string | null>(null);
-
   const [imgSrc, setImgSrc] = useState<string>(profilePlaceholder);
 
   useEffect(() => {
@@ -26,7 +27,13 @@ export default function MyPageHome() {
         const data = await fetchMe();
         setMe(data);
       } catch (e: any) {
-        setErr(e?.response?.data?.message || "내 정보 불러오기에 실패했어요.");
+        const status = e?.response?.status;
+        if (status === 401) {
+          setMe(null);            
+          setErr(null);
+        } else {
+          setErr(e?.response?.data?.message || "내 정보 불러오기에 실패했어요.");
+        }
       } finally {
         setLoading(false);
       }
@@ -39,26 +46,43 @@ export default function MyPageHome() {
 
     (async () => {
       const uuid = me?.profileImage?.uuid;
-      const isImage = me?.profileImage?.handlingType === "IMAGE";
+      const isImage = (me as any)?.profileImage?.handlingType === "IMAGE";
 
       if (!uuid || !isImage) {
         setImgSrc(profilePlaceholder);
         return;
       }
-
-      const url = await getImage(uuid); 
-      if (!alive) return;
-
-      setImgSrc(url);
-
-      if (url.startsWith("blob:")) revokeUrl = url;
+      try {
+        const url = await getImage(uuid);
+        if (!alive) return;
+        setImgSrc(url);
+        if (url.startsWith("blob:")) revokeUrl = url;
+      } catch {
+        if (!alive) return;
+        setImgSrc(profilePlaceholder);
+      }
     })();
 
     return () => {
       alive = false;
       if (revokeUrl) URL.revokeObjectURL(revokeUrl);
     };
-  }, [me?.profileImage?.uuid, me?.profileImage?.handlingType]);
+  }, [me?.profileImage?.uuid, (me as any)?.profileImage?.handlingType]);
+
+  useEffect(() => {
+    const onLogout = () => {
+      setMe(null);
+      setImgSrc(profilePlaceholder);
+    };
+    window.addEventListener("auth:logout", onLogout);
+    return () => window.removeEventListener("auth:logout", onLogout);
+  }, []);
+
+  const handleLogout = async () => {
+    await logout();
+    setMe(null);
+    setImgSrc(profilePlaceholder);
+  };
 
   const idLabel = me?.email ? me.email : "-";
 
@@ -109,6 +133,22 @@ export default function MyPageHome() {
     );
   }
 
+  // 비로그인/토큰만료 전용 화면
+  if (!me && !err) {
+    return (
+      <main className={styles.container}>
+        <section className={styles.logoutWrap}>
+          <div className={styles.logoutCard}>
+            <p className={styles.logoutTitle}>로그인 후 확인 가능합니다</p>
+            <p className={styles.logoutSub}>
+              원활한 서비스 이용을 위해서 로그인 후 이용해 주세요
+            </p>
+          </div>
+        </section>
+      </main>
+    );
+  }
+
   if (err) {
     return (
       <main className={styles.container}>
@@ -137,7 +177,6 @@ export default function MyPageHome() {
         <hr />
         <div className={styles.profileBox}>
           <div className={styles.profileContent}>
-            {/* 프로필 이미지 + 필드 */}
             <div className={styles.profileLeft}>
               <div className={styles.fieldRow}>
                 <label className={styles.label}>프로필 사진</label>
@@ -149,7 +188,7 @@ export default function MyPageHome() {
               <div className={styles.profileFields}>
                 <div className={styles.fieldRow}>
                   <label className={styles.label}>닉네임</label>
-                  <p className={styles.leftTextValue}>{me?.nickname ?? "-"}</p>
+                  <p className={styles.leftTextValue}>{me?.nickname ?? "로그인 필요"}</p>
                 </div>
                 <div className={styles.fieldRow}>
                   <label className={styles.label}>생년월일</label>
@@ -157,12 +196,11 @@ export default function MyPageHome() {
                 </div>
                 <div className={styles.fieldRow}>
                   <label className={styles.label}>성별</label>
-                  <p className={styles.leftTextValue}>{formatGender(me?.gender!)}</p>
+                  <p className={styles.leftTextValue}>{formatGender((me as any)?.gender)}</p>
                 </div>
               </div>
             </div>
 
-            {/* ID, 비밀번호 */}
             <div className={styles.profileRight}>
               <div className={styles.fieldRow}>
                 <label className={styles.label}>ID</label>
@@ -183,7 +221,15 @@ export default function MyPageHome() {
         </div>
       </section>
 
-      <button className={styles.logout}>로그아웃</button>
+      <button
+        className={styles.logout}
+        onClick={handleLogout}
+        disabled={!me}
+        aria-disabled={!me}
+        title={me ? "로그아웃" : "이미 로그아웃 상태입니다"}
+      >
+        로그아웃
+      </button>
     </main>
   );
 }

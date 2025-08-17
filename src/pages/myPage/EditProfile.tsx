@@ -8,6 +8,7 @@ import BirthCalendar from "../../components/signUp/BirthCalendar";
 import Profile from "../../components/signUp/Profile";
 import Gender from "../../components/signUp/Gender";
 import { fetchMe, updateMe, type MeResponse } from "../../apis/mypage/users";
+import { getImage } from "../../apis/common/File";
 
 function toYYYYMMDD(d: Date) {
   const y = d.getFullYear();
@@ -33,11 +34,15 @@ export default function EditProfile() {
   const [birthday, setBirthday] = useState<Date | null>(null);
   const [gender, setGender] = useState<string | null>(null);
   const [profileImage, setProfileImage] = useState<File | null>(null);
+  const [profileImageUrl, setProfileImageUrl] = useState<string | null>(null);
 
   const [emailMessage, setEmailMessage] = useState("*이메일을 입력하세요.");
   const [nicknameMessage, setNicknameMessage] = useState("*닉네임을 입력하세요.");
-  const [passwordMessage, setPasswordMessage] = useState("*영어 대소문자, 숫자, 특수기호 조합 최소 8자 이상");
-  const [confirmPasswordMessage, setConfirmPasswordMessage] = useState("*비밀번호를 다시 입력하세요.");
+  const [passwordMessage, setPasswordMessage] = useState(
+    "*영어 대소문자, 숫자, 특수기호 조합 최소 8자 이상"
+  );
+  const [confirmPasswordMessage, setConfirmPasswordMessage] =
+    useState("*비밀번호를 다시 입력하세요.");
 
   const [emailValid, setEmailValid] = useState(false);
   const [nicknameValid, setNicknameValid] = useState(false);
@@ -97,9 +102,14 @@ export default function EditProfile() {
   };
 
   useEffect(() => {
+    let alive = true;
+    let revokeUrl: string | null = null;
+
     (async () => {
       try {
         const me: MeResponse = await fetchMe();
+        if (!alive) return;
+
         setEmail(me.email || "");
         setNickname(me.nickname || "");
         setGender(me.gender || null);
@@ -114,29 +124,57 @@ export default function EditProfile() {
           const parsed = parseYYYYMMDDToDate(rawBirthday);
           if (parsed) setBirthday(parsed);
         }
+
+        const img = (me as any).profileImage;
+        const uuid: string | undefined = img?.uuid;
+        const handlingType: string | undefined = img?.handlingType;
+
+        if (uuid && handlingType === "IMAGE") {
+          try {
+            const url = await getImage(uuid); 
+            if (!alive) return;
+            setProfileImageUrl(url);
+            if (url.startsWith("blob:")) revokeUrl = url;
+          } catch {
+            if (!alive) return;
+            setProfileImageUrl(null);
+          }
+        } else {
+          setProfileImageUrl(null);
+        }
       } catch (e: any) {
+        if (!alive) return;
         setError(e?.response?.data?.message || "내 정보 불러오기에 실패했습니다.");
       } finally {
-        setLoading(false);
+        if (alive) setLoading(false);
       }
     })();
+
+    return () => {
+      alive = false;
+      if (revokeUrl) URL.revokeObjectURL(revokeUrl);
+    };
   }, []);
 
   const canSubmit =
-    (password === "" && confirmPassword === "") || (passwordValid && passwordsMatch);
+    (password === "" && confirmPassword === "") ||
+    (passwordValid && passwordsMatch);
 
   const handleSubmit = async () => {
     if (!canSubmit || saving) return;
     setSaving(true);
     setError(null);
     try {
-      await updateMe({
+      const payload: any = {
         email,
         nickname,
-        password, 
-        profileImage,
-        birthday: birthday ? toYYYYMMDD(birthday) : undefined, // YYYY-MM-DD
-      });
+        birthday: birthday ? toYYYYMMDD(birthday) : undefined,
+      };
+
+      if (password) payload.password = password;
+      if (profileImage) payload.profileImage = profileImage;
+
+      await updateMe(payload);
       alert("내 정보가 수정되었습니다.");
       navigate("/myPage");
     } catch (e: any) {
@@ -146,8 +184,14 @@ export default function EditProfile() {
     }
   };
 
-  if (loading) return <div className={styles.page__wrapper}>불러오는 중...</div>;
-  if (error) return <div className={styles.page__wrapper} style={{ color: "red" }}>{error}</div>;
+  if (loading)
+    return <div className={styles.page__wrapper}>불러오는 중...</div>;
+  if (error)
+    return (
+      <div className={styles.page__wrapper} style={{ color: "red" }}>
+        {error}
+      </div>
+    );
 
   return (
     <>
@@ -211,12 +255,14 @@ export default function EditProfile() {
             isValid={nicknameValid}
           />
 
-          {/* 생일 */}
           <BirthCalendar value={birthday} onChange={setBirthday} />
 
           <Gender selected={gender} onSelect={setGender} />
 
-          <Profile onImageChange={setProfileImage} />
+          <Profile
+            onImageChange={setProfileImage}
+            initialImage={profileImageUrl}
+          />
 
           {error && <p style={{ color: "red" }}>{error}</p>}
 
