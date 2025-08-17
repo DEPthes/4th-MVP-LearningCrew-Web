@@ -10,6 +10,8 @@ import {
 } from "../../apis/common/studyGroups";
 import CATEGORY_NAME_TO_ID from "../../constants/categoryNameToId";
 import { getImage } from "../../apis/common/File";
+import type { SortLabel } from "../../utils/mapSort";
+
 
 type Card = {
   id: number;
@@ -228,7 +230,7 @@ export const Home = () => {
           onBookmarkClick={handleBookmarkClick}
           isGroup
           sort={sort}
-          setSort={setSort}
+          setSort={(v: string) => setSort(v as SortLabel)}
           onCardClick={handleCardClick}
         />
       )}
