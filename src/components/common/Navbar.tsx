@@ -9,7 +9,7 @@ import {
   hasAccessToken,
   type UserProfile,
 } from "../../apis/auth/auth";
-import { tokenStore, isJwtExpired } from "../../apis/common/token"; 
+import { tokenStore, isJwtExpired } from "../../apis/common/token";
 import { getImage } from "../../apis/common/File";
 
 const DEFAULT_PROFILE = (() => {
@@ -135,7 +135,7 @@ export default function Navbar() {
       <nav className={styles.navbar}>
         <div className={styles.container}>
           <div className={styles.logoSection}>
-            <img src="/logo.svg" alt="LearnIT Logo" className={styles.logo} />
+            <img src="/logo.svg" alt="LearnIT Logo" className={styles.logo} onClick={() => navigate("/")} />
           </div>
 
           <div className={styles.menu}>

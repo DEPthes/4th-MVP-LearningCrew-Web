@@ -92,6 +92,7 @@ export default function HostGroupStudyWriting() {
         wholeTitle="스터디 노트 작성하기"
         contentText="내 노트 내용"
         onSubmit={handleEditorSubmit}
+        isStudy={true}
         initialTitle={editorInitial.title}
         initialContent={editorInitial.content}
         loading={loading}

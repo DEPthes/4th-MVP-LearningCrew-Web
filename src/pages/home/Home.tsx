@@ -14,7 +14,7 @@ import { mapSort, type SortLabel } from "../../utils/mapSort";
 
 type Card = {
   id: number;
-  image: string;
+  image: string | null;
   label: string;
   count: string;
   title: string;
@@ -25,12 +25,12 @@ type Card = {
   type?: "joined" | "hosted" | "applied";
 };
 
-const PLACEHOLDER = "/images/placeholder-group.png";
+const PLACEHOLDER = null;
 
 function toCardSkeleton(item: StudyGroupItem): Card {
   return {
     id: item.id,
-    image: PLACEHOLDER,
+    image: PLACEHOLDER ?? null,
     label: item.summary || "스터디 소개",
     count: `${item.memberCount}/${item.maxMembers}`,
     title: item.name,

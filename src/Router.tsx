@@ -51,7 +51,6 @@ export const Router = () => {
 
         {/* Navbar (footer x) */}
         <Route element={<MinimalLayout />}>
-          <Route path="/mygroup/create" element={<CreateGroup />} />
           <Route path="group/:groupId/step/:stepId/quiz/questions" element={<QuizQ />} />
         </Route>
 
@@ -91,6 +90,7 @@ export const Router = () => {
         <Route path="/signup" element={<SignUp />} />
         <Route path="/welcome" element={<WelcomePage />} />
         <Route path="/mypage/edit" element={<EditProfile />} />
+        <Route path="/mygroup/create" element={<CreateGroup />} />
 
         {/* 404 */}
         <Route path="*" element={<div>404 Not Found</div>} />

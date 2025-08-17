@@ -85,7 +85,7 @@ export interface AppliedGroupListResponse {
 // 기존 컴포넌트와의 호환성을 위한 변환된 타입
 export interface TransformedGroupData {
  id: number;
- image: string; // null을 허용하지 않음
+ image: string | null;
  label: string;
  count: string;
  title: string;

@@ -1,7 +1,15 @@
 .page__page__wrapper {
- background: url("../../assets/studyackground.jpg");
- background-size: cover;
- background-position: center;
+ position: relative;
+}
+
+.backgroundImage {
+ position: absolute;
+ top: 0;
+ left: 0;
+ width: 100%;
+ height: 100%;
+ object-fit: cover;
+ z-index: -1;
 }
 
 .page__wrapper {
@@ -97,30 +105,30 @@
 
 /* 기본 북마크 버튼 */
 .Bookmark {
-  display: flex;
-  width: 42px;
-  height: 42px;
-  justify-content: center;
-  align-items: center;
-  border-radius: 8px;
-  border: 1.4px solid var(--Gray4, #ededed);
-  background: var(--gray-40, rgba(153, 153, 153, 0.4));
-  cursor: pointer;
-  box-sizing: border-box;
-  padding: 0;
-  transition: background-color .2s ease, border-color .2s ease;
+ display: flex;
+ width: 42px;
+ height: 42px;
+ justify-content: center;
+ align-items: center;
+ border-radius: 8px;
+ border: 1.4px solid var(--Gray4, #ededed);
+ background: var(--gray-40, rgba(153, 153, 153, 0.4));
+ cursor: pointer;
+ box-sizing: border-box;
+ padding: 0;
+ transition: background-color 0.2s ease, border-color 0.2s ease;
 }
 
 /* 이미지 크기 */
 .Bookmark img {
-  width: 24px;
-  height: 24px;
+ width: 24px;
+ height: 24px;
 }
 
 /* 클릭(활성) 상태 */
 .Bookmark[aria-pressed="true"] {
-  border: 1.4px solid var(--Main-Color-2, #FF552C);
-  background: var(--main-color-240, rgba(255, 85, 44, 0.40));
+ border: 1.4px solid var(--Main-Color-2, #ff552c);
+ background: var(--main-color-240, rgba(255, 85, 44, 0.4));
 }
 
 .button {

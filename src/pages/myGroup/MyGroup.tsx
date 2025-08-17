@@ -4,7 +4,6 @@ import GroupTypeTabs from '../../components/myGroup/GroupTypesTabs';
 import type { GroupType } from '../../components/myGroup/GroupTypesTabs';
 import CreateGroupButton from '../../components/myGroup/CreateGroupButton';
 import styles from '../../styles/myGroup/myGroup.module.css';
-import DefaultGroupImage from '../../assets/DefaultGroup.svg';
 import type { GroupListResponse, AppliedGroupListResponse, TransformedGroupData } from '../../types/group';
 import { getJoinGroup, getHostedGroup, getAppliedGroup } from '../../apis/home/GroupList';
 import { getImage } from '../../apis/common/File';
@@ -15,18 +14,17 @@ const transformGroupData = async (apiData: GroupListResponse | AppliedGroupListR
     const appliedData = apiData as AppliedGroupListResponse;
     const transformedData = await Promise.all(
       appliedData.content.map(async (item) => {
-        let imageUrl = DefaultGroupImage;
+        let imageUrl = null;
         if (item.studyGroup.groupImage) {
           try {
             imageUrl = await getImage(item.studyGroup.groupImage.uuid);
           } catch (error) {
             console.error(`이미지 로드 실패: ${item.studyGroup.groupImage.uuid}`, error);
-            imageUrl = DefaultGroupImage;
           }
         }
         return {
           id: item.studyGroup.id,
-          image: imageUrl,
+          image: imageUrl ?? null,
           label: item.studyGroup.summary,
           count: `${item.studyGroup.memberCount}/${item.studyGroup.maxMembers}`,
           title: item.studyGroup.name,
@@ -44,18 +42,17 @@ const transformGroupData = async (apiData: GroupListResponse | AppliedGroupListR
     const groupData = apiData as GroupListResponse;
     const transformedData = await Promise.all(
       groupData.content.map(async (group) => {
-        let imageUrl = DefaultGroupImage;
+        let imageUrl = null;
         if (group.groupImage) {
           try {
             imageUrl = await getImage(group.groupImage.uuid);
           } catch (error) {
             console.error(`이미지 로드 실패: ${group.groupImage.uuid}`, error);
-            imageUrl = DefaultGroupImage;
           }
         }
         return {
           id: group.id,
-          image: imageUrl,
+          image: imageUrl ?? null,
           label: group.summary,
           count: `${group.memberCount}/${group.maxMembers}`,
           title: group.name,

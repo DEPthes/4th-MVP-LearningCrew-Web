@@ -38,7 +38,7 @@ export default function ParticipantList({
             <button className={styles.button} disabled={busy} onClick={onApprove}>
               승인
             </button>
-            <button className={styles.button} disabled={busy} onClick={onReject}>
+            <button className={styles.button_reject} disabled={busy} onClick={onReject}>
               거절
             </button>
           </>

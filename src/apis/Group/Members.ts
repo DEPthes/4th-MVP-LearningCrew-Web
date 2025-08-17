@@ -13,15 +13,23 @@ export interface Member {
  * 참여자 목록 조회
  * GET /api/study-groups/{groupId}/members
  */
-export const getGroupMembers = async (
- groupId: number,
- opts?: { page?: number; size?: number; sort?: string }
-) => {
- const { page = 0, size = 10, sort = "createdAt,desc" } = opts ?? {};
+export const getGroupMembers = async ({
+ groupId,
+ page,
+ size,
+ sort,
+ order,
+}: {
+ groupId: number;
+ page?: number;
+ size?: number;
+ sort?: string;
+ order?: string;
+}) => {
  const { data } = await axios.get<PagedResponse<Member>>(
   `/api/study-groups/${groupId}/members`,
   {
-   params: { page, size, sort },
+   params: { page, size, sort, order },
    headers: getAuthHeader(), // ✅ 인증 헤더 추가
   }
  );

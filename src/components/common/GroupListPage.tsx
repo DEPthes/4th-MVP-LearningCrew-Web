@@ -6,10 +6,11 @@ import { Sort } from '../../components/common/Sort';
 import type { ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getStudyGroup } from '../../apis/studygroup/StudyGroup';
+import { useCurrentStep } from '../../hooks/CurrentStepContext';
 
 interface GroupItem {
   id: number;
-  image: string;
+  image: string | null;
   label: string;
   count: string;
   title: string;
@@ -60,6 +61,7 @@ export default function GroupListPage({
   setSort,
 }: GroupListPageProps) {
   const navigate = useNavigate();
+  const { setCurrentStep } = useCurrentStep();
 
   //임시
   const handleGroupClick = (groupId: number) => {
@@ -68,10 +70,12 @@ export default function GroupListPage({
         if (groupId) {
           const response = await getStudyGroup(groupId.toString());
           navigate(`/group/${groupId}/step/${response.currentStep}/MyGroupStudy`);
+          setCurrentStep(response.currentStep - 1);
         }
       } catch (error) {
         console.error('현재 스텝 아이디 조회 실패:', error);
         navigate(`/group/${groupId}/step/1/MyGroupStudy`);
+        setCurrentStep(1);
       }
     };
     fetchCurrentStepId();

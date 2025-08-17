@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import styles from "../../styles/fixedGroupHeader/Step.module.css";
 import { useGroupTab } from "../../hooks/GroupTabContext";
+import { useCurrentStep } from "../../hooks/CurrentStepContext";
 
 interface StepProps {
   totalSteps: number;   // 전체 스텝 수
@@ -13,6 +14,7 @@ export default function Step({ totalSteps, currentStep }: StepProps) {
   const navigate = useNavigate();
   const { groupId, stepId } = useParams<{ groupId: string; stepId: string }>();
   const { currentTab } = useGroupTab();
+  const { groupCurrentStep } = useCurrentStep();//그룹 현재 스탭 받아오기(변하지 않는 값)
 
   // 선택된 스텝(0-based). null이면 기본 모드(현재 스텝 강조).
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
@@ -59,15 +61,16 @@ export default function Step({ totalSteps, currentStep }: StepProps) {
         // 상태별 색상 규칙
         let stateClass: string;
         if (selectedIndex === null) {
-          if (idx === currentStep) stateClass = styles.selected;     // 주황
-          else if (idx < currentStep) stateClass = styles.after;     // 갈색
-          else stateClass = styles.before;                           // 회색
+          if (idx === currentStep) stateClass = styles.selected;     // 진한 주황 (현재 스텝)
+          else if (idx <= groupCurrentStep) stateClass = styles.after;     // 연한 주황 (그룹 현재 스텝까지)
+          else stateClass = styles.before;                           // 회색 (그룹 현재 스텝 초과)
         } else {
-          if (idx === selectedIndex) stateClass = styles.selected;   // 주황 (선택된 하나)
-          else if (idx < currentStep) stateClass = styles.after;     // 갈색(진행완료 유지)
-          else if (idx === currentStep) stateClass = styles.current; // 갈색(현재도 갈색으로)
-          else stateClass = styles.before;                           // 회색
+          if (idx === selectedIndex) stateClass = styles.selected;   // 진한 주황 (선택된 하나)
+          else if (idx <= groupCurrentStep) stateClass = styles.after;     // 연한 주황 (그룹 현재 스텝까지 유지)
+          else if (idx === currentStep) stateClass = styles.current; // 진한 주황 (현재 스텝도 진한 주황으로)
+          else stateClass = styles.before;                           // 회색 (그룹 현재 스텝 초과)
         }
+
 
         return (
           <div

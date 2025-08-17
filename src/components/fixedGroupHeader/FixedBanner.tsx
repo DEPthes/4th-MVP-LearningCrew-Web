@@ -5,6 +5,7 @@ import styles from "../../styles/fixedGroupHeader/FixedBanner.module.css";
 import bookmark1 from "../../assets/bookmark1.svg";
 import BookmarkOn from "../../assets/BookmarkOn.svg";
 import Step from "./Step";
+import studyBackground from "../../assets/studyackground.jpg"
 
 import {
   applyToStudyGroup,
@@ -17,6 +18,7 @@ import { closeStudyGroup } from "../../apis/Group/StudyGroupManage";
 import { getStudyGroupDetail, type StudyGroupDetail } from "../../apis/Group/StudyGroup";
 import { getStudyByStep, type StepStudy } from "../../apis/Group/StudyGroupStep";
 import { toggleGroupDibs } from "../../apis/Group/StudyGroupDibs";
+import { getImage } from "../../apis/common/File";
 
 type JoinUiState = "NONE" | ApplicationState;
 
@@ -32,7 +34,7 @@ export default function FixedBanner({ groupId, isOwner }: FixedBannerProps) {
   // 그룹/스텝 데이터
   const [group, setGroup] = useState<StudyGroupDetail | null>(null);
   const [stepInfo, setStepInfo] = useState<StepStudy | null>(null);
-
+  const [groupImg, setGroupImg] = useState<string | null>(null);
   // 북마크 & 가입 버튼
   const [bookmarked, setBookmarked] = useState(false);
   const [bookmarking, setBookmarking] = useState(false);
@@ -110,6 +112,7 @@ export default function FixedBanner({ groupId, isOwner }: FixedBannerProps) {
     if (loading) return "처리 중...";
     switch (joinState) {
       case "NONE":
+        return "탈퇴"
       case "REJECTED":
         return "가입 신청";
       case "PENDING":
@@ -203,8 +206,31 @@ export default function FixedBanner({ groupId, isOwner }: FixedBannerProps) {
     }
   };
 
+  useEffect(() => {
+    if (!group?.groupImage) return;
+
+    const fetchImages = async () => {
+      if (group?.groupImage) {
+        try {
+          const response = await getImage(group.groupImage.uuid);
+          setGroupImg(response);
+          console.log(response);
+        } catch (error) {
+          console.error(`이미지 로드 실패: ${group.groupImage.fileName}`, error);
+        }
+      }
+    };
+
+    fetchImages();
+  }, [group?.groupImage]);
+
   return (
     <div className={styles.page__page__wrapper}>
+      <img
+        src={groupImg ?? studyBackground}
+        alt="스터디 배경"
+        className={styles.backgroundImage}
+      />
       <div className={styles.page__wrapper}>
         <div className={styles.div__container}>
           <div className={styles.container__1}>

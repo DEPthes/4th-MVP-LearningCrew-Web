@@ -1,6 +1,6 @@
 // src/components/hostGroupParticipants/HostGroupParticipants.tsx
 import styles from "../../styles/hostGroupParticipants/HostGroupParticipants.module.css";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import ParticipantRow from "./ParticipantList";
 import { Sort } from "../common/Sort";
@@ -47,27 +47,24 @@ export default function HostGroupParticipants({ groupId: propId }: Props) {
   const [activeTab, setActiveTab] = useState<Tab>("applicant");
   const [sort, setSort] = useState("최신순");
   const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize] = useState(10);
 
   const [loading, setLoading] = useState(false);
   const [rows, setRows] = useState<(Application | Member)[]>([]);
   const [totalPages, setTotalPages] = useState(1);
-
-  const apiSort = useMemo(
-    () => (sort === "최신순" ? "createdAt,desc" : "createdAt,asc"),
-    [sort]
-  );
+  const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
 
   const fetchList = async () => {
     setLoading(true);
     try {
       const page = currentPage - 1;
+      const order = sort === "최신순" ? "desc" : "asc";
+      const apiSort = sort === "최신순" || sort === "오래된순" ? "created_at" : "alphabet";
       if (activeTab === "applicant") {
-        const data = await getGroupApplications(groupId, { page, size: pageSize, sort: apiSort });
+        const data = await getGroupApplications({ groupId, page, size: 10, sort: apiSort, order });
         setRows(data.content);
         setTotalPages(data.page.totalPages || 1);
       } else {
-        const data = await getGroupMembers(groupId, { page, size: pageSize, sort: apiSort });
+        const data = await getGroupMembers({ groupId, page, size: 10, sort: apiSort, order });
         setRows(data.content);
         setTotalPages(data.page.totalPages || 1);
       }
@@ -82,15 +79,7 @@ export default function HostGroupParticipants({ groupId: propId }: Props) {
   useEffect(() => {
     fetchList();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeTab, currentPage, apiSort, groupId]);
-
-  // 신청자 탭일 때 자동 새로고침(10초)
-  useEffect(() => {
-    if (activeTab !== "applicant") return;
-    const id = setInterval(fetchList, 10000);
-    return () => clearInterval(id);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeTab, currentPage, apiSort, groupId]);
+  }, [activeTab, currentPage, sort, groupId, isRefreshing]);
 
   /** ✅ 현재 목록에서 특정 userId 제거(옵티미스틱) */
   const removeRowByUserId = (uid: number) => {
@@ -104,6 +93,7 @@ export default function HostGroupParticipants({ groupId: propId }: Props) {
 
   /** ✅ 승인: 즉시 제거, 이미 처리된 400/404/409는 성공 간주(다시 안 보임) */
   const handleApprove = async (userId: number) => {
+    setIsRefreshing(!isRefreshing);
     removeRowByUserId(userId); // 먼저 화면에서 삭제
     try {
       await approveApplication(groupId, userId);
@@ -117,6 +107,7 @@ export default function HostGroupParticipants({ groupId: propId }: Props) {
 
   /** ✅ 거절: 즉시 제거, 이미 처리된 400/404/409는 성공 간주 */
   const handleReject = async (userId: number) => {
+    setIsRefreshing(!isRefreshing);
     removeRowByUserId(userId);
     try {
       await rejectApplication(groupId, userId);
@@ -179,18 +170,20 @@ export default function HostGroupParticipants({ groupId: propId }: Props) {
         rows.map((item) => {
           if (activeTab === "applicant") {
             const a = item as Application;
-            return (
-              <ParticipantRow
-                key={a.user.id}                                    // ✅ user.id로 고정
-                mode="applicant"
-                nickname={a.user.nickname}
-                gender={displayGender(a.user.gender)}              // ✅ 남/여
-                dateLabel={fmt(a.createdAt)}
-                onApprove={() => handleApprove(a.user.id)}         // ✅ 즉시 제거
-                onReject={() => handleReject(a.user.id)}           // ✅ 즉시 제거
-                busy={loading}
-              />
-            );
+            if (a.state === "PENDING") {
+              return (
+                <ParticipantRow
+                  key={a.user.id}                                    // ✅ user.id로 고정
+                  mode="applicant"
+                  nickname={a.user.nickname}
+                  gender={displayGender(a.user.gender)}              // ✅ 남/여
+                  dateLabel={fmt(a.createdAt)}
+                  onApprove={() => handleApprove(a.user.id)}         // ✅ 즉시 제거
+                  onReject={() => handleReject(a.user.id)}           // ✅ 즉시 제거
+                  busy={loading}
+                />
+              );
+            }
           } else {
             const m = item as Member;
             return (

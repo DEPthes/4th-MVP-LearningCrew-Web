@@ -13,8 +13,11 @@ import { Font } from "./Font";
 import { Submit } from "./Submit";
 
 interface EditorProps {
-  contentText: string;
-  wholeTitle: string;
+  contentText?: string;
+  wholeTitle?: string;
+  fileList?: AttachedFile[];
+  imageList?: AttachedFile[];
+  isStudy?: boolean;
   onSubmit?: (
     title: string,
     content: string,
@@ -28,6 +31,10 @@ interface EditorProps {
 
   /** 선택: 로딩 표시 */
   loading?: boolean;
+
+  /** ✅ 파일 상태 변경 콜백 추가 */
+  onFilesChange?: (files: AttachedFile[]) => void;
+  onImagesChange?: (images: AttachedFile[]) => void;
 }
 
 interface AttachedFile {
@@ -43,7 +50,10 @@ export const ContentEditor = ({
   onSubmit,
   initialTitle = "",
   initialContent = "",
+  fileList,
+  imageList,
   loading = false,
+  isStudy,
 }: EditorProps) => {
   const [title, setTitle] = useState(initialTitle);
   const [fontSize, setFontSize] = useState("16px");
@@ -96,6 +106,8 @@ export const ContentEditor = ({
   /** ---------- 프리필 ---------- */
   useEffect(() => {
     setTitle(initialTitle ?? "");
+    setAttachedFiles(fileList ?? []);
+    setAttachedImages(imageList ?? []);
   }, [initialTitle]);
 
   // 🔧 setContent의 2번째 인자는 버전에 따라 타입이 다름 → 옵션 객체로 안전하게 처리
@@ -221,9 +233,8 @@ export const ContentEditor = ({
     if (bytes === 0) return "0 Bytes";
     const k = 1024;
     const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return `${parseFloat((bytes / Math.pow(k, i)).toFixed(2))} ${
-      ["Bytes", "KB", "MB", "GB"][i]
-    }`;
+    return `${parseFloat((bytes / Math.pow(k, i)).toFixed(2))} ${["Bytes", "KB", "MB", "GB"][i]
+      }`;
   };
 
   if (!editor) return null;
@@ -272,19 +283,21 @@ export const ContentEditor = ({
               />
             </div>
 
-            <div>
-              <label className={styles.fileUploadButton}>
-                <img src={Clip} alt="Clip" />
-                <span>파일 첨부</span>
-                <input
-                  type="file"
-                  onChange={handleFileUpload}
-                  style={{ display: "none" }}
-                  accept="image/*,.pdf,.doc,.docx,.txt,.xlsx,.xls"
-                  multiple
-                />
-              </label>
-            </div>
+            {!isStudy && (
+              <div>
+                <label className={styles.fileUploadButton}>
+                  <img src={Clip} alt="Clip" />
+                  <span>파일 첨부</span>
+                  <input
+                    type="file"
+                    onChange={handleFileUpload}
+                    style={{ display: "none" }}
+                    accept="image/*,.pdf,.doc,.docx,.txt,.xlsx,.xls"
+                    multiple
+                  />
+                </label>
+              </div>
+            )}
           </div>
         </div>
 

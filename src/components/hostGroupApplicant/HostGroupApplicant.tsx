@@ -1,5 +1,5 @@
 import styles from "../../styles/hostGroupParticipants/HostGroupParticipants.module.css";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import ApplicantRow from "../hostGroupApplicant/ApplicantList";
 import { Sort } from "../common/Sort";
 import { Pagenation } from "../common/Pagenation";
@@ -41,27 +41,23 @@ export default function HostGroupApplicant({ groupId }: Props) {
   const [activeTab, setActiveTab] = useState<Tab>("applicant");
   const [sort, setSort] = useState("최신순");
   const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize] = useState(10);
 
   const [loading, setLoading] = useState(false);
   const [rows, setRows] = useState<(Application | Member)[]>([]);
   const [totalPages, setTotalPages] = useState(1);
 
-  const apiSort = useMemo(
-    () => (sort === "최신순" ? "createdAt,desc" : "createdAt,asc"),
-    [sort]
-  );
-
   const fetchList = async () => {
     setLoading(true);
     try {
       const page = currentPage - 1;
+      const order = sort === "최신순" ? "desc" : "asc";
+      const apiSort = sort === "최신순" || sort === "오래된순" ? "created_at" : "alphabet";
       if (activeTab === "applicant") {
-        const data = await getGroupApplications(groupId, { page, size: pageSize, sort: apiSort });
+        const data = await getGroupApplications({ groupId, page, size: 10, sort: apiSort, order });
         setRows(data.content);
         setTotalPages(data.page.totalPages || 1);
       } else {
-        const data = await getGroupMembers(groupId, { page, size: pageSize, sort: apiSort });
+        const data = await getGroupMembers({ groupId, page, size: 10, sort: apiSort, order });
         setRows(data.content);
         setTotalPages(data.page.totalPages || 1);
       }
@@ -76,14 +72,14 @@ export default function HostGroupApplicant({ groupId }: Props) {
   useEffect(() => {
     fetchList();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeTab, currentPage, apiSort, groupId]);
+  }, [activeTab, currentPage, sort, groupId]);
 
   useEffect(() => {
     if (activeTab !== "applicant") return;
     const id = setInterval(fetchList, 10000);
     return () => clearInterval(id);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeTab, currentPage, apiSort, groupId]);
+  }, [activeTab, currentPage, sort, groupId]);
 
   const removeRowByUserId = (uid: number) => {
     setRows(prev => prev.filter((r: any) => (r?.user?.id ?? r?.applicant?.id ?? r?.id) !== uid));
