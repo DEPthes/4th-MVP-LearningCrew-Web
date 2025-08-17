@@ -4,6 +4,7 @@ import GroupListPage from "../../components/common/GroupListPage";
 import { fetchStudyGroups, type StudyGroupItem } from "../../apis/common/studyGroups";
 import { getImage } from "../../apis/common/File";
 import { postBookmark } from "../../apis/common/Bookmark";
+import { mapSort } from "../../utils/mapSort"; 
 
 type Card = {
   id: number;
@@ -58,41 +59,15 @@ export default function FavoriteGroupList() {
         setLoading(true);
         setErrorMsg(null);
 
-        let sortKey: string = "created_at"; 
-        let order: "asc" | "desc" | undefined = "desc";
+        const { sort: sortKey, order } = mapSort(sort, !!q);
 
-        switch (sort) {
-          case "최신순":
-            sortKey = "created_at";
-            order = "desc";
-            break;
-          case "오래된순":
-            sortKey = "created_at";
-            order = "asc";
-            break;
-          case "가나다순":
-            sortKey = "alphabet";
-            order = undefined;
-            break;
-          case "관련도순":
-            if (q) {
-              sortKey = "relative";
-              order = undefined;
-            } else {
-              // 검색어 없으면 최신순으로 폴백
-              sortKey = "created_at";
-              order = "desc";
-            }
-            break;
-        }
-
-        const res = await fetchStudyGroups({
+        const baseParams = {
           page: 0,
           size: 50,
           sort: sortKey,
-          order,
           searchKeyword: q || undefined,
-        });
+        } as const;
+        const res = await fetchStudyGroups(order ? { ...baseParams, order } : baseParams);
 
         const items: StudyGroupItem[] = (res?.content ?? []).filter((g) => g.dibs === true);
 
@@ -167,8 +142,8 @@ export default function FavoriteGroupList() {
       groupList={filtered}
       loading={loading}
       error={errorMsg ?? undefined}
-      isGroup={true}    
-      showSort           
+      isGroup
+      showSort
       sort={sort}
       setSort={setSort}
       onBookmarkClick={handleToggleBookmark}
