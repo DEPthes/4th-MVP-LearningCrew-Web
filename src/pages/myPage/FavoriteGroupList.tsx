@@ -31,7 +31,7 @@ function toCardSkeleton(item: StudyGroupItem): Card {
       .replaceAll("-", ".")}`,
     person: `@${item.owner?.nickname ?? "알 수 없음"}`,
     categories: item.categories?.map((c) => c.name) ?? [],
-    isBookmarked: true, 
+    isBookmarked: true,
   };
 }
 
@@ -39,6 +39,8 @@ export default function FavoriteGroupList() {
   const [params] = useSearchParams();
   const rawQ = params.get("q") ?? "";
   const q = rawQ.trim();
+
+  const [sort, setSort] = useState<"최신순" | "오래된순" | "관련도순" | "가나다순">("최신순");
 
   const [cards, setCards] = useState<Card[]>([]);
   const [loading, setLoading] = useState(false);
@@ -56,11 +58,39 @@ export default function FavoriteGroupList() {
         setLoading(true);
         setErrorMsg(null);
 
+        let sortKey: string = "created_at"; 
+        let order: "asc" | "desc" | undefined = "desc";
+
+        switch (sort) {
+          case "최신순":
+            sortKey = "created_at";
+            order = "desc";
+            break;
+          case "오래된순":
+            sortKey = "created_at";
+            order = "asc";
+            break;
+          case "가나다순":
+            sortKey = "alphabet";
+            order = undefined;
+            break;
+          case "관련도순":
+            if (q) {
+              sortKey = "relative";
+              order = undefined;
+            } else {
+              // 검색어 없으면 최신순으로 폴백
+              sortKey = "created_at";
+              order = "desc";
+            }
+            break;
+        }
+
         const res = await fetchStudyGroups({
           page: 0,
           size: 50,
-          sort: "createdAt",
-          order: "desc",
+          sort: sortKey,
+          order,
           searchKeyword: q || undefined,
         });
 
@@ -79,13 +109,13 @@ export default function FavoriteGroupList() {
             if (!uuid || !fileName) return base;
 
             try {
-              const url = await getImage(uuid, fileName); 
+              const url = await getImage(uuid, fileName);
               if (url.startsWith("blob:")) {
                 createdUrlsRef.current.push(url);
               }
               return { ...base, image: url };
             } catch {
-              return base; 
+              return base;
             }
           })
         );
@@ -111,23 +141,21 @@ export default function FavoriteGroupList() {
       createdUrlsRef.current.forEach((u) => URL.revokeObjectURL(u));
       createdUrlsRef.current = [];
     };
-
-  }, [q]);
+  }, [q, sort]);
 
   const filtered = useMemo(() => {
     if (!q) return cards;
     const lc = q.toLowerCase();
-    return cards.filter((item) => {
-      const bySearch =
+    return cards.filter(
+      (item) =>
         item.title.toLowerCase().includes(lc) ||
         item.label.toLowerCase().includes(lc) ||
-        (item.categories ?? []).some((c) => c.toLowerCase().includes(lc));
-      return bySearch;
-    });
+        (item.categories ?? []).some((c) => c.toLowerCase().includes(lc))
+    );
   }, [cards, q]);
 
   const handleToggleBookmark = async (groupId: number) => {
-    const next = await postBookmark(String(groupId)); 
+    const next = await postBookmark(String(groupId));
     if (!next) {
       setCards((prev) => prev.filter((v) => v.id !== groupId));
     }
@@ -135,12 +163,15 @@ export default function FavoriteGroupList() {
 
   return (
     <GroupListPage
-      title={rawQ.trim() ? `'${rawQ.trim()}' 검색 결과` : "찜 그룹 리스트"}
+      title={rawQ ? `'${rawQ}' 검색 결과` : "찜 그룹 리스트"}
       groupList={filtered}
       loading={loading}
       error={errorMsg ?? undefined}
-      // GroupListPage가 지원하면 주석 해제
-      // onToggleBookmark={handleToggleBookmark}
+      isGroup={true}    
+      showSort           
+      sort={sort}
+      setSort={setSort}
+      onBookmarkClick={handleToggleBookmark}
     />
   );
 }
