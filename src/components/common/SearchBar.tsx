@@ -7,7 +7,7 @@ interface SearchBarProps {
   onSearch: (query: string) => void;
 }
 
-export default function SearchBar({ placeholder = "스터디 이름을 검색해 보세요", onSearch }: SearchBarProps) {
+export default function SearchBar({ placeholder = "그룹명 또는 카테고리를 검색해 보세요", onSearch }: SearchBarProps) {
   const [q, setQ] = useState("");
 
   const handleSearch = () => {
