@@ -93,6 +93,9 @@
  width: 100px;
  height: 100px;
  margin-top: 20px;
+ border: solid 1px var(--Gray2);
+ object-fit: cover;
+ border-radius: 50%;
 }
 
 .fieldRow {
@@ -177,8 +180,3 @@
   color: var(--Gray1);
 }
 
-.profileImage{
-  border: solid 1px var(--Gray2);
-  object-fit: cover;
-  border-radius: 50%;
-}
