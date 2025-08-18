@@ -33,7 +33,7 @@ export const CommentList = ({ comments }: CommentListProps) => {
   const [sort, setSort] = useState<string>("최신순");
   const [sortedComments, setSortedComments] = useState<DataProps[] | undefined>(comments);
   const [imageUrls, setImageUrls] = useState<{ [key: string]: string }>({});
-  const [profileImageUrl, setProfileImageUrl] = useState<string | null>();
+  const [profileImageUrls, setProfileImageUrls] = useState<{ [key: number]: string }>({});
 
   useEffect(() => {
     if (!comments || !Array.isArray(comments)) {
@@ -56,17 +56,22 @@ export const CommentList = ({ comments }: CommentListProps) => {
     const fetchImages = async () => {
       if (comments && Array.isArray(comments)) {
         const imageUrlMap: { [key: string]: string } = {};
+        const profileUrlMap: { [key: number]: string } = {};
 
         for (const comment of comments) {
-          if (comment.createdBy.profileImage.uuid) {
+          // 프로필 이미지 처리
+          if (comment.createdBy.profileImage && comment.createdBy.profileImage.uuid) {
             try {
               const response = await getImage(comment.createdBy.profileImage.uuid);
-              setProfileImageUrl(response);
+              profileUrlMap[comment.createdBy.id] = response;
             } catch (error) {
               console.error(`프로필 이미지 로드 실패: ${comment.createdBy.profileImage.uuid}`, error);
+              // 기본 프로필 이미지 설정
+              profileUrlMap[comment.createdBy.id] = "";
             }
           }
 
+          // 첨부 이미지 처리
           if (comment.attachedImages && comment.attachedImages.length > 0) {
             for (const image of comment.attachedImages) {
               try {
@@ -74,12 +79,15 @@ export const CommentList = ({ comments }: CommentListProps) => {
                 imageUrlMap[image.uuid] = response;
               } catch (error) {
                 console.error(`이미지 로드 실패: ${image.fileName}`, error);
+                // 에러 시 기본 이미지 설정
+                imageUrlMap[image.uuid] = "/images/placeholder-image.png";
               }
             }
           }
         }
 
         setImageUrls(imageUrlMap);
+        setProfileImageUrls(profileUrlMap);
       }
     };
 
@@ -104,6 +112,21 @@ export const CommentList = ({ comments }: CommentListProps) => {
     }
   };
 
+  const getProfileImage = (comment: DataProps) => {
+    const profileUrl = profileImageUrls[comment.createdBy.id];
+    if (profileUrl) {
+      return <img src={profileUrl} alt="프로필" />;
+    } else {
+      return (
+        <div className={styles.comment__profile__none}>
+          <p className={styles.comment__profile__none__word}>
+            {comment.createdBy.nickname.slice(0, 1)}
+          </p>
+        </div>
+      );
+    }
+  };
+
   return (
     <div className={styles.comment__container}>
       <div className={styles.comment__header}>
@@ -120,14 +143,7 @@ export const CommentList = ({ comments }: CommentListProps) => {
                 style={{ borderBottom: index + 1 === sortedComments.length ? "none" : "2px solid var(--Gray4)" }}
               >
                 <div className={styles.comment__content__each__header}>
-                  {profileImageUrl ?
-                    <>
-                      <img src={profileImageUrl} />
-                    </>
-                    :
-                    <div className={styles.comment__profile__none}>
-                      <p className={styles.comment__profile__none__word}>{comment.createdBy.nickname.slice(0, 1)}</p>
-                    </div>}
+                  {getProfileImage(comment)}
                   <p className={styles.comment__content__each__writer}>{comment.createdBy.nickname} 님</p>
                   <p className={styles.comment__content__each__date}>{comment.createdAt.slice(0, 10)} {comment.createdAt.slice(11, 16)}</p>
                 </div>
@@ -136,7 +152,15 @@ export const CommentList = ({ comments }: CommentListProps) => {
                   <div className={styles.comment__imageList}>
                     {comment.attachedImages.length > 0 && comment.attachedImages.map((image) => (
                       <div key={image.uuid} className={styles.comment__imageItem}>
-                        <img src={imageUrls[image.uuid] || image.uuid} alt={image.fileName} className={styles.comment__image} />
+                        <img
+                          src={imageUrls[image.uuid] || "/images/placeholder-image.png"}
+                          alt={image.fileName}
+                          className={styles.comment__image}
+                          onError={(e) => {
+                            const target = e.target as HTMLImageElement;
+                            target.src = "/images/placeholder-image.png";
+                          }}
+                        />
                       </div>
                     ))}
                   </div>

@@ -71,6 +71,7 @@ export const CreateGroup = () => {
           <Input
             holder="스터디 이름을 작성해 주세요."
             message="스터디 이름을 입력하세요."
+            maxLength={10}
             errorMessage={errors.name?.message}
             register={register("name")}
           />
