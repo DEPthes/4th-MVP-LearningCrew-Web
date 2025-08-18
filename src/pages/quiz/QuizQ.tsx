@@ -29,7 +29,6 @@ export const QuizQ = () => {
   const isLastQuestion = currentQuizIndex === totalQuestions - 1;
 
   const handleAnswerSelect = (optionNum: number) => {
-    console.log(currentQuizIndex, optionNum);
     setSelectedAnswers(prev => ({
       ...prev,
       [currentQuizIndex]: optionNum

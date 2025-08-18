@@ -10,12 +10,10 @@ interface ButtonProps {
 export const Button = ({ handleSubmit }: ButtonProps) => {
   const navigate = useNavigate();
   const handleFormSubmit: SubmitHandler<any> = async (formData) => {
-    console.log(formData);
     try {
-      const response = await PostCreateGroup(formData);
+      await PostCreateGroup(formData);
       alert("스터디가 개설되었습니다.");
       navigate(`/`);
-      console.log(response);
     } catch (error) {
       console.error(error);
     }

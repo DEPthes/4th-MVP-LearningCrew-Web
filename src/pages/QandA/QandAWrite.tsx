@@ -18,7 +18,7 @@ export const QandAWrite = () => {
 
   const handleSubmit = async (title: string, content: string, attachedFiles: File[], attachedImages: File[]) => {
     try {
-      const response = await postQandA({
+      await postQandA({
         groupId: groupId || "2",
         stepId: "3",
         title,
@@ -26,7 +26,6 @@ export const QandAWrite = () => {
         attachedFiles,
         attachedImages,
       })
-      console.log(response);
       alert("질문이 등록되었습니다.");
       navigate(`/group/${groupId}/step/${stepId}/QandA`);
     } catch (error) {

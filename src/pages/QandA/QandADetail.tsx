@@ -23,7 +23,6 @@ export const QandADetail = () => {
         if (groupId && qId) {
           const response = await getQandADetail({ groupId: groupId, qnaId: qId });
           setQandADetail(response);
-          console.log(response);
           setLoading(false);
         }
       } catch (error) {

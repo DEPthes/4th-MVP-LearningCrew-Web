@@ -5,8 +5,8 @@ import { Pagenation } from '../../components/common/Pagenation';
 import { Sort } from '../../components/common/Sort';
 import type { ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getStudyGroup } from '../../apis/studygroup/StudyGroup';
 import { useCurrentStep } from '../../hooks/CurrentStepContext';
+import { fetchStudyGroups } from '../../apis/common/studyGroups';
 
 interface GroupItem {
   id: number;
@@ -68,13 +68,15 @@ export default function GroupListPage({
     const fetchCurrentStepId = async () => {
       try {
         if (groupId) {
-          const response = await getStudyGroup(groupId.toString());
-          navigate(`/group/${groupId}/step/${response.currentStep}/MyGroupStudy`);
-          setCurrentStep(response.currentStep - 1);
+          const response = await fetchStudyGroups({ page: 0, size: 1000 });
+          const item = response.content.find(item => item.id === groupId);
+          if (item) {
+            navigate(`/group/${groupId}/step/${item.currentStep}/MyGroupStudy`);
+            setCurrentStep(item.currentStep);
+          }
         }
       } catch (error) {
         console.error('현재 스텝 아이디 조회 실패:', error);
-        navigate(`/group/${groupId}/step/1/MyGroupStudy`);
       }
     };
     fetchCurrentStepId();

@@ -138,27 +138,34 @@ export const applyToStudyGroup = async (groupId: number) => {
  return data;
 };
 
-// 가입 취소 (본인) — DELETE 우선, 405/404면 POST /join/cancel 폴백
 export const cancelMyApplication = async (groupId: number) => {
- try {
-  const { data } = await axios.delete<Application>(
-   `/api/study-groups/${groupId}/join`,
-   { headers: getAuthHeader() }
-  );
-  return data;
- } catch (e: any) {
-  const status = e?.response?.status;
-  if (status === 405 || status === 404) {
-   const { data } = await axios.post<Application>(
-    `/api/study-groups/${groupId}/join/cancel`,
-    {},
-    { headers: getAuthHeader() }
-   );
-   return data;
-  }
-  throw e;
- }
+ const { data } = await axios.delete(`/api/study-groups/${groupId}/join`, {
+  headers: getAuthHeader(),
+ });
+ return data;
 };
+
+// 가입 취소 (본인) — DELETE 우선, 405/404면 POST /join/cancel 폴백
+// export const cancelMyApplication = async (groupId: number) => {
+//  try {
+//   const { data } = await axios.delete<Application>(
+//    `/api/study-groups/${groupId}/join`,
+//    { headers: getAuthHeader() }
+//   );
+//   return data;
+//  } catch (e: any) {
+//   const status = e?.response?.status;
+//   if (status === 405 || status === 404) {
+//    const { data } = await axios.post<Application>(
+//     `/api/study-groups/${groupId}/join/cancel`,
+//     {},
+//     { headers: getAuthHeader() }
+//    );
+//    return data;
+//   }
+//   throw e;
+//  }
+// };
 
 // 탈퇴 (승인된 이후)
 export const leaveStudyGroup = async (groupId: number) => {

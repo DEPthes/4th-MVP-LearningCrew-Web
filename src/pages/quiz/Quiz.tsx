@@ -51,7 +51,6 @@ export const Quiz = () => {
         if (groupCurrentStep - 1 === parseInt(stepId ?? "0") && !isQuiz) {
           try {
             await postQuizCreate({ groupId: groupId ?? "1", stepId: stepId ?? "1" });
-            console.log("퀴즈 생성 요청 성공");
           } catch (error) {
             console.error("퀴즈 생성 요청 실패:", error);
           }

@@ -21,8 +21,7 @@ export type StepStudy = {
 export async function getStudyByStep(groupId: number, step: number) {
  try {
   const { data } = await axios.get<StepStudy>(
-   `/api/study-groups/${groupId}/steps/${step}`,
-   { headers: getAuthHeader() }
+   `/api/study-groups/${groupId}/steps/${step}`
   );
   return data;
  } catch (e: any) {

@@ -135,7 +135,6 @@ export const MyNote = () => {
           try {
             const response = await getImage(image.uuid);
             imageUrlMap[image.uuid] = response;
-            console.log(imageUrlMap);
           } catch (error) {
             console.error(`이미지 로드 실패: ${image.fileName}`, error);
           }

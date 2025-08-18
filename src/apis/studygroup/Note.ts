@@ -60,7 +60,6 @@ export const getSharedNoteList = async (data: SharedNoteListRequest) => {
     headers: getAuthHeader(),
    }
   );
-  console.log(response.data);
   return response.data;
  } catch (error) {
   throw error;

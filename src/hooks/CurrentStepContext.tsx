@@ -15,6 +15,8 @@ interface CategoryType {
 interface CurrentStepContextType {
   id: number;
   setId: (id: number) => void;
+  totalStep: number | null;
+  setTotalStep: (totalStep: number | null) => void;
   groupCurrentStep: number;
   setCurrentStep: (step: number) => void;
   summary: string;
@@ -32,6 +34,7 @@ const CurrentStepContext = createContext<CurrentStepContextType | undefined>(und
 export function CurrentStepProvider({ children }: { children: ReactNode }) {
   const [groupCurrentStep, setCurrentStep] = useState<number>(0);
   const [id, setId] = useState<number>(0);
+  const [totalStep, setTotalStep] = useState<number | null>(null);
   const [summary, setSummary] = useState<string>("");
   const [maxMembers, setMaxMembers] = useState<number>(0);
   const [groupImage, setGroupImage] = useState<FileMeta>({
@@ -48,6 +51,8 @@ export function CurrentStepProvider({ children }: { children: ReactNode }) {
       setId,
       groupCurrentStep,
       setCurrentStep,
+      totalStep,
+      setTotalStep,
       summary,
       setSummary,
       maxMembers,

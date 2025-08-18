@@ -46,7 +46,7 @@ export default function Step({ totalSteps, currentStep }: StepProps) {
     const safeTab = getSafeTab();
     const target = `/group/${groupId}/step/${index + 1}/${safeTab}`;
     // 디버그용 로그: 실제 이동 경로 확인
-    console.log("[Step] navigate to:", target, "(from tab:", currentTab, "→ safe:", safeTab, ")");
+    // console.log("[Step] navigate to:", target, "(from tab:", currentTab, "→ safe:", safeTab, ")");
     navigate(target);
   };
 
@@ -62,11 +62,11 @@ export default function Step({ totalSteps, currentStep }: StepProps) {
         let stateClass: string;
         if (selectedIndex === null) {
           if (idx === currentStep) stateClass = styles.selected;     // 진한 주황 (현재 스텝)
-          else if (idx <= groupCurrentStep) stateClass = styles.after;     // 연한 주황 (그룹 현재 스텝까지)
+          else if (idx <= groupCurrentStep - 1) stateClass = styles.after;     // 연한 주황 (그룹 현재 스텝까지)
           else stateClass = styles.before;                           // 회색 (그룹 현재 스텝 초과)
         } else {
           if (idx === selectedIndex) stateClass = styles.selected;   // 진한 주황 (선택된 하나)
-          else if (idx <= groupCurrentStep) stateClass = styles.after;     // 연한 주황 (그룹 현재 스텝까지 유지)
+          else if (idx <= groupCurrentStep - 1) stateClass = styles.after;     // 연한 주황 (그룹 현재 스텝까지 유지)
           else if (idx === currentStep) stateClass = styles.current; // 진한 주황 (현재 스텝도 진한 주황으로)
           else stateClass = styles.before;                           // 회색 (그룹 현재 스텝 초과)
         }

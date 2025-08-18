@@ -40,6 +40,8 @@ export interface StudyGroupItem {
  owner?: StudyGroupOwner | null;
  dibs?: boolean;
  groupImage?: FileMeta | null;
+ currentStep: number;
+ totalSteps: number;
 }
 
 export interface StudyGroupStep {

@@ -60,7 +60,6 @@ export const Comment = () => {
           // 댓글 제출 성공 후 댓글 목록 새로고침
           if (response) {
             const updatedComments = await getComments({ groupId: groupId, qnaId: qId });
-            console.log(updatedComments);
             setComments(updatedComments.content);
           }
         }

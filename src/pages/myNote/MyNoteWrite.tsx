@@ -17,7 +17,7 @@ export const MyNoteWrite = () => {
 
   const handleSubmit = async (title: string, content: string, attachedFiles: File[], attachedImages: File[]) => {
     try {
-      const response = await postNote({
+      await postNote({
         groupId: groupId || "2",
         stepId: stepId || "1",
         title,
@@ -25,7 +25,6 @@ export const MyNoteWrite = () => {
         attachedFiles,
         attachedImages,
       })
-      console.log(response);
       alert("노트가 등록되었습니다.");
       navigate(`/group/${groupId}/step/${stepId}/myNote`);
     } catch (error) {

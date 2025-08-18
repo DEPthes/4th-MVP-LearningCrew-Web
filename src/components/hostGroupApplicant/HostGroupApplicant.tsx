@@ -85,7 +85,6 @@ export default function HostGroupApplicant({ groupId }: Props) {
   const handleApprove = async (userId: number) => {
     removeRowByUserId(userId);
     try {
-      console.log("approveApplication");
     } catch (e: any) {
       const s = e?.response?.status;
       if (s === 400 || s === 404 || s === 409) return;

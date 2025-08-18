@@ -6,10 +6,12 @@ import bookmark1 from "../../assets/bookmark1.svg";
 import BookmarkOn from "../../assets/BookmarkOn.svg";
 import Step from "./Step";
 import studyBackground from "../../assets/studyackground.jpg"
+import { useCurrentStep } from "../../hooks/CurrentStepContext";
 
 import {
   applyToStudyGroup,
   leaveStudyGroup,
+  cancelMyApplication,
 } from "../../apis/Group/StudyGroupApplication";
 import { closeStudyGroup } from "../../apis/Group/StudyGroupManage";
 import { getStudyGroupDetail, type StudyGroupDetail } from "../../apis/Group/StudyGroup";
@@ -28,6 +30,7 @@ interface FixedBannerProps {
 export default function FixedBanner({ groupId, isOwner }: FixedBannerProps) {
   const navigate = useNavigate();
   const { stepId: stepIdParam } = useParams<{ stepId: string }>();
+  const { totalStep, setTotalStep, setCurrentStep, groupCurrentStep } = useCurrentStep();
 
   // 그룹/스텝 데이터
   const [group, setGroup] = useState<StudyGroupDetail | null>(null);
@@ -50,8 +53,7 @@ export default function FixedBanner({ groupId, isOwner }: FixedBannerProps) {
   // 스텝바
   const totalSteps = group?.steps?.length ?? 10;
   const currentStepIndex =
-    Math.max(0, (Number(stepIdParam) || group?.currentStep || 1) - 1);
-
+    Math.max(0, (Number(stepIdParam) || groupCurrentStep) - 1);
   const fmt = (d?: string) => (d ? d.replaceAll("-", ".") : "");
 
   // 그룹 상세
@@ -127,9 +129,11 @@ export default function FixedBanner({ groupId, isOwner }: FixedBannerProps) {
 
         // response.content 배열에서 현재 groupId가 있는지 확인
         const hasApplied = response.content?.filter((group: any) => group.studyGroup.id === groupId);
-        setHasApplied(hasApplied.state === "PENDING" ? true : false);
+
+        // filter 결과가 배열이므로 첫 번째 요소의 state에 접근
+        const appliedGroup = hasApplied?.[0];
+        setHasApplied(appliedGroup?.state === "PENDING");
       } catch (error) {
-        console.error('가입 신청 상태 확인 실패:', error);
         if (mounted) {
           setHasApplied(false);
         }
@@ -184,14 +188,14 @@ export default function FixedBanner({ groupId, isOwner }: FixedBannerProps) {
         setIsMember(false);
         return;
       }
-      console.log(hasApplied)
       // 가입 신청한 경우 취소 처리
       if (hasApplied) {
         try {
           // 가입 신청 취소 api 연결
+          await cancelMyApplication(groupId);
+          setHasApplied(false);
           navigate("/mygroup?type=joined");
         } catch (error) {
-          console.error('가입 신청 취소 실패:', error);
           const msg = "가입 신청 취소에 실패했습니다.";
           alert(msg);
         }
@@ -228,7 +232,6 @@ export default function FixedBanner({ groupId, isOwner }: FixedBannerProps) {
   useEffect(() => {
     const fetchGroup = async () => {
       const response = await fetchStudyGroups({ page: 0, size: 1000 });
-      console.log(response.content)
       const items: StudyGroupItem[] = Array.isArray(response?.content)
         ? response.content
         : Array.isArray(response)
@@ -237,8 +240,8 @@ export default function FixedBanner({ groupId, isOwner }: FixedBannerProps) {
       const foundGroup = items.find(item => item.id === groupId);
       if (foundGroup) {
         setGroupFromList(foundGroup);
-        // setCurrentStep(foundGroup.currentStep ?? 0);
-        console.log(foundGroup)
+        setTotalStep(foundGroup.totalSteps);
+        setCurrentStep(foundGroup.currentStep);
       }
     };
     fetchGroup();
@@ -252,7 +255,6 @@ export default function FixedBanner({ groupId, isOwner }: FixedBannerProps) {
         try {
           const response = await getImage(groupFromList.groupImage.uuid, groupFromList.groupImage.fileName);
           setGroupImg(response);
-          console.log(response);
         } catch (error) {
           console.error(`이미지 로드 실패: ${groupFromList.groupImage.fileName}`, error);
         }
@@ -356,7 +358,7 @@ export default function FixedBanner({ groupId, isOwner }: FixedBannerProps) {
       </div>
 
       <div className={styles.step__wrapper}>
-        <Step totalSteps={totalSteps} currentStep={currentStepIndex} />
+        <Step totalSteps={totalStep ?? totalSteps} currentStep={currentStepIndex} />
       </div>
     </div>
   );

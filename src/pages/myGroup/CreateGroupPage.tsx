@@ -96,8 +96,7 @@ export default function CreateGroupPage() {
   const groupStart = watch("groupStart");
   const groupEnd = watch("groupEnd");
 
-  const onSubmit = (data: FormValues) => {
-    console.log("CREATE GROUP FORM DATA >>", data);
+  const onSubmit = () => {
     alert("그룹이 개설되었습니다!");
   };
 

@@ -18,7 +18,6 @@ const transformGroupData = async (apiData: GroupListResponse | AppliedGroupListR
         if (item.studyGroup.groupImage) {
           try {
             imageUrl = await getImage(item.studyGroup.groupImage.uuid);
-            console.log(item)
           } catch (error) {
             console.error(`이미지 로드 실패: ${item.studyGroup.groupImage.uuid}`, error);
           }
