@@ -9,6 +9,7 @@ import Profile from "../../components/signUp/Profile";
 import Gender from "../../components/signUp/Gender";
 import { fetchMe, updateMe, type MeResponse } from "../../apis/mypage/users";
 import { getImage } from "../../apis/common/File";
+import axios from "axios";
 
 function toYYYYMMDD(d: Date) {
   const y = d.getFullYear();
@@ -91,15 +92,21 @@ export default function EditProfile() {
     setEmailValid(true);
   };
 
-  const handleCheckNickname = () => {
-    if (!nickname.trim()) {
-      setNicknameMessage("*닉네임을 입력하세요.");
-      setNicknameValid(false);
-      return;
+  const handleCheckNickname = async () => {
+    try {
+      const res = await axios.get("/api/auth/nickname-exist", { params: { nickname } })
+      if (res.data.exist) {
+        setNicknameMessage("*중복되는 닉네임입니다.")
+        setNicknameValid(false)
+      } else {
+        setNicknameMessage("*사용 가능한 닉네임입니다.")
+        setNicknameValid(true)
+      }
+    } catch {
+      setNicknameMessage("*중복 확인 중 오류가 발생했습니다.")
+      setNicknameValid(false)
     }
-    setNicknameMessage("*사용 가능한 닉네임입니다.");
-    setNicknameValid(true);
-  };
+  }
 
   useEffect(() => {
     let alive = true;
@@ -131,7 +138,7 @@ export default function EditProfile() {
 
         if (uuid && handlingType === "IMAGE") {
           try {
-            const url = await getImage(uuid); 
+            const url = await getImage(uuid);
             if (!alive) return;
             setProfileImageUrl(url);
             if (url.startsWith("blob:")) revokeUrl = url;

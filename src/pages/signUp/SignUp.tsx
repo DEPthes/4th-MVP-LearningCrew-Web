@@ -12,6 +12,13 @@ import { useNavigate } from "react-router-dom"
 import axios from "axios"
 import { login as loginApi } from "../../apis/auth/auth"
 
+// birthday를 +1일 처리하는 헬퍼 함수
+function adjustBirthdayForTimezone(birthday: Date): string {
+  // 24시간(밀리초)을 더해서 다음 날로 조정
+  const adjustedDate = new Date(birthday.getTime() + 24 * 60 * 60 * 1000);
+  return adjustedDate.toISOString().split("T")[0];
+}
+
 export default function SignUp() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
@@ -136,10 +143,13 @@ export default function SignUp() {
       formData.append("email", email)
       formData.append("password", password)
       formData.append("nickname", nickname)
-      formData.append("birthday", birthday ? birthday.toISOString().split("T")[0] : "")
+      formData.append("birthday", birthday ? adjustBirthdayForTimezone(birthday) : "")
       if (gender) formData.append("gender", gender)
-      if (profileImage) formData.append("profile", profileImage)
+      if (profileImage) formData.append("profileImage", profileImage)
 
+      for (const [key, value] of formData.entries()) {
+        console.log(key, value);
+      }
       await axios.post("/api/auth/register", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       })
