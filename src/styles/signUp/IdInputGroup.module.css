@@ -60,8 +60,9 @@
   padding-top: 10px;
 }
 
+/* ✅ 에러는 자기 모듈에서 !important로 고정 */
 .require__error {
-  color: var(--MainColor2);
+  color: var(--MainColor2) !important;
 }
 
 .success {
