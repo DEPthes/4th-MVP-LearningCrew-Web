@@ -39,7 +39,7 @@ export default function EditProfile() {
   const [emailMessage, setEmailMessage] = useState("*이메일을 입력하세요.");
   const [nicknameMessage, setNicknameMessage] = useState("*닉네임을 입력하세요.");
   const [passwordMessage, setPasswordMessage] = useState(
-    "*영어 대소문자, 숫자, 특수기호 조합 최소 8자 이상"
+    "*영어 소문자, 숫자, 특수기호 조합 최소 8자 이상"
   );
   const [confirmPasswordMessage, setConfirmPasswordMessage] =
     useState("*비밀번호를 다시 입력하세요.");
