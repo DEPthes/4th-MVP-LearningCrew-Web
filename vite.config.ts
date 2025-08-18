@@ -13,6 +13,8 @@ export default defineConfig(({ mode }) => {
      target: env.VITE_BASE_URL,
      changeOrigin: true,
      secure: false,
+     //  timeout: 10000,
+     //  proxyTimeout: 10000,
     },
    },
   },
