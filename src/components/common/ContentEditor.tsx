@@ -65,6 +65,7 @@ export const ContentEditor = ({
   const [files, setFiles] = useState<{ id: string; file: File }[]>([]);
   const [imageFiles, setImageFiles] = useState<{ id: string; file: File }[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [canSubmit, setCanSubmit] = useState<boolean>(false);
 
   const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB
 
@@ -153,9 +154,9 @@ export const ContentEditor = ({
   );
 
   /** ---------- 비었는지 체크 ---------- */
-  const isEditorContentEmpty = useCallback((ed: any): boolean => {
-    if (!ed) return true;
-    const html = ed.getHTML();
+  const isEditorContentEmpty = useCallback((): boolean => {
+    if (!editor) return true;
+    const html = editor.getHTML();
     const temp = document.createElement("div");
     temp.innerHTML = html;
     const text = (temp.textContent || temp.innerText || "")
@@ -163,9 +164,23 @@ export const ContentEditor = ({
       .trim();
     const hasImg = html.includes("<img");
     return text.length === 0 && !hasImg;
-  }, []);
+  }, [editor]);
 
-  const canSubmit = () => title.length > 0 && !isEditorContentEmpty(editor);
+  useEffect(() => {
+    if (!editor) return;
+
+    const updateCanSubmit = () => {
+      setCanSubmit(title.length > 0 && !isEditorContentEmpty());
+    };
+
+    // title 바뀔 때도 반영
+    updateCanSubmit();
+
+    editor.on("update", updateCanSubmit);
+    return () => {
+      editor.off("update", updateCanSubmit);
+    };
+  }, [editor, title, isEditorContentEmpty]);
 
   /** ---------- 제출 ---------- */
   const handleSubmit = async () => {
@@ -173,11 +188,12 @@ export const ContentEditor = ({
     setIsSubmitting(true);
     try {
       const finalContent = editor.getHTML();
+
       onSubmit?.(
         title,
         finalContent,
-        files.map((f) => f.file),
-        imageFiles.map((f) => f.file)
+        files.map((f) => f.file),        // 일반 파일들
+        imageFiles.map((f) => f.file)    // 이미지 파일들
       );
     } finally {
       setIsSubmitting(false);
@@ -199,13 +215,19 @@ export const ContentEditor = ({
         }
         const id = Date.now() + Math.random().toString(36).slice(2);
 
-        if (file.type.startsWith("image/")) {
+        // 파일 타입 체크를 더 명확하게
+        const isImage = file.type.startsWith("image/");
+
+        if (isImage) {
+          // 이미지 파일 처리
           setAttachedImages((prev) => [
             ...prev,
             { id, name: file.name, type: file.type, size: file.size },
           ]);
           setImageFiles((prev) => [...prev, { id, file }]);
+          console.log("이미지 파일 추가됨:", file.name);
         } else {
+          // 일반 파일 처리
           setAttachedFiles((prev) => [
             ...prev,
             { id, name: file.name, type: file.type, size: file.size },
@@ -351,7 +373,7 @@ export const ContentEditor = ({
 
       <div className={styles.submitSection}>
         <Submit
-          canSubmit={canSubmit()}
+          canSubmit={canSubmit}
           isSubmitting={isSubmitting || loading}
           onClick={handleSubmit}
           text={isSubmitting || loading ? "제출중..." : "완료"}

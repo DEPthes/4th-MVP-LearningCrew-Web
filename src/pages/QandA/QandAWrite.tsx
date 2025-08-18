@@ -20,7 +20,7 @@ export const QandAWrite = () => {
     try {
       await postQandA({
         groupId: groupId || "2",
-        stepId: "3",
+        stepId: stepId || "1",
         title,
         content,
         attachedFiles,
