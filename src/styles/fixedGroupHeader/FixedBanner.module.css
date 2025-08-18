@@ -39,6 +39,7 @@
 .title {
  font: var(--HeadlineXLMedium);
  color: var(--MainColor1);
+ width: 700px;
 }
 
 .introduce {
@@ -54,6 +55,7 @@
 .hostName {
  font: var(--BodySRegular);
  color: var(--MainColor1);
+ width: 50px;
  /* padding-top: 55px;  ✅ 제거 */
  /* 필요하면 미세 조정
   margin-top: 2px;
