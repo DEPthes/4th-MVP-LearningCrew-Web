@@ -31,10 +31,10 @@ export default function ParticipantMenu({ isOwner }: Props) {
   }, [groupId, stepId, isOwner]);
 
   const detailItems = [
-    { path: `/group/${groupId}/step/${stepId}/myNote/write`,        previousPath: `/group/${groupId}/step/${stepId}/myNote` },
+    { path: `/group/${groupId}/step/${stepId}/myNote/write`, previousPath: `/group/${groupId}/step/${stepId}/myNote` },
     { path: `/group/${groupId}/step/${stepId}/shareNoteDetail/[^/]+`, previousPath: `/group/${groupId}/step/${stepId}/shareNote` },
-    { path: `/group/${groupId}/step/${stepId}/QandA/write`,          previousPath: `/group/${groupId}/step/${stepId}/QandA` },
-    { path: `/group/${groupId}/step/${stepId}/QandADetail/[^/]+`,    previousPath: `/group/${groupId}/step/${stepId}/QandA` },
+    { path: `/group/${groupId}/step/${stepId}/QandA/write`, previousPath: `/group/${groupId}/step/${stepId}/QandA` },
+    { path: `/group/${groupId}/step/${stepId}/QandADetail/[^/]+`, previousPath: `/group/${groupId}/step/${stepId}/QandA` },
   ];
 
   const isDetailPath = detailItems.some(item => new RegExp(`^${item.path}$`).test(location.pathname));
