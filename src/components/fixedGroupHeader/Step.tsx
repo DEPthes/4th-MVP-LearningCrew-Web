@@ -2,7 +2,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import styles from "../../styles/fixedGroupHeader/Step.module.css";
-import { useGroupTab } from "../../hooks/GroupTabContext";
 import { useCurrentStep } from "../../hooks/CurrentStepContext";
 
 interface StepProps {
@@ -13,7 +12,6 @@ interface StepProps {
 export default function Step({ totalSteps, currentStep }: StepProps) {
   const navigate = useNavigate();
   const { groupId, stepId } = useParams<{ groupId: string; stepId: string }>();
-  const { currentTab } = useGroupTab();
   const { groupCurrentStep } = useCurrentStep();//그룹 현재 스탭 받아오기(변하지 않는 값)
 
   // 선택된 스텝(0-based). null이면 기본 모드(현재 스텝 강조).
@@ -25,26 +23,11 @@ export default function Step({ totalSteps, currentStep }: StepProps) {
     setSelectedIndex(null);
   }, [stepId]);
 
-  // ✅ 라우팅용 탭 이름을 안전하게 정규화
-  // - Study → MyGroupStudy 로 강제 매핑 (404 방지)
-  // - 빈값이거나 알 수 없으면 MyGroupStudy 기본값
-  const getSafeTab = () => {
-    const t = (currentTab || "").toLowerCase();
-    if (t === "study" || t === "mygroupstudy") return "MyGroupStudy";
-    // 필요하면 다른 탭도 허용
-    if (t === "mynote") return "myNote";
-    if (t === "sharenote") return "shareNote";
-    if (t === "q&a" || t === "qandA".toLowerCase()) return "QandA";
-    if (t === "quiz") return "quiz";
-    return "MyGroupStudy";
-  };
-
   const handleClick = (index: number) => {
     if (index === currentStep) setSelectedIndex(null);
     else setSelectedIndex(index);
 
-    const safeTab = getSafeTab();
-    const target = `/group/${groupId}/step/${index + 1}/${safeTab}`;
+    const target = `/group/${groupId}/step/${index + 1}/MyGroupStudy`;
     // 디버그용 로그: 실제 이동 경로 확인
     // console.log("[Step] navigate to:", target, "(from tab:", currentTab, "→ safe:", safeTab, ")");
     navigate(target);

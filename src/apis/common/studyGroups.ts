@@ -60,12 +60,13 @@ export interface StudyGroupDetail extends StudyGroupItem {
 
 export interface PageResponse<T> {
  content: T[];
- totalElements: number;
- totalPages: number;
- number: number;
+ page: PageInfo;
+}
+export interface PageInfo {
+ page: number;
  size: number;
- first: boolean;
- last: boolean;
+ totalPages: number;
+ totalElements: number;
 }
 
 // 스터디 그룹 목록 조회
@@ -82,8 +83,8 @@ export async function fetchStudyGroups(params: {
   order = "desc",
   categoryId,
   searchKeyword,
-  page = 0,
-  size = 12,
+  page,
+  size,
  } = params;
 
  const qs = new URLSearchParams();
@@ -91,8 +92,8 @@ export async function fetchStudyGroups(params: {
  if (order) qs.set("order", order);
  if (categoryId !== undefined) qs.set("categoryId", String(categoryId));
  if (searchKeyword) qs.set("searchKeyword", searchKeyword);
- qs.set("page", String(page));
- qs.set("size", String(size));
+ if (page) qs.set("page", String(page));
+ if (size) qs.set("size", String(size));
 
  const { data } = await axios.get<PageResponse<StudyGroupItem>>(
   `/api/study-groups?${qs.toString()}`,

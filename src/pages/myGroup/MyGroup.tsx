@@ -77,6 +77,7 @@ export default function MyGroup() {
   const [currentPage, setCurrentPage] = useState(1);
   const { searchKeyword, type } = useSearchKeyword();
   const [sort, setSort] = useState("최신순");
+  const [totalPages, setTotalPages] = useState(1);
 
   const rawQ = searchKeyword ?? '';
   const q = rawQ.trim().toLowerCase();
@@ -85,6 +86,7 @@ export default function MyGroup() {
     const apiSort = sort === "오래된순" ? "created_at" : sort === "관련도순" ? "relative" : sort === "가나다순" ? "alphabet" : "created_at";
     const order = sort === "가나다순" || sort === "오래된순" ? "asc" : "desc";
     const page = currentPage - 1;
+    console.log(page);
     const fetchGroups = async () => {
       try {
         setLoading(true);
@@ -92,10 +94,12 @@ export default function MyGroup() {
         switch (type) {
           case 'joined':
             response = await getJoinGroup({ sort: apiSort, order, page, searchKeyword: searchKeyword ? searchKeyword : rawQ.trim() ? rawQ.trim() : undefined });
+            setTotalPages(response.page.totalPages);
             break;
           case 'hosted':
             try {
               response = await getHostedGroup({ sort: apiSort, order, page, searchKeyword: searchKeyword ? searchKeyword : rawQ.trim() ? rawQ.trim() : undefined });
+              setTotalPages(response.page.totalPages);
               setIsLogin(true);
             } catch (err) {
               setIsLogin(false);
@@ -112,6 +116,7 @@ export default function MyGroup() {
             break;
           case 'applied':
             response = await getAppliedGroup({ sort: apiSort, order, page, searchKeyword: searchKeyword ? searchKeyword : rawQ.trim() ? rawQ.trim() : undefined });
+            setTotalPages(response.page.totalPages);
             break;
         }
 
@@ -161,6 +166,7 @@ export default function MyGroup() {
         setNumber={setCurrentPage}
         sort={sort}
         setSort={setSort}
+        totalPages={totalPages}
         headerBelow={
           <div className={styles.headerBelowRow}>
             <GroupTypeTabs value={type} />
