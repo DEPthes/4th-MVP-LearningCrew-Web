@@ -12,6 +12,13 @@ import { useNavigate } from "react-router-dom"
 import axios from "axios"
 import { login as loginApi } from "../../apis/auth/auth"
 
+// birthday를 +1일 처리하는 헬퍼 함수
+function adjustBirthdayForTimezone(birthday: Date): string {
+  // 24시간(밀리초)을 더해서 다음 날로 조정
+  const adjustedDate = new Date(birthday.getTime() + 24 * 60 * 60 * 1000);
+  return adjustedDate.toISOString().split("T")[0];
+}
+
 export default function SignUp() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
@@ -22,7 +29,7 @@ export default function SignUp() {
   const [profileImage, setProfileImage] = useState<File | null>(null)
 
   const [emailMessage, setEmailMessage] = useState("*이메일을 입력하세요.")
-  const [nicknameMessage, setNicknameMessage] = useState("*닉네임을 입력하세요.")
+  const [nicknameMessage, setNicknameMessage] = useState("*10글자 내")
   const [passwordMessage, setPasswordMessage] = useState(
     "*영어 소문자, 숫자, 특수기호 포함 최소 8자 이상"
   )
@@ -34,6 +41,9 @@ export default function SignUp() {
   const [nicknameValid, setNicknameValid] = useState(false)
   const [passwordValid, setPasswordValid] = useState(false)
   const [passwordsMatch, setPasswordsMatch] = useState(false)
+
+  // ✅ 닉네임 에러(길이 초과/중복확인 오류 등) 표시용
+  const [nicknameError, setNicknameError] = useState(false)
 
   const [formError, setFormError] = useState("")
   const [submitting, setSubmitting] = useState(false)
@@ -92,19 +102,28 @@ export default function SignUp() {
       if (res.data.exist) {
         setNicknameMessage("*중복되는 닉네임입니다.")
         setNicknameValid(false)
+        setNicknameError(true) // 중복이면 에러 표시
       } else {
         setNicknameMessage("*사용 가능한 닉네임입니다.")
         setNicknameValid(true)
+        setNicknameError(false)
       }
     } catch {
       setNicknameMessage("*중복 확인 중 오류가 발생했습니다.")
       setNicknameValid(false)
+      setNicknameError(true) // 오류도 에러 표시
     }
   }
 
   const handleSignUp = async () => {
+    // ✅ 필수값
     if (!email || !password || !confirmPassword || !nickname || !birthday || !gender) {
       setFormError("*입력되지 않은 정보가 있습니다.")
+      return
+    }
+    // ✅ 닉네임 길이 제한: 10자 초과면 가입 차단
+    if (nickname.length > 10) {
+      setFormError("*닉네임은 10글자 이하여야 합니다.")
       return
     }
     if (!passwordValid) {
@@ -124,16 +143,18 @@ export default function SignUp() {
       formData.append("email", email)
       formData.append("password", password)
       formData.append("nickname", nickname)
-      formData.append("birthday", birthday ? birthday.toISOString().split("T")[0] : "")
+      formData.append("birthday", birthday ? adjustBirthdayForTimezone(birthday) : "")
       if (gender) formData.append("gender", gender)
-      if (profileImage) formData.append("profile", profileImage)
+      if (profileImage) formData.append("profileImage", profileImage)
 
+      for (const [key, value] of formData.entries()) {
+        console.log(key, value);
+      }
       await axios.post("/api/auth/register", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       })
 
       await loginApi(email, password)
-
       navigate("/welcome")
     } catch (error) {
       console.error("회원가입 실패:", error)
@@ -201,14 +222,26 @@ export default function SignUp() {
             type="text"
             value={nickname}
             onChange={(e) => {
-              setNickname(e.target.value)
-              setNicknameMessage("*닉네임을 입력하세요.")
-              setNicknameValid(false)
+              const v = e.target.value
+              setNickname(v)
+
+              // ✅ 길이 검사: 10자 초과 시 에러 + 색상 표시
+              if (v.length > 10) {
+                setNicknameMessage("*닉네임 조건에 충족하지 않습니다.")
+                setNicknameValid(false)
+                setNicknameError(true)
+              } else {
+                setNicknameMessage("*10글자 내")
+                setNicknameValid(false)
+                setNicknameError(false)
+              }
+
               setFormError("")
             }}
             onCheckDuplicate={handleCheckNickname}
             showCheckButton
             isValid={nicknameValid}
+            error={nicknameError} // ✅ 에러 상태 내려줌 (IdInputGroup에서 색상 처리)
           />
 
           <BirthCalendar

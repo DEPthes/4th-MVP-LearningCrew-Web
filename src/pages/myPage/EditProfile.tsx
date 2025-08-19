@@ -9,6 +9,7 @@ import Profile from "../../components/signUp/Profile";
 import Gender from "../../components/signUp/Gender";
 import { fetchMe, updateMe, type MeResponse } from "../../apis/mypage/users";
 import { getImage } from "../../apis/common/File";
+import axios from "axios";
 
 function toYYYYMMDD(d: Date) {
   const y = d.getFullYear();
@@ -107,21 +108,37 @@ export default function EditProfile() {
     setEmailValid(true);
   };
 
-  const handleCheckNickname = () => {
-    const trimmed = nickname.trim();
-    if (trimmed.length === 0) {
-      setNicknameMessage("*닉네임을 입력하세요.");
+const handleCheckNickname = async () => {
+  const trimmed = nickname.trim();
+
+  if (trimmed.length === 0) {
+    setNicknameMessage("*닉네임을 입력하세요.");
+    setNicknameValid(false);
+    return;
+  }
+  if (trimmed.length > 10) {
+    setNicknameMessage("*닉네임 조건에 충족하지 않습니다.");
+    setNicknameValid(false);
+    return;
+  }
+
+  try {
+    const res = await axios.get("/api/auth/nickname-exist", {
+      params: { nickname: trimmed },
+    });
+
+    if (res?.data?.exist) {
+      setNicknameMessage("*중복되는 닉네임입니다.");
       setNicknameValid(false);
-      return;
+    } else {
+      setNicknameMessage("*사용 가능한 닉네임입니다.");
+      setNicknameValid(true);
     }
-    if (trimmed.length > 10) {
-      setNicknameMessage("*닉네임 조건에 충족하지 않습니다.");
-      setNicknameValid(false);
-      return;
-    }
-    setNicknameMessage("*사용 가능한 닉네임입니다.");
-    setNicknameValid(true);
-  };
+  } catch {
+    setNicknameMessage("*중복 확인 중 오류가 발생했습니다.");
+    setNicknameValid(false);
+  }
+};
 
   useEffect(() => {
     let alive = true;

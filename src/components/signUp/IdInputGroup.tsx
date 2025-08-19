@@ -10,6 +10,8 @@ type IdInputGroupProps = {
   onCheckDuplicate?: () => void
   showCheckButton?: boolean
   isValid?: boolean
+  /** ✅ 외부에서 에러 여부만 내려받음. 클래스 문자열은 넘기지 않음 */
+  error?: boolean
 }
 
 export default function IdInputGroup({
@@ -22,6 +24,7 @@ export default function IdInputGroup({
   onCheckDuplicate,
   showCheckButton = false,
   isValid = false,
+  error = false,
 }: IdInputGroupProps) {
   const isHighlighted =
     message === "*사용 가능한 아이디입니다." ||
@@ -51,7 +54,13 @@ export default function IdInputGroup({
           </button>
         )}
       </div>
-      <div className={`${styles.input__require} ${isHighlighted ? styles.success : ""}`}>
+
+      {/* ✅ error가 true면 require__error(자기 모듈) 강제 적용 */}
+      <div
+        className={`${styles.input__require} ${
+          error ? styles.require__error : isHighlighted ? styles.success : ""
+        }`}
+      >
         {message}
       </div>
     </div>

@@ -25,12 +25,13 @@ interface PostCommentRequest {
 
 //리스트 보기
 export const getQandAList = async (data: SharedQandAListRequest) => {
- const formData = new FormData();
- formData.append("step", data.stepId);
  try {
-  const response = await axios.get(`/api/study-groups/${data.groupId}/qna`, {
-   headers: getAuthHeader(),
-  });
+  const response = await axios.get(
+   `/api/study-groups/${data.groupId}/qna?step=${data.stepId}`,
+   {
+    headers: getAuthHeader(),
+   }
+  );
   return response.data;
  } catch (error) {
   throw error;

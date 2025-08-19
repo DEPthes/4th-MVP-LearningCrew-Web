@@ -1,5 +1,6 @@
 .page__page__wrapper {
  position: relative;
+ background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3));
 }
 
 .backgroundImage {
@@ -38,6 +39,7 @@
 .title {
  font: var(--HeadlineXLMedium);
  color: var(--MainColor1);
+ width: 700px;
 }
 
 .introduce {
@@ -84,7 +86,7 @@
  gap: 12px;
  padding-top: 24px;
  width: 171px;
- margin-right: 118px;
+ margin-right: 50px;
 }
 
 .study__date {

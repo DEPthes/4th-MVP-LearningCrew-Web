@@ -51,7 +51,7 @@ export const MyNote = () => {
   const navigator = useNavigate();
   const { groupId } = useParams<{ groupId: string }>();
   const { stepId } = useParams<{ stepId: string }>();
-  const { setCurrentTab } = useGroupTab();
+  const { setCurrentTab, currentTab } = useGroupTab();
   const [myNote, setMyNote] = useState<MyNoteData | null>(null);
   const [loading, setLoading] = useState(true);
   const [canAccessGroup, setCanAccessGroup] = useState<boolean>(false);
@@ -100,28 +100,27 @@ export const MyNote = () => {
         }
       };
       fetchList();
-      return;
     } else {
       setCanAccessStep(true);
+    }
+    const fetchMyNote = async () => {
+      try {
+        const response = await getMyNote({ groupId: groupId ?? "1", stepId: stepId ?? "2" });
+        setMyNote(response);
+        setCanAccessGroup(true);
+        setLoading(false);
+      } catch (error: any) {
+        console.error("내 노트를 가져오는데 실패했습니다:", error);
+        setLoading(false);
 
-      const fetchMyNote = async () => {
-        try {
-          const response = await getMyNote({ groupId: groupId ?? "1", stepId: stepId ?? "2" });
-          setMyNote(response);
+        if (error?.response?.data?.codeName !== "STUDY_GROUP_NOT_MEMBER") {
           setCanAccessGroup(true);
-          setLoading(false);
-        } catch (error: any) {
-          console.error("내 노트를 가져오는데 실패했습니다:", error);
-          setLoading(false);
-
-          if (error?.response?.data?.codeName !== "STUDY_GROUP_NOT_MEMBER") {
-            setCanAccessGroup(true);
-          }
         }
       }
-      fetchMyNote();
     }
-  }, [currentStep, stepId, groupId]);
+    fetchMyNote();
+
+  }, [currentStep, stepId, groupId, currentTab]);
 
   // 이미지 로드
   useEffect(() => {
