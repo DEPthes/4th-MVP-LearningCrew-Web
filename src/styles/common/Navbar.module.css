@@ -9,7 +9,7 @@
  top: 0;
  left: 0;
  width: 100%;
- min-width: 1024px;
+ min-width: 900px;
  height: 116px;
  display: flex;
  align-items: center;
@@ -34,7 +34,7 @@
 .logoSection {
  display: flex;
  align-items: center;
- transform: translateX(68px);
+ /* transform: translateX(68px); */
 }
 
 .logo {
@@ -48,7 +48,7 @@
  display: flex;
  gap: 2rem;
  justify-content: flex-start;
- margin-left: 195px;
+ margin-left: 9%;
  position: relative;
  min-width: 314px;
 }
@@ -68,7 +68,7 @@
 
 .menuItem.active {
  color: var(--MainColor2);
-  font: var(--BodyLMedium);
+ font: var(--BodyLMedium);
 }
 
 .menuItem.active::after {
@@ -89,14 +89,15 @@
  align-items: center;
  justify-content: end;
  gap: 2rem;
-  width: auto; 
-    margin-left: auto;
+ width: 50%;
+ margin-left: auto;
 }
 
 /* 검색 */
 .searchWrapper {
  position: relative;
- width: 100%;
+ width: 50%;
+ min-width: 300px;
  display: flex;
  justify-content: end;
 }
@@ -129,7 +130,7 @@
  justify-content: center;
  padding: 0.5rem 0rem;
  min-width: 94px;
-  width: auto; 
+ width: auto;
  background: var(--MainColor2);
  color: var(--MainColor1);
  border-radius: 1.5rem;
@@ -140,11 +141,10 @@
  font: var(--BodyLMedium);
 }
 
-
 .profileImage {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 1px solid var(--Gray2);
+ width: 40px;
+ height: 40px;
+ border-radius: 50%;
+ object-fit: cover;
+ border: 1px solid var(--Gray2);
 }
