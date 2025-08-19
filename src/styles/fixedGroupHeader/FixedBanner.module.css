@@ -65,13 +65,15 @@
 .introduce {
  font: var(--BodySRegular);
  color: var(--MainColor1);
+ width: 300px;
 }
 
 .container__3 {
  display: flex;
  flex-shrink: 0;
  margin-top: 60px;
- margin-right: 15%;
+ margin-left: 50px;
+ margin-right: 10%;
 }
 
 .hostName {

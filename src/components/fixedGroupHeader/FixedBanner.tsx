@@ -84,7 +84,7 @@ export default function FixedBanner({ groupId, isOwner }: FixedBannerProps) {
       try {
         const data = await getStudyByStep(groupId, step);
         if (!mounted) return;
-        setStepInfo(data);
+        console.log(data);
       } catch {
         setStepInfo(null);
       }
@@ -281,7 +281,7 @@ export default function FixedBanner({ groupId, isOwner }: FixedBannerProps) {
               </div>
               {/* 소개 문구: fetchStudyGroups에서 가져온 데이터 우선 사용 */}
               <div className={styles.introduce}>
-                {stepInfo?.title ?? groupFromList?.summary ?? group?.summary ?? "스터디가 처음이신 분들 함께해요!"}
+                {groupFromList?.summary ?? stepInfo?.title ?? group?.summary ?? "스터디가 처음이신 분들 함께해요!"}
               </div>
             </div>
 

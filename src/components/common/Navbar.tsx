@@ -11,6 +11,7 @@ import {
 } from "../../apis/auth/auth";
 import { tokenStore, isJwtExpired } from "../../apis/common/token";
 import { getImage } from "../../apis/common/File";
+import { useNavbar } from "../../hooks/NavbarContext";
 
 const DEFAULT_PROFILE = (() => {
   try {
@@ -27,6 +28,7 @@ export default function Navbar() {
   const navbarHeight = "116px";
   const { pathname } = useLocation();
   const { setSearchKeyword, type, setType } = useSearchKeyword();
+  const { activeTab, setActiveTab } = useNavbar();
 
   const [user, setUser] = useState<UserProfile | null>(null);
   const [profileSrc, setProfileSrc] = useState<string>(DEFAULT_PROFILE);
@@ -41,8 +43,8 @@ export default function Navbar() {
     });
   };
 
-  const isMyGroupActive =
-    pathname.startsWith("/mygroup") || pathname.startsWith("/group/");
+  // const isMyGroupActive =
+  //   pathname.startsWith("/mygroup") || pathname.startsWith("/group/");
 
   const reevaluateAuth = async () => {
     const tokens = tokenStore.get();
@@ -143,18 +145,19 @@ export default function Navbar() {
             <NavLink
               to="/"
               end
-              className={({ isActive }) =>
-                `${styles.menuItem} ${isActive ? styles.active : ""}`
+              onClick={() => setActiveTab("홈")}
+              className={() =>
+                `${styles.menuItem} ${activeTab === "홈" ? styles.active : ""}`
               }
             >
               홈
             </NavLink>
 
             <NavLink
-              onClick={() => setType("joined")}
+              onClick={() => { setType("joined"); setActiveTab("내그룹") }}
               to={`/mygroup?type=${type}`}
               className={() =>
-                `${styles.menuItem} ${isMyGroupActive ? styles.active : ""}`
+                `${styles.menuItem} ${activeTab === "내그룹" ? styles.active : ""}`
               }
             >
               내 그룹
@@ -162,8 +165,9 @@ export default function Navbar() {
 
             <NavLink
               to="/mypage"
-              className={({ isActive }) =>
-                `${styles.menuItem} ${isActive ? styles.active : ""}`
+              onClick={() => setActiveTab("마이페이지")}
+              className={() =>
+                `${styles.menuItem} ${activeTab === "마이페이지" ? styles.active : ""}`
               }
             >
               마이페이지
