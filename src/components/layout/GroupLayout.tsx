@@ -18,16 +18,19 @@ export default function GroupLayout() {
   }
 
   return (
-    <>
+    <div className={styles.layout__container}>
       <FixedBanner groupId={groupId} isOwner={isOwner} />
       <div className={styles.layout__wrapper}>
-        <div className={styles.menu__container}>
-          <ParticipantMenu isOwner={isOwner} />
+        <div className={styles.layout__wrapper2}>
+          <div className={styles.menu__container}>
+            <ParticipantMenu isOwner={isOwner} />
+          </div>
+          <main className={styles.main__content}>
+            <Outlet />
+          </main>
+
         </div>
-        <main className={styles.main__content}>
-          <Outlet />
-        </main>
       </div>
-    </>
+    </div>
   );
 }
