@@ -52,7 +52,8 @@ export const Home = () => {
 
   const [sort, setSort] = useState<SortLabel>("최신순");
 
-  const page = 0;
+  const [page, setPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
   const size = 12;
 
   const [cards, setCards] = useState<Card[]>([]);
@@ -84,11 +85,12 @@ export const Home = () => {
           sort: sortKey,
           categoryId,
           searchKeyword: q || undefined,
-          page,
+          page: page - 1,
           size,
         } as const;
 
         const res = await fetchStudyGroups(order ? { ...baseParams, order } : baseParams);
+        setTotalPages(res.page.totalPages);
 
         if (!alive || requestIdRef.current !== myRequestId) return;
 
@@ -200,6 +202,9 @@ export const Home = () => {
           showSort
           loading={loading}
           errorMsg={errorMsg ?? undefined}
+          totalPages={totalPages}
+          number={page}
+          setNumber={setPage}
           onBookmarkClick={handleBookmarkClick}
           isGroup
           sort={sort}
