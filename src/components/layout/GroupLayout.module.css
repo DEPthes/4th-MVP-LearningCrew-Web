@@ -7,7 +7,7 @@
  flex-direction: row;
  justify-content: center;
  gap: 63px;
- min-width: 1400px;
+ min-width: 1500px;
  margin: 0 auto;
  box-sizing: border-box;
 }
@@ -17,7 +17,7 @@
  flex-direction: row;
  justify-content: center;
  align-items: flex-start;
- width: 80%;
+ width: 1230px;
  gap: 63px;
 }
 

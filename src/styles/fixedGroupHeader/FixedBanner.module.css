@@ -4,7 +4,7 @@
  align-items: center;
  position: relative;
  width: 100%;
- min-width: 1400px;
+ min-width: 1500px;
  background: linear-gradient(
   to bottom,
   transparent 0%,
@@ -27,6 +27,8 @@
  display: flex;
  margin: 0 auto;
  width: 80%;
+ max-width: 1220px;
+ margin: 0 auto;
 }
 
 .div__container {
@@ -34,7 +36,8 @@
  flex-direction: column;
  justify-content: flex-start;
  padding: 72px 0;
- width: 80%;
+ width: 100%;
+ margin: 0 auto;
 }
 
 .container__1 {
@@ -123,7 +126,7 @@
 .container__6 {
  display: flex;
  margin-top: 32px;
- gap: 50px;
+ gap: 70px;
 }
 
 /* 기본 북마크 버튼 */
@@ -193,4 +196,5 @@
  width: 80%;
  margin: 0 auto;
  padding-bottom: 72px;
+ max-width: 1220px;
 }
