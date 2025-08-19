@@ -191,7 +191,7 @@ export default function MyPageHome() {
               <div className={styles.fieldRow}>
                 <label className={styles.label}>프로필 사진</label>
                 <div className={styles.profile}>
-                  <img src={imgSrc} alt="프로필" className={styles.profileImage} />
+                  <img src={imgSrc || profilePlaceholder} alt="프로필" className={styles.profileImage} />
                 </div>
               </div>
 

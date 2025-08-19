@@ -11,18 +11,24 @@ import { fetchMe, updateMe, type MeResponse } from "../../apis/mypage/users";
 import { getImage } from "../../apis/common/File";
 import axios from "axios";
 
-function toYYYYMMDD(d: Date) {
-  const y = d.getFullYear();
-  const m = String(d.getMonth() + 1).padStart(2, "0");
-  const day = String(d.getDate()).padStart(2, "0");
-  return `${y}-${m}-${day}`;
-}
+// function toYYYYMMDD(d: Date) {
+//   const y = d.getFullYear();
+//   const m = String(d.getMonth() + 1).padStart(2, "0");
+//   const day = String(d.getDate()).padStart(2, "0");
+//   return `${y}-${m}-${day}`;
+// }
 
 function parseYYYYMMDDToDate(str: string) {
   const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(str);
   if (m) return new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]));
   const dt = new Date(str);
   return isNaN(dt.getTime()) ? null : dt;
+}
+
+function adjustBirthdayForTimezone(birthday: Date): string {
+  // 24시간(밀리초)을 더해서 다음 날로 조정
+  const adjustedDate = new Date(birthday.getTime() + 24 * 60 * 60 * 1000);
+  return adjustedDate.toISOString().split("T")[0];
 }
 
 export default function EditProfile() {
@@ -56,7 +62,7 @@ export default function EditProfile() {
 
   const validatePassword = (value: string) => {
     const regex =
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{8,}$/;
+      /^(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{8,}$/;
     if (value === "") {
       setPasswordMessage("*영어 소문자, 숫자, 특수기호 조합 최소 8자 이상");
       setPasswordValid(false);
@@ -207,7 +213,7 @@ export default function EditProfile() {
       const payload: any = {
         email,
         nickname,
-        birthday: birthday ? toYYYYMMDD(birthday) : undefined,
+        birthday: birthday ? adjustBirthdayForTimezone(birthday) : undefined,
       };
 
       if (password) payload.password = password;
