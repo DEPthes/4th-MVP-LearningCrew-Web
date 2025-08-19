@@ -37,7 +37,7 @@ export default function EditProfile() {
   const [profileImageUrl, setProfileImageUrl] = useState<string | null>(null);
 
   const [emailMessage, setEmailMessage] = useState("*이메일을 입력하세요.");
-  const [nicknameMessage, setNicknameMessage] = useState("*닉네임을 입력하세요.");
+  const [nicknameMessage, setNicknameMessage] = useState("*10글자 내");
   const [passwordMessage, setPasswordMessage] = useState(
     "*영어 소문자, 숫자, 특수기호 조합 최소 8자 이상"
   );
@@ -57,7 +57,7 @@ export default function EditProfile() {
     const regex =
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{8,}$/;
     if (value === "") {
-      setPasswordMessage("*영어 대소문자, 숫자, 특수기호 조합 최소 8자 이상");
+      setPasswordMessage("*영어 소문자, 숫자, 특수기호 조합 최소 8자 이상");
       setPasswordValid(false);
     } else if (regex.test(value)) {
       setPasswordMessage("*사용 가능한 비밀번호입니다.");
@@ -81,6 +81,22 @@ export default function EditProfile() {
     }
   };
 
+  const validateNickname = (value: string) => {
+    const trimmed = value.trim();
+    if (trimmed.length === 0) {
+      setNicknameMessage("*10글자 내");
+      setNicknameValid(false);
+      return;
+    }
+    if (trimmed.length > 10) {
+      setNicknameMessage("*닉네임 조건에 충족하지 않습니다.");
+      setNicknameValid(false);
+      return;
+    }
+    setNicknameMessage("*10글자 내");
+    setNicknameValid(false);
+  };
+
   const handleCheckEmail = () => {
     if (!email) {
       setEmailMessage("*이메일을 입력하세요.");
@@ -92,8 +108,14 @@ export default function EditProfile() {
   };
 
   const handleCheckNickname = () => {
-    if (!nickname.trim()) {
+    const trimmed = nickname.trim();
+    if (trimmed.length === 0) {
       setNicknameMessage("*닉네임을 입력하세요.");
+      setNicknameValid(false);
+      return;
+    }
+    if (trimmed.length > 10) {
+      setNicknameMessage("*닉네임 조건에 충족하지 않습니다.");
       setNicknameValid(false);
       return;
     }
@@ -131,7 +153,7 @@ export default function EditProfile() {
 
         if (uuid && handlingType === "IMAGE") {
           try {
-            const url = await getImage(uuid); 
+            const url = await getImage(uuid);
             if (!alive) return;
             setProfileImageUrl(url);
             if (url.startsWith("blob:")) revokeUrl = url;
@@ -246,12 +268,12 @@ export default function EditProfile() {
             type="text"
             value={nickname}
             onChange={(e) => {
-              setNickname(e.target.value);
-              setNicknameMessage("*닉네임을 입력하세요.");
-              setNicknameValid(false);
+              const v = e.target.value;
+              setNickname(v);
+              validateNickname(v); 
             }}
             showCheckButton
-            onCheckDuplicate={handleCheckNickname}
+            onCheckDuplicate={handleCheckNickname} 
             isValid={nicknameValid}
           />
 
