@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import styles from "../../styles/myPage/MyPage.module.css";
 import { MdNavigateNext } from "react-icons/md";
-import profilePlaceholder from "../../assets/profile.svg";
+import profilePlaceholder from "../../assets/default-profile.svg";
 import { Link } from "react-router-dom";
 import { fetchMe, type MeResponse } from "../../apis/mypage/users";
 import { getImage } from "../../apis/common/File";
