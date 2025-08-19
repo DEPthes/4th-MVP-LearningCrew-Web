@@ -115,7 +115,8 @@ export default function Navbar() {
         next = user.profileImageUrl;
       } else if (user?.profileImage?.uuid) {
         try {
-          next = await getImage(user.profileImage.uuid, user.profileImage.fileName);
+          const imageUrl = await getImage(user.profileImage.uuid, user.profileImage.fileName);
+          next = imageUrl || DEFAULT_PROFILE;
         } catch {
           next = DEFAULT_PROFILE;
         }

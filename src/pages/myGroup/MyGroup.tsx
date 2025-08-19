@@ -151,7 +151,7 @@ export default function MyGroup() {
     : <span className={styles.defaultTitle}>내 그룹 리스트</span>;
 
   return (
-    <div>
+    <div style={{ overflowX: "auto" }}>
       <GroupListPage
         title={title}
         groupList={filtered}

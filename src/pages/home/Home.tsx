@@ -110,12 +110,12 @@ export const Home = () => {
 
             try {
               const url = await getImage(uuid, fileName);
-              if (url.startsWith("blob:")) {
+              if (url?.startsWith("blob:")) {
                 createdUrlsRef.current.push(url);
               }
               return { ...base, image: url };
             } catch {
-              return base;
+              return { ...base, image: null };
             }
           })
         );
@@ -186,25 +186,27 @@ export const Home = () => {
   };
 
   return (
-    <div>
+    <div style={{ overflowX: "auto" }}>
       <CategoryTabs
         selectedLabel={selectedCategory}
         onSelect={(label) => {
           setSelectedCategory(label);
         }}
       />
-      <GroupListPage
-        title={title}
-        groupList={filtered}
-        showSort
-        loading={loading}
-        errorMsg={errorMsg ?? undefined}
-        onBookmarkClick={handleBookmarkClick}
-        isGroup
-        sort={sort}
-        setSort={(v: string) => setSort(v as SortLabel)}
-        onCardClick={handleCardClick}
-      />
+      <div style={{ maxWidth: "1236px", minWidth: "1000px", margin: "0 auto" }}>
+        <GroupListPage
+          title={title}
+          groupList={filtered}
+          showSort
+          loading={loading}
+          errorMsg={errorMsg ?? undefined}
+          onBookmarkClick={handleBookmarkClick}
+          isGroup
+          sort={sort}
+          setSort={(v: string) => setSort(v as SortLabel)}
+          onCardClick={handleCardClick}
+        />
+      </div>
 
       {!loading && !errorMsg && filtered.length === 0 && (
         <div className={styles.empty}>조건에 맞는 스터디가 없어요.</div>

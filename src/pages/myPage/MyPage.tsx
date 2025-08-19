@@ -65,8 +65,8 @@ export default function MyPageHome() {
       try {
         const url = await getImage(uuid);
         if (!alive) return;
-        setImgSrc(url);
-        if (url.startsWith("blob:")) revokeUrl = url;
+        setImgSrc(url || "");
+        if (url?.startsWith("blob:")) revokeUrl = url;
       } catch {
         if (!alive) return;
         setImgSrc(profilePlaceholder);

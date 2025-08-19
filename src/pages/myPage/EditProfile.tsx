@@ -108,37 +108,37 @@ export default function EditProfile() {
     setEmailValid(true);
   };
 
-const handleCheckNickname = async () => {
-  const trimmed = nickname.trim();
+  const handleCheckNickname = async () => {
+    const trimmed = nickname.trim();
 
-  if (trimmed.length === 0) {
-    setNicknameMessage("*닉네임을 입력하세요.");
-    setNicknameValid(false);
-    return;
-  }
-  if (trimmed.length > 10) {
-    setNicknameMessage("*닉네임 조건에 충족하지 않습니다.");
-    setNicknameValid(false);
-    return;
-  }
-
-  try {
-    const res = await axios.get("/api/auth/nickname-exist", {
-      params: { nickname: trimmed },
-    });
-
-    if (res?.data?.exist) {
-      setNicknameMessage("*중복되는 닉네임입니다.");
+    if (trimmed.length === 0) {
+      setNicknameMessage("*닉네임을 입력하세요.");
       setNicknameValid(false);
-    } else {
-      setNicknameMessage("*사용 가능한 닉네임입니다.");
-      setNicknameValid(true);
+      return;
     }
-  } catch {
-    setNicknameMessage("*중복 확인 중 오류가 발생했습니다.");
-    setNicknameValid(false);
-  }
-};
+    if (trimmed.length > 10) {
+      setNicknameMessage("*닉네임 조건에 충족하지 않습니다.");
+      setNicknameValid(false);
+      return;
+    }
+
+    try {
+      const res = await axios.get("/api/auth/nickname-exist", {
+        params: { nickname: trimmed },
+      });
+
+      if (res?.data?.exist) {
+        setNicknameMessage("*중복되는 닉네임입니다.");
+        setNicknameValid(false);
+      } else {
+        setNicknameMessage("*사용 가능한 닉네임입니다.");
+        setNicknameValid(true);
+      }
+    } catch {
+      setNicknameMessage("*중복 확인 중 오류가 발생했습니다.");
+      setNicknameValid(false);
+    }
+  };
 
   useEffect(() => {
     let alive = true;
@@ -173,7 +173,7 @@ const handleCheckNickname = async () => {
             const url = await getImage(uuid);
             if (!alive) return;
             setProfileImageUrl(url);
-            if (url.startsWith("blob:")) revokeUrl = url;
+            if (url?.startsWith("blob:")) revokeUrl = url;
           } catch {
             if (!alive) return;
             setProfileImageUrl(null);
@@ -287,10 +287,10 @@ const handleCheckNickname = async () => {
             onChange={(e) => {
               const v = e.target.value;
               setNickname(v);
-              validateNickname(v); 
+              validateNickname(v);
             }}
             showCheckButton
-            onCheckDuplicate={handleCheckNickname} 
+            onCheckDuplicate={handleCheckNickname}
             isValid={nicknameValid}
           />
 
