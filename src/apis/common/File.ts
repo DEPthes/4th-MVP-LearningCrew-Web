@@ -1,7 +1,7 @@
 import axios from "axios";
 import { getAuthHeader } from "../auth/auth";
 
-export const PLACEHOLDER = "/images/placeholder-group.png";
+export const PLACEHOLDER = null;
 
 // 정상이면 blob 실패/없음 PLACEHOLDER
 export const getImage = async (fileUuid?: string, _fileName?: string) => {

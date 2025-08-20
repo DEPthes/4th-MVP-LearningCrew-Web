@@ -4,11 +4,11 @@ import GroupListPage from "../../components/common/GroupListPage";
 import { fetchStudyGroups, type StudyGroupItem } from "../../apis/common/studyGroups";
 import { getImage } from "../../apis/common/File";
 import { postBookmark } from "../../apis/common/Bookmark";
-import { mapSort } from "../../utils/mapSort"; 
+import { mapSort } from "../../utils/mapSort";
 
 type Card = {
   id: number;
-  image: string;
+  image: string | null;
   label: string;
   count: string;
   title: string;
@@ -57,7 +57,7 @@ export default function FavoriteGroupList() {
     (async () => {
       try {
         setLoading(true);
-       // setErrorMsg(null);
+        // setErrorMsg(null);
 
         const { sort: sortKey, order } = mapSort(sort, !!q);
 
@@ -85,7 +85,7 @@ export default function FavoriteGroupList() {
 
             try {
               const url = await getImage(uuid, fileName);
-              if (url.startsWith("blob:")) {
+              if (url?.startsWith("blob:")) {
                 createdUrlsRef.current.push(url);
               }
               return { ...base, image: url };
@@ -96,7 +96,7 @@ export default function FavoriteGroupList() {
         );
 
         if (!alive || requestIdRef.current !== myRequestId) return;
-        setCards(loaded);
+        if (loaded) setCards(loaded);
       } catch (e: unknown) {
         if (!alive || requestIdRef.current !== myRequestId) return;
         // const msg =
@@ -137,16 +137,18 @@ export default function FavoriteGroupList() {
   };
 
   return (
-    <GroupListPage
-      title={rawQ ? `'${rawQ}' 검색 결과` : "찜 그룹 리스트"}
-      groupList={filtered}
-      loading={loading}
-      // error={errorMsg ?? undefined}
-      isGroup
-      showSort
-      sort={sort}
-      setSort={(s) => setSort(s as any)}
-      onBookmarkClick={handleToggleBookmark}
-    />
+    <div style={{ overflowX: "auto" }}>
+      <GroupListPage
+        title={rawQ ? `'${rawQ}' 검색 결과` : "찜 그룹 리스트"}
+        groupList={filtered}
+        loading={loading}
+        // error={errorMsg ?? undefined}
+        isGroup
+        showSort
+        sort={sort}
+        setSort={(s) => setSort(s as any)}
+        onBookmarkClick={handleToggleBookmark}
+      />
+    </div>
   );
 }

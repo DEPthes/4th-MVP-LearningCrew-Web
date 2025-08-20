@@ -13,7 +13,7 @@ interface PageInfo {
 export const getJoinGroup = async (data: PageInfo = {}) => {
  try {
   const page = data.page ?? 0;
-  const size = data.size ?? 10;
+  const size = data.size ?? 12;
 
   let response;
   if (!data.sort && !data.order) {
@@ -50,7 +50,7 @@ export const getJoinGroup = async (data: PageInfo = {}) => {
 export const getHostedGroup = async (data: PageInfo = {}) => {
  try {
   const page = data.page ?? 0;
-  const size = data.size ?? 10;
+  const size = data.size ?? 12;
 
   let response;
   if (!data.sort && !data.order) {
@@ -85,7 +85,7 @@ export const getHostedGroup = async (data: PageInfo = {}) => {
 export const getAppliedGroup = async (data: PageInfo = {}) => {
  try {
   const page = data.page ?? 0;
-  const size = data.size ?? 10;
+  const size = data.size ?? 12;
 
   let response;
   if (!data.sort && !data.order) {

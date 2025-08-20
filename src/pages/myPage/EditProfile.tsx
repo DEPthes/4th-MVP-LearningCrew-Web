@@ -11,18 +11,24 @@ import { fetchMe, updateMe, type MeResponse } from "../../apis/mypage/users";
 import { getImage } from "../../apis/common/File";
 import axios from "axios";
 
-function toYYYYMMDD(d: Date) {
-  const y = d.getFullYear();
-  const m = String(d.getMonth() + 1).padStart(2, "0");
-  const day = String(d.getDate()).padStart(2, "0");
-  return `${y}-${m}-${day}`;
-}
+// function toYYYYMMDD(d: Date) {
+//   const y = d.getFullYear();
+//   const m = String(d.getMonth() + 1).padStart(2, "0");
+//   const day = String(d.getDate()).padStart(2, "0");
+//   return `${y}-${m}-${day}`;
+// }
 
 function parseYYYYMMDDToDate(str: string) {
   const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(str);
   if (m) return new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]));
   const dt = new Date(str);
   return isNaN(dt.getTime()) ? null : dt;
+}
+
+function adjustBirthdayForTimezone(birthday: Date): string {
+  // 24시간(밀리초)을 더해서 다음 날로 조정
+  const adjustedDate = new Date(birthday.getTime() + 24 * 60 * 60 * 1000);
+  return adjustedDate.toISOString().split("T")[0];
 }
 
 export default function EditProfile() {
@@ -56,7 +62,7 @@ export default function EditProfile() {
 
   const validatePassword = (value: string) => {
     const regex =
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{8,}$/;
+      /^(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{8,}$/;
     if (value === "") {
       setPasswordMessage("*영어 소문자, 숫자, 특수기호 조합 최소 8자 이상");
       setPasswordValid(false);
@@ -108,37 +114,37 @@ export default function EditProfile() {
     setEmailValid(true);
   };
 
-const handleCheckNickname = async () => {
-  const trimmed = nickname.trim();
+  const handleCheckNickname = async () => {
+    const trimmed = nickname.trim();
 
-  if (trimmed.length === 0) {
-    setNicknameMessage("*닉네임을 입력하세요.");
-    setNicknameValid(false);
-    return;
-  }
-  if (trimmed.length > 10) {
-    setNicknameMessage("*닉네임 조건에 충족하지 않습니다.");
-    setNicknameValid(false);
-    return;
-  }
-
-  try {
-    const res = await axios.get("/api/auth/nickname-exist", {
-      params: { nickname: trimmed },
-    });
-
-    if (res?.data?.exist) {
-      setNicknameMessage("*중복되는 닉네임입니다.");
+    if (trimmed.length === 0) {
+      setNicknameMessage("*닉네임을 입력하세요.");
       setNicknameValid(false);
-    } else {
-      setNicknameMessage("*사용 가능한 닉네임입니다.");
-      setNicknameValid(true);
+      return;
     }
-  } catch {
-    setNicknameMessage("*중복 확인 중 오류가 발생했습니다.");
-    setNicknameValid(false);
-  }
-};
+    if (trimmed.length > 10) {
+      setNicknameMessage("*닉네임 조건에 충족하지 않습니다.");
+      setNicknameValid(false);
+      return;
+    }
+
+    try {
+      const res = await axios.get("/api/auth/nickname-exist", {
+        params: { nickname: trimmed },
+      });
+
+      if (res?.data?.exist) {
+        setNicknameMessage("*중복되는 닉네임입니다.");
+        setNicknameValid(false);
+      } else {
+        setNicknameMessage("*사용 가능한 닉네임입니다.");
+        setNicknameValid(true);
+      }
+    } catch {
+      setNicknameMessage("*중복 확인 중 오류가 발생했습니다.");
+      setNicknameValid(false);
+    }
+  };
 
   useEffect(() => {
     let alive = true;
@@ -173,7 +179,7 @@ const handleCheckNickname = async () => {
             const url = await getImage(uuid);
             if (!alive) return;
             setProfileImageUrl(url);
-            if (url.startsWith("blob:")) revokeUrl = url;
+            if (url?.startsWith("blob:")) revokeUrl = url;
           } catch {
             if (!alive) return;
             setProfileImageUrl(null);
@@ -207,7 +213,7 @@ const handleCheckNickname = async () => {
       const payload: any = {
         email,
         nickname,
-        birthday: birthday ? toYYYYMMDD(birthday) : undefined,
+        birthday: birthday ? adjustBirthdayForTimezone(birthday) : undefined,
       };
 
       if (password) payload.password = password;
@@ -287,10 +293,10 @@ const handleCheckNickname = async () => {
             onChange={(e) => {
               const v = e.target.value;
               setNickname(v);
-              validateNickname(v); 
+              validateNickname(v);
             }}
             showCheckButton
-            onCheckDuplicate={handleCheckNickname} 
+            onCheckDuplicate={handleCheckNickname}
             isValid={nicknameValid}
           />
 

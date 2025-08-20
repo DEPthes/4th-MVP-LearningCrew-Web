@@ -11,18 +11,21 @@ import Bold from "../../assets/Bold.svg";
 import Clip from "../../assets/Clip.svg";
 import { Font } from "./Font";
 import { Submit } from "./Submit";
+import { type Attachment } from "../../apis/Group/StudyGroupStep";
 
 interface EditorProps {
   contentText?: string;
   wholeTitle?: string;
-  fileList?: AttachedFile[];
-  imageList?: AttachedFile[];
+  fileList?: Attachment[];
+  imageList?: Attachment[];
   isStudy?: boolean;
   onSubmit?: (
     title: string,
     content: string,
     attachedFiles: File[],
-    attachedImages: File[]
+    attachedImages: File[],
+    deletedAttachedImages?: string[] | undefined,
+    deletedAttachedFiles?: string[] | undefined,
   ) => void;
 
   /** ✅ 프리필 */
@@ -42,6 +45,7 @@ interface AttachedFile {
   name: string;
   type: string;
   size: number;
+  set: boolean;
 }
 
 export const ContentEditor = ({
@@ -64,6 +68,8 @@ export const ContentEditor = ({
   const [attachedImages, setAttachedImages] = useState<AttachedFile[]>([]);
   const [files, setFiles] = useState<{ id: string; file: File }[]>([]);
   const [imageFiles, setImageFiles] = useState<{ id: string; file: File }[]>([]);
+  const [deletedAttachedImages, setDeletedAttachedImages] = useState<string[] | undefined>();
+  const [deletedAttachedFiles, setDeletedAttachedFiles] = useState<string[] | undefined>();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [canSubmit, setCanSubmit] = useState<boolean>(false);
 
@@ -107,8 +113,8 @@ export const ContentEditor = ({
   /** ---------- 프리필 ---------- */
   useEffect(() => {
     setTitle(initialTitle ?? "");
-    setAttachedFiles(fileList ?? []);
-    setAttachedImages(imageList ?? []);
+    setAttachedFiles(fileList?.map((f) => ({ id: f.uuid, name: f.fileName, type: f.handlingType, size: f.size, set: true })) ?? []);
+    setAttachedImages(imageList?.map((i) => ({ id: i.uuid, name: i.fileName, type: i.handlingType, size: i.size, set: true })) ?? []);
   }, [initialTitle]);
 
   // 🔧 setContent의 2번째 인자는 버전에 따라 타입이 다름 → 옵션 객체로 안전하게 처리
@@ -189,12 +195,23 @@ export const ContentEditor = ({
     try {
       const finalContent = editor.getHTML();
 
-      onSubmit?.(
-        title,
-        finalContent,
-        files.map((f) => f.file),        // 일반 파일들
-        imageFiles.map((f) => f.file)    // 이미지 파일들
-      );
+      if (isStudy) {
+        onSubmit?.(
+          title,
+          finalContent,
+          files.map((f) => f.file),
+          imageFiles.map((f) => f.file),
+          deletedAttachedImages,
+          deletedAttachedFiles,
+        );
+      } else {
+        onSubmit?.(
+          title,
+          finalContent,
+          files.map((f) => f.file),        // 일반 파일들
+          imageFiles.map((f) => f.file)    // 이미지 파일들
+        );
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -222,15 +239,14 @@ export const ContentEditor = ({
           // 이미지 파일 처리
           setAttachedImages((prev) => [
             ...prev,
-            { id, name: file.name, type: file.type, size: file.size },
+            { id, name: file.name, type: file.type, size: file.size, set: false },
           ]);
           setImageFiles((prev) => [...prev, { id, file }]);
-          console.log("이미지 파일 추가됨:", file.name);
         } else {
           // 일반 파일 처리
           setAttachedFiles((prev) => [
             ...prev,
-            { id, name: file.name, type: file.type, size: file.size },
+            { id, name: file.name, type: file.type, size: file.size, set: false },
           ]);
           setFiles((prev) => [...prev, { id, file }]);
         }
@@ -244,12 +260,18 @@ export const ContentEditor = ({
   const removeAttachedFile = useCallback((id: string) => {
     setAttachedFiles((prev) => prev.filter((f) => f.id !== id));
     setFiles((prev) => prev.filter((f) => f.id !== id));
-  }, []);
+    if (attachedFiles) {
+      setDeletedAttachedFiles((prev) => [...(prev ?? []), id]);
+    }
+  }, [attachedFiles]);
 
   const removeAttachedImage = useCallback((id: string) => {
     setAttachedImages((prev) => prev.filter((f) => f.id !== id));
     setImageFiles((prev) => prev.filter((f) => f.id !== id));
-  }, []);
+    if (attachedImages.find((f) => f.id === id)?.set) {
+      setDeletedAttachedImages((prev) => [...(prev ?? []), id]);
+    }
+  }, [attachedImages]);
 
   const formatFileSize = (bytes: number) => {
     if (bytes === 0) return "0 Bytes";
@@ -305,21 +327,19 @@ export const ContentEditor = ({
               />
             </div>
 
-            {!isStudy && (
-              <div>
-                <label className={styles.fileUploadButton}>
-                  <img src={Clip} alt="Clip" />
-                  <span>파일 첨부</span>
-                  <input
-                    type="file"
-                    onChange={handleFileUpload}
-                    style={{ display: "none" }}
-                    accept="image/*,.pdf,.doc,.docx,.txt,.xlsx,.xls"
-                    multiple
-                  />
-                </label>
-              </div>
-            )}
+            <div>
+              <label className={styles.fileUploadButton}>
+                <img src={Clip} alt="Clip" />
+                <span>파일 첨부</span>
+                <input
+                  type="file"
+                  onChange={handleFileUpload}
+                  style={{ display: "none" }}
+                  accept="image/*,.pdf,.doc,.docx,.txt,.xlsx,.xls"
+                  multiple
+                />
+              </label>
+            </div>
           </div>
         </div>
 

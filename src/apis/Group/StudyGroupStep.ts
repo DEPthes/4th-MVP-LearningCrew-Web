@@ -3,9 +3,10 @@ import axios from "axios";
 import { getAuthHeader } from "../auth/auth";
 
 export type Attachment = {
- id: number; // 서버에서 관리하는 파일/이미지 ID
- name: string; // 파일명
- url?: string; // 미리보기/다운로드 URL (선택)
+ uuid: string;
+ fileName: string;
+ size: number;
+ handlingType: string;
 };
 
 export type StepStudy = {
@@ -13,8 +14,8 @@ export type StepStudy = {
  endDate?: string; // "YYYY-MM-DD"
  title: string;
  content: string; // html
- fileList?: Attachment[]; // ✅ 추가
- imageList?: Attachment[]; // ✅ 추가
+ attachedFiles?: Attachment[]; // ✅ 추가
+ attachedImages?: Attachment[]; // ✅ 추가
 };
 
 // ✅ 특정 스텝 조회 (미작성 404면 null)
@@ -34,48 +35,40 @@ export async function getStudyByStep(groupId: number, step: number) {
 export async function saveStudyByStep(
  groupId: number,
  step: number,
- body: {
-  endDate?: string;
-  title: string;
-  content: string;
-  fileList?: Attachment[]; // ✅ 추가
-  imageList?: Attachment[]; // ✅ 추가
- }
+ title: string,
+ content: string,
+ newAttachedFiles?: File[],
+ newAttachedImages?: File[],
+ deletedAttachedImages?: string[],
+ deletedAttachedFiles?: string[]
 ) {
  const headers = getAuthHeader();
 
- // 서버가 첨부를 ID 배열로 받는다면 여기서 매핑
- const payload = {
-  ...body,
-  fileIds: body.fileList?.map((f) => f.id),
-  imageIds: body.imageList?.map((i) => i.id),
- };
-
  try {
   // 보통 최초 생성
-  const { data } = await axios.post(
+  const formData = new FormData();
+  formData.append("title", title);
+  formData.append("content", content);
+  newAttachedFiles?.forEach((file) =>
+   formData.append("newAttachedFiles", file)
+  );
+  newAttachedImages?.forEach((image) =>
+   formData.append("newAttachedImages", image)
+  );
+  deletedAttachedImages?.forEach((image) =>
+   formData.append("deletedAttachedImages", image)
+  );
+  deletedAttachedFiles?.forEach((file) =>
+   formData.append("deletedAttachedFiles", file)
+  );
+
+  const { data } = await axios.patch(
    `/api/study-groups/${groupId}/steps/${step}`,
-   payload,
+   formData,
    { headers }
   );
   return data;
- } catch (e1: any) {
-  // 이미 존재 → 전체 교체
-  try {
-   const { data } = await axios.put(
-    `/api/study-groups/${groupId}/steps/${step}`,
-    payload,
-    { headers }
-   );
-   return data;
-  } catch (e2: any) {
-   // 부분 수정
-   const { data } = await axios.patch(
-    `/api/study-groups/${groupId}/steps/${step}`,
-    payload,
-    { headers }
-   );
-   return data;
-  }
+ } catch (error) {
+  throw error;
  }
 }

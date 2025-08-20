@@ -133,7 +133,7 @@ export const MyNote = () => {
         for (const image of myNote.attachedImages) {
           try {
             const response = await getImage(image.uuid);
-            imageUrlMap[image.uuid] = response;
+            imageUrlMap[image.uuid] = response || "";
           } catch (error) {
             console.error(`이미지 로드 실패: ${image.fileName}`, error);
           }

@@ -19,7 +19,6 @@ export default function HostGroupStudyWriting() {
   const gid = Number(groupId);
   const step = Number(stepId);
 
-  const [endDate, setEndDate] = useState("");
   const [title, setTitle] = useState("");
   const [content, setContent] = useState(""); // html
   const [fileList, setFileList] = useState<Attachment[]>([]);
@@ -32,11 +31,10 @@ export default function HostGroupStudyWriting() {
     if (!Number.isFinite(gid) || !Number.isFinite(step)) return;
 
     const fill = (data: StepStudy) => {
-      setEndDate(data.endDate ?? "");
       setTitle(data.title ?? "");
       setContent(data.content ?? "");
-      setFileList(data.fileList ?? []);
-      setImageList(data.imageList ?? []);
+      setFileList(data.attachedFiles ?? []);
+      setImageList(data.attachedImages ?? []);
     };
 
     if (initialFromState) {
@@ -57,21 +55,16 @@ export default function HostGroupStudyWriting() {
 
   // ✅ ContentEditor가 호출하는 onSubmit 어댑터(시그니처 맞춤)
   const handleEditorSubmit = async (
-    nextTitle: string,
-    nextContent: string,
-    _newFiles: File[],
-    _newImages: File[],
+    title: string,
+    content: string,
+    attachedFiles: File[],
+    attachedImages: File[],
+    deletedAttachedImages?: string[] | undefined,
+    deletedAttachedFiles?: string[] | undefined,
   ) => {
     if (!Number.isFinite(gid) || !Number.isFinite(step)) return;
     try {
-      // TODO: _newFiles/_newImages 업로드 로직 붙이면 fileList/imageList 갱신
-      await saveStudyByStep(gid, step, {
-        endDate,
-        title: nextTitle,
-        content: nextContent,
-        fileList,   // 기존 첨부 유지 (업로드 붙이면 갱신)
-        imageList,  // 기존 첨부 유지
-      });
+      await saveStudyByStep(gid, step, title, content, attachedFiles, attachedImages, deletedAttachedImages, deletedAttachedFiles);
       alert("저장 완료!");
       navigate(`/group/${gid}/step/${step}/MyGroupStudy`, { replace: true });
     } catch (e: any) {
@@ -93,6 +86,8 @@ export default function HostGroupStudyWriting() {
         contentText="내 노트 내용"
         onSubmit={handleEditorSubmit}
         isStudy={true}
+        fileList={fileList}
+        imageList={imageList}
         initialTitle={editorInitial.title}
         initialContent={editorInitial.content}
         loading={loading}

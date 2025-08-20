@@ -65,8 +65,8 @@ export default function MyPageHome() {
       try {
         const url = await getImage(uuid);
         if (!alive) return;
-        setImgSrc(url);
-        if (url.startsWith("blob:")) revokeUrl = url;
+        setImgSrc(url || "");
+        if (url?.startsWith("blob:")) revokeUrl = url;
       } catch {
         if (!alive) return;
         setImgSrc(profilePlaceholder);
@@ -191,7 +191,7 @@ export default function MyPageHome() {
               <div className={styles.fieldRow}>
                 <label className={styles.label}>프로필 사진</label>
                 <div className={styles.profile}>
-                  <img src={imgSrc} alt="프로필" className={styles.profileImage} />
+                  <img src={imgSrc || profilePlaceholder} alt="프로필" className={styles.profileImage} />
                 </div>
               </div>
 

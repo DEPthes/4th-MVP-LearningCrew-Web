@@ -63,7 +63,7 @@ export const CommentList = ({ comments }: CommentListProps) => {
           if (comment.createdBy.profileImage && comment.createdBy.profileImage.uuid) {
             try {
               const response = await getImage(comment.createdBy.profileImage.uuid);
-              profileUrlMap[comment.createdBy.id] = response;
+              profileUrlMap[comment.createdBy.id] = response || "";
             } catch (error) {
               console.error(`프로필 이미지 로드 실패: ${comment.createdBy.profileImage.uuid}`, error);
               // 기본 프로필 이미지 설정
@@ -76,7 +76,7 @@ export const CommentList = ({ comments }: CommentListProps) => {
             for (const image of comment.attachedImages) {
               try {
                 const response = await getImage(image.uuid);
-                imageUrlMap[image.uuid] = response;
+                imageUrlMap[image.uuid] = response || "";
               } catch (error) {
                 console.error(`이미지 로드 실패: ${image.fileName}`, error);
                 // 에러 시 기본 이미지 설정
