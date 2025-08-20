@@ -187,6 +187,10 @@
  max-width: 80%;
 }
 
+.comment__image {
+ max-width: 100%;
+}
+
 .comment__fileList {
  display: flex;
  flex-direction: column;

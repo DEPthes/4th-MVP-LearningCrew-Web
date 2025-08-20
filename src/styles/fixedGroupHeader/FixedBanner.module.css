@@ -11,6 +11,7 @@
   rgba(0, 0, 0, 0.3) 100%,
   rgba(0, 0, 0, 0.35) 100%
  );
+ background-color: rgba(0, 0, 0, 0.5);
 }
 
 .backgroundImage {
@@ -65,15 +66,15 @@
 .introduce {
  font: var(--BodySRegular);
  color: var(--MainColor1);
- width: 300px;
+ width: 250px;
 }
 
 .container__3 {
  display: flex;
  flex-shrink: 0;
  margin-top: 60px;
- margin-left: 50px;
- margin-right: 10%;
+ margin-right: 50px;
+ width: 180px;
 }
 
 .hostName {
@@ -92,7 +93,7 @@
  gap: 12px;
  padding-top: 24px;
  width: 88px;
- margin-right: 10%;
+ margin-right: 50px;
 }
 
 .study__people {
@@ -112,7 +113,7 @@
  gap: 12px;
  padding-top: 24px;
  width: 171px;
- margin-right: 10%;
+ margin-right: 120px;
 }
 
 .study__date {
@@ -128,7 +129,7 @@
 .container__6 {
  display: flex;
  margin-top: 32px;
- gap: 70px;
+ gap: 20px;
 }
 
 /* 기본 북마크 버튼 */

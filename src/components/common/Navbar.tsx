@@ -138,7 +138,7 @@ export default function Navbar() {
       <nav className={styles.navbar}>
         <div className={styles.container}>
           <div className={styles.logoSection}>
-            <img src="/logo.svg" alt="LearnIT Logo" className={styles.logo} onClick={() => navigate("/")} />
+            <img src="/logo.svg" alt="LearnIT Logo" className={styles.logo} onClick={() => { navigate("/"); setActiveTab("홈") }} />
           </div>
 
           <div className={styles.menu}>
