@@ -65,6 +65,18 @@ export const Calendar = ({ message, errorMessage, name, setValue, watch }: Calen
     return `${year}-${month}-${day}`;
   };
 
+  const formatMonthYear = (locale: string | undefined, date: Date) => {
+    console.log(locale);
+    const year = date.getFullYear();
+    const month = date.getMonth();
+
+    const monthNames = [
+      '1월', '2월', '3월', '4월', '5월', '6월',
+      '7월', '8월', '9월', '10월', '11월', '12월'
+    ];
+
+    return `${monthNames[month]} ${year}년`;
+  };
 
   return (
     <>
@@ -73,7 +85,7 @@ export const Calendar = ({ message, errorMessage, name, setValue, watch }: Calen
       </p>
       <div className={styles.calendarWrapper}>
         <CalendarLib
-          locale="ko-KR"
+          locale="en-US"
           selectRange
           value={value}
           onChange={handleChange}
@@ -84,6 +96,7 @@ export const Calendar = ({ message, errorMessage, name, setValue, watch }: Calen
           }}
           className={styles.calendar}
           formatDay={(_, date) => date.getDate().toString()}
+          formatMonthYear={formatMonthYear}
           next2Label={null}
           prev2Label={null}
           showNeighboringMonth={true}
