@@ -175,7 +175,7 @@ export default function Navbar() {
           </div>
 
           <div className={styles.rightSection}>
-            <SearchBar placeholder="스터디 이름을 검색해 보세요" onSearch={emitSearch} />
+            <SearchBar placeholder="그룹명 또는 카테고리를 검색해 보세요" onSearch={emitSearch} />
             {user ? (
               <img
                 src={profileSrc}
