@@ -56,7 +56,7 @@ export default function EditProfile() {
   const [passwordValid, setPasswordValid] = useState(false);
   const [passwordsMatch, setPasswordsMatch] = useState(false);
 
-  const [loading, setLoading] = useState(true);
+//  const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -191,10 +191,9 @@ export default function EditProfile() {
       } catch (e: any) {
         if (!alive) return;
         setError(e?.response?.data?.message || "내 정보 불러오기에 실패했습니다.");
-      } finally {
-        if (alive) setLoading(false);
       }
     })();
+
 
     return () => {
       alive = false;
