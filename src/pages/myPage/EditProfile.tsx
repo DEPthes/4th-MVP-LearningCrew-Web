@@ -36,9 +36,11 @@ export default function EditProfile() {
   const navigate = useNavigate();
   const { setActiveTab } = useNavbar();
   const [email, setEmail] = useState("");
+  const [originEmail, setOriginEmail] = useState(""); 
+  const [nickname, setNickname] = useState("");
+  const [originNickname, setOriginNickname] = useState(""); 
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [nickname, setNickname] = useState("");
   const [birthday, setBirthday] = useState<Date | null>(null);
   const [gender, setGender] = useState<string | null>(null);
   const [profileImage, setProfileImage] = useState<File | null>(null);
@@ -56,8 +58,6 @@ export default function EditProfile() {
   const [nicknameValid, setNicknameValid] = useState(false);
   const [passwordValid, setPasswordValid] = useState(false);
   const [passwordsMatch, setPasswordsMatch] = useState(false);
-
-  //  const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -105,14 +105,34 @@ export default function EditProfile() {
     setNicknameValid(false);
   };
 
-  const handleCheckEmail = () => {
-    if (!email) {
+  const handleCheckEmail = async () => {
+    const trimmed = email.trim();
+
+    if (!trimmed) {
       setEmailMessage("*이메일을 입력하세요.");
       setEmailValid(false);
       return;
     }
-    setEmailMessage("*사용 가능한 아이디입니다.");
-    setEmailValid(true);
+
+    if (trimmed === originEmail) {
+      setEmailMessage("*현재 본인이 사용중인 이메일입니다.");
+      setEmailValid(true);
+      return;
+    }
+
+    try {
+      const res = await axios.get("/api/auth/email-exist", { params: { email: trimmed } });
+      if (res?.data?.exist) {
+        setEmailMessage("*중복되는 아이디입니다.");
+        setEmailValid(true);
+      } else {
+        setEmailMessage("*사용 가능한 아이디입니다.");
+        setEmailValid(true);
+      }
+    } catch {
+      setEmailMessage("*중복 확인 중 오류가 발생했습니다.");
+      setEmailValid(false);
+    }
   };
 
   const handleCheckNickname = async () => {
@@ -120,15 +140,22 @@ export default function EditProfile() {
 
     if (trimmed.length === 0) {
       setNicknameMessage("*닉네임을 입력하세요.");
-      setNicknameValid(true);
+      setNicknameValid(false);
       return;
     }
     if (trimmed.length > 10) {
       setNicknameMessage("*닉네임 조건에 충족하지 않습니다.");
+      setNicknameValid(false);
+      return;
+    }
+
+    if (trimmed === originNickname) {
+      setNicknameMessage("*현재 본인이 사용중인 닉네임입니다.");
       setNicknameValid(true);
       return;
     }
     setNicknameValid(true);
+
 
     try {
       const res = await axios.get("/api/auth/nickname-exist", {
@@ -137,14 +164,14 @@ export default function EditProfile() {
 
       if (res?.data?.exist) {
         setNicknameMessage("*중복되는 닉네임입니다.");
-        setNicknameValid(true);
+        setNicknameValid(false);
       } else {
         setNicknameMessage("*사용 가능한 닉네임입니다.");
         setNicknameValid(true);
       }
     } catch {
       setNicknameMessage("*중복 확인 중 오류가 발생했습니다.");
-      setNicknameValid(true);
+      setNicknameValid(false);
     }
   };
 
@@ -158,7 +185,9 @@ export default function EditProfile() {
         if (!alive) return;
 
         setEmail(me.email || "");
+        setOriginEmail(me.email || ""); 
         setNickname(me.nickname || "");
+        setOriginNickname(me.nickname || ""); 
         setGender(me.gender || null);
 
         const rawBirthday =
@@ -195,7 +224,6 @@ export default function EditProfile() {
       }
     })();
 
-
     return () => {
       alive = false;
       if (revokeUrl) URL.revokeObjectURL(revokeUrl);
@@ -229,10 +257,10 @@ export default function EditProfile() {
 
       if (msg.includes("닉네임")) {
         setNicknameMessage(`*${msg}`);
-        setNicknameValid(true);
+        setNicknameValid(false);
       } else if (msg.includes("이메일")) {
         setEmailMessage(`*${msg}`);
-        setEmailValid(true);
+        setEmailValid(false);
       } else {
         alert(msg);
       }
@@ -240,7 +268,6 @@ export default function EditProfile() {
       setSaving(false);
     }
   };
-
 
   return (
     <>
