@@ -79,8 +79,20 @@ export default function MyGroup() {
   const [sort, setSort] = useState("최신순");
   const [totalPages, setTotalPages] = useState(1);
 
+  // requestAnimationFrame을 사용해서 검색 키워드를 안전하게 처리
+  const [q, setQ] = useState("");
+
+  useEffect(() => {
+    const rawQ = searchKeyword ?? '';
+    const trimmedQ = rawQ.trim().toLowerCase();
+
+    // requestAnimationFrame을 사용해서 상태 업데이트를 다음 프레임으로 지연
+    requestAnimationFrame(() => {
+      setQ(trimmedQ);
+    });
+  }, [searchKeyword]);
+
   const rawQ = searchKeyword ?? '';
-  const q = rawQ.trim().toLowerCase();
 
   useEffect(() => {
     const apiSort = sort === "오래된순" ? "created_at" : sort === "관련도순" ? "relative" : sort === "가나다순" ? "alphabet" : "created_at";

@@ -70,7 +70,7 @@ export default function HostGroupStudy() {
       setLoading(true);
       try {
         const data = await getStudyByStep(gid, step);
-        setStudy(data ?? null);
+        setStudy(data?.content ? data : null);
       } catch {
         setStudy(null);
       } finally {
@@ -135,8 +135,8 @@ export default function HostGroupStudy() {
           </div>
         ) : (
           <div className={styles.noteBox}>
-            <h2 className={styles.noteTitle}>제목</h2>
-            <p className={styles.noteContent}>내용</p>
+            <h2 className={styles.noteTitle}></h2>
+            <p className={styles.noteContent}></p>
           </div>
         )}
       </div>

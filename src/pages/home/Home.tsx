@@ -47,8 +47,23 @@ export const Home = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>("전체");
 
   const [params] = useSearchParams();
+  const [q, setQ] = useState("");
+
+  // requestAnimationFrame을 사용해서 검색 파라미터를 안전하게 처리
+  useEffect(() => {
+    const rawQ = params.get("q") ?? "";
+    const decodedQ = decodeURIComponent(rawQ);
+    const trimmedQ = decodedQ.trim();
+
+    // requestAnimationFrame을 사용해서 상태 업데이트를 다음 프레임으로 지연
+    requestAnimationFrame(() => {
+      setQ(trimmedQ);
+    });
+  }, [params]);
+
+  // title 표시를 위한 rawQ 값
   const rawQ = params.get("q") ?? "";
-  const q = rawQ.trim();
+  const decodedQ = decodeURIComponent(rawQ);
 
   const [sort, setSort] = useState<SortLabel>("최신순");
 
@@ -80,6 +95,16 @@ export const Home = () => {
             : CATEGORY_NAME_TO_ID[selectedCategory];
 
         const { sort: sortKey, order } = mapSort(sort, !!q);
+
+        // 디버깅을 위한 로그 (개발 환경에서만)
+        if (process.env.NODE_ENV === 'development') {
+          console.log('Search params debug:', {
+            rawQ,
+            decodedQ,
+            q,
+            searchKeyword: q || undefined
+          });
+        }
 
         const baseParams = {
           sort: sortKey,
@@ -162,8 +187,8 @@ export const Home = () => {
     });
   }, [cards, selectedCategory, q]);
 
-  const title = rawQ.trim() ? (
-    <span className={styles.searchTitle}>{`'${rawQ.trim()}' 검색 결과`}</span>
+  const title = decodedQ.trim() ? (
+    <span className={styles.searchTitle}>{`'${decodedQ.trim()}' 검색 결과`}</span>
   ) : (
     <span>스터디 모집</span>
   );

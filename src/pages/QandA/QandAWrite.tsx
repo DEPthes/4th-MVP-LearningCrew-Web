@@ -29,6 +29,7 @@ export const QandAWrite = () => {
       alert("질문이 등록되었습니다.");
       navigate(`/group/${groupId}/step/${stepId}/QandA`);
     } catch (error) {
+      alert("질문 등록에 실패했습니다.");
       console.error(error);
     }
   }

@@ -13,7 +13,7 @@ export const Button = ({ handleSubmit }: ButtonProps) => {
     try {
       await PostCreateGroup(formData);
       alert("스터디가 개설되었습니다.");
-      navigate(`/`);
+      navigate(`/mygroup?type=hosted `);
     } catch (error) {
       console.error(error);
     }

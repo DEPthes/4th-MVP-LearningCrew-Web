@@ -10,6 +10,7 @@ import Gender from "../../components/signUp/Gender";
 import { fetchMe, updateMe, type MeResponse } from "../../apis/mypage/users";
 import { getImage } from "../../apis/common/File";
 import axios from "axios";
+import { useNavbar } from "../../hooks/NavbarContext";
 
 // function toYYYYMMDD(d: Date) {
 //   const y = d.getFullYear();
@@ -33,7 +34,7 @@ function adjustBirthdayForTimezone(birthday: Date): string {
 
 export default function EditProfile() {
   const navigate = useNavigate();
-
+  const { setActiveTab } = useNavbar();
   const [email, setEmail] = useState("");
   const [originEmail, setOriginEmail] = useState(""); 
   const [nickname, setNickname] = useState("");
@@ -57,7 +58,6 @@ export default function EditProfile() {
   const [nicknameValid, setNicknameValid] = useState(false);
   const [passwordValid, setPasswordValid] = useState(false);
   const [passwordsMatch, setPasswordsMatch] = useState(false);
-
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -154,6 +154,8 @@ export default function EditProfile() {
       setNicknameValid(true);
       return;
     }
+    setNicknameValid(true);
+
 
     try {
       const res = await axios.get("/api/auth/nickname-exist", {
@@ -248,6 +250,7 @@ export default function EditProfile() {
 
       await updateMe(payload);
       alert("내 정보가 수정되었습니다.");
+      setActiveTab("마이페이지");
       navigate("/myPage");
     } catch (e: any) {
       const msg = e?.response?.data?.message || "수정 중 오류가 발생했습니다.";

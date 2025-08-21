@@ -82,7 +82,7 @@ export default function HostGroupStudyWriting() {
   return (
     <div className="wrapper">
       <ContentEditor
-        wholeTitle="스터디 노트 작성하기"
+        wholeTitle="스터디 작성하기"
         contentText="내 노트 내용"
         onSubmit={handleEditorSubmit}
         isStudy={true}

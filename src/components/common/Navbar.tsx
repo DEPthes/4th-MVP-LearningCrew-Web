@@ -181,6 +181,7 @@ export default function Navbar() {
                 src={profileSrc}
                 alt="프로필"
                 className={styles.profileImage}
+                onClick={() => { navigate('/mypage'); setActiveTab("마이페이지") }}
                 onError={(e) => {
                   (e.currentTarget as HTMLImageElement).src = DEFAULT_PROFILE;
                 }}

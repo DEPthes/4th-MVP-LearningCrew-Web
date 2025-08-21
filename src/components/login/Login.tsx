@@ -3,8 +3,10 @@ import Header from "../header/Header"
 import styles from "../../styles/login/Login.module.css"
 import { Link, useNavigate } from "react-router-dom"
 import { login } from "../../apis/auth/auth"
+import { useNavbar } from "../../hooks/NavbarContext"
 
 export default function Login() {
+  const { setActiveTab } = useNavbar();
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [error, setError] = useState(false)
@@ -14,6 +16,7 @@ export default function Login() {
     e.preventDefault()
     try {
       await login(email, password)
+      setActiveTab("마이페이지")
       navigate("/mypage")
     } catch (err) {
       console.error("로그인 실패:", err)

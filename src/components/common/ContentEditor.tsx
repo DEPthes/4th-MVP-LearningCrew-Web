@@ -134,11 +134,14 @@ export const ContentEditor = ({
     updateFont();
     updateBold();
 
-    editor.on("selectionUpdate", updateFont);
+    editor.on("selectionUpdate", () => {
+      updateFont();
+      updateBold();
+    });
     editor.on("update", updateBold);
 
     return () => {
-      editor.off("selectionUpdate", updateFont);
+      editor.off("selectionUpdate");
       editor.off("update", updateBold);
     };
   }, [editor]);
