@@ -48,7 +48,9 @@ export const Home = () => {
 
   const [params] = useSearchParams();
   const rawQ = params.get("q") ?? "";
-  const q = rawQ.trim();
+  // macOS에서 공백 포함 검색어 문제 해결을 위한 디코딩 처리
+  const decodedQ = decodeURIComponent(rawQ);
+  const q = decodedQ.trim();
 
   const [sort, setSort] = useState<SortLabel>("최신순");
 
@@ -80,6 +82,16 @@ export const Home = () => {
             : CATEGORY_NAME_TO_ID[selectedCategory];
 
         const { sort: sortKey, order } = mapSort(sort, !!q);
+
+        // 디버깅을 위한 로그 (개발 환경에서만)
+        if (process.env.NODE_ENV === 'development') {
+          console.log('Search params debug:', {
+            rawQ,
+            decodedQ,
+            q,
+            searchKeyword: q || undefined
+          });
+        }
 
         const baseParams = {
           sort: sortKey,

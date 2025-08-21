@@ -34,6 +34,7 @@
 .logoSection {
  display: flex;
  align-items: center;
+ cursor: pointer;
  /* transform: translateX(68px); */
 }
 
@@ -121,6 +122,7 @@
  top: 50%;
  transform: translateY(-50%);
  color: var(--PointColor);
+ cursor: pointer;
 }
 
 /* 로그인 버튼 */
@@ -147,4 +149,5 @@
  border-radius: 50%;
  object-fit: cover;
  border: 1px solid var(--Gray2);
+ cursor: pointer;
 }
