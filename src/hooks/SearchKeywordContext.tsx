@@ -13,8 +13,16 @@ const SearchKeywordContext = createContext<SearchKeywordContextType | undefined>
 export function SearchKeywordProvider({ children }: { children: ReactNode }) {
   const [searchKeyword, setSearchKeyword] = useState<string>('');
   const [type, setType] = useState<"joined" | "hosted" | "applied">("joined");
+
   const clearSearchKeyword = () => {
     setSearchKeyword('');
+  };
+
+  // requestAnimationFrame을 사용해서 검색 키워드 변경을 안전하게 처리
+  const setSearchKeywordSafe = (keyword: string) => {
+    requestAnimationFrame(() => {
+      setSearchKeyword(keyword);
+    });
   };
 
   useEffect(() => {
@@ -24,7 +32,7 @@ export function SearchKeywordProvider({ children }: { children: ReactNode }) {
   return (
     <SearchKeywordContext.Provider value={{
       searchKeyword,
-      setSearchKeyword,
+      setSearchKeyword: setSearchKeywordSafe,
       clearSearchKeyword,
       type,
       setType
