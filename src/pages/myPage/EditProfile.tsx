@@ -35,6 +35,7 @@ export default function EditProfile() {
   const navigate = useNavigate();
 
   const [email, setEmail] = useState("");
+  const [originEmail, setOriginEmail] = useState(""); 
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [nickname, setNickname] = useState("");
@@ -104,14 +105,35 @@ export default function EditProfile() {
     setNicknameValid(false);
   };
 
-  const handleCheckEmail = () => {
-    if (!email) {
+  const handleCheckEmail = async () => {
+    const trimmed = email.trim();
+
+    if (!trimmed) {
       setEmailMessage("*이메일을 입력하세요.");
       setEmailValid(false);
       return;
     }
-    setEmailMessage("*사용 가능한 아이디입니다.");
-    setEmailValid(true);
+
+    // 원본과 동일하면 본인 사용 중 안내
+    if (trimmed === originEmail) {
+      setEmailMessage("*현재 본인이 사용중인 이메일입니다.");
+      setEmailValid(true);
+      return;
+    }
+
+    try {
+      const res = await axios.get("/api/auth/email-exist", { params: { email: trimmed } });
+      if (res?.data?.exist) {
+        setEmailMessage("*중복되는 아이디입니다.");
+        setEmailValid(true);
+      } else {
+        setEmailMessage("*사용 가능한 아이디입니다.");
+        setEmailValid(true);
+      }
+    } catch {
+      setEmailMessage("*중복 확인 중 오류가 발생했습니다.");
+      setEmailValid(false);
+    }
   };
 
   const handleCheckNickname = async () => {
@@ -127,7 +149,7 @@ export default function EditProfile() {
       setNicknameValid(true);
       return;
     }
-  setNicknameValid(true);
+    setNicknameValid(true);
 
     try {
       const res = await axios.get("/api/auth/nickname-exist", {
@@ -157,6 +179,7 @@ export default function EditProfile() {
         if (!alive) return;
 
         setEmail(me.email || "");
+        setOriginEmail(me.email || ""); 
         setNickname(me.nickname || "");
         setGender(me.gender || null);
 
@@ -194,7 +217,6 @@ export default function EditProfile() {
       }
     })();
 
-
     return () => {
       alive = false;
       if (revokeUrl) URL.revokeObjectURL(revokeUrl);
@@ -205,40 +227,39 @@ export default function EditProfile() {
     (password === "" && confirmPassword === "") ||
     (passwordValid && passwordsMatch);
 
-const handleSubmit = async () => {
-  if (!canSubmit || saving) return;
-  setSaving(true);
+  const handleSubmit = async () => {
+    if (!canSubmit || saving) return;
+    setSaving(true);
 
-  try {
-    const payload: any = {
-      email,
-      nickname,
-      birthday: birthday ? adjustBirthdayForTimezone(birthday) : undefined,
-    };
+    try {
+      const payload: any = {
+        email,
+        nickname,
+        birthday: birthday ? adjustBirthdayForTimezone(birthday) : undefined,
+      };
 
-    if (password) payload.password = password;
-    if (profileImage) payload.profileImage = profileImage;
+      if (password) payload.password = password;
+      if (profileImage) payload.profileImage = profileImage;
 
-    await updateMe(payload);
-    alert("내 정보가 수정되었습니다.");
-    navigate("/myPage");
-} catch (e: any) {
-  const msg = e?.response?.data?.message || "수정 중 오류가 발생했습니다.";
+      await updateMe(payload);
+      alert("내 정보가 수정되었습니다.");
+      navigate("/myPage");
+    } catch (e: any) {
+      const msg = e?.response?.data?.message || "수정 중 오류가 발생했습니다.";
 
-  if (msg.includes("닉네임")) {
-    setNicknameMessage(`*${msg}`);
-    setNicknameValid(true);
-  } else if (msg.includes("이메일")) {
-    setEmailMessage(`*${msg}`);
-    setEmailValid(true);
-  } else {
-    alert(msg);
-  }
-} finally {
-    setSaving(false);
-  }
-};
-
+      if (msg.includes("닉네임")) {
+        setNicknameMessage(`*${msg}`);
+        setNicknameValid(true);
+      } else if (msg.includes("이메일")) {
+        setEmailMessage(`*${msg}`);
+        setEmailValid(true);
+      } else {
+        alert(msg);
+      }
+    } finally {
+      setSaving(false);
+    }
+  };
 
   return (
     <>

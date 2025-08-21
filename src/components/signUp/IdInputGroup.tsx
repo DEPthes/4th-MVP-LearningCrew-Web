@@ -31,7 +31,8 @@ export default function IdInputGroup({
     message === "*중복되는 아이디입니다." ||
     message === "*사용 가능한 닉네임입니다." ||
     message === "*중복되는 닉네임입니다." ||
-    message === "*닉네임 조건에 충족하지 않습니다."
+    message === "*닉네임 조건에 충족하지 않습니다." ||
+    message === "*현재 본인이 사용중인 이메일입니다."
 
   return (
     <div className={styles.div__container}>
