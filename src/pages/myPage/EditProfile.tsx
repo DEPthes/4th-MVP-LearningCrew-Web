@@ -124,7 +124,7 @@ export default function EditProfile() {
       const res = await axios.get("/api/auth/email-exist", { params: { email: trimmed } });
       if (res?.data?.exist) {
         setEmailMessage("*중복되는 아이디입니다.");
-        setEmailValid(false);
+        setEmailValid(true);
       } else {
         setEmailMessage("*사용 가능한 아이디입니다.");
         setEmailValid(true);
