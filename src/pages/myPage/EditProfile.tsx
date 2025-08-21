@@ -10,6 +10,7 @@ import Gender from "../../components/signUp/Gender";
 import { fetchMe, updateMe, type MeResponse } from "../../apis/mypage/users";
 import { getImage } from "../../apis/common/File";
 import axios from "axios";
+import { useNavbar } from "../../hooks/NavbarContext";
 
 // function toYYYYMMDD(d: Date) {
 //   const y = d.getFullYear();
@@ -33,7 +34,7 @@ function adjustBirthdayForTimezone(birthday: Date): string {
 
 export default function EditProfile() {
   const navigate = useNavigate();
-
+  const { setActiveTab } = useNavbar();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -56,7 +57,7 @@ export default function EditProfile() {
   const [passwordValid, setPasswordValid] = useState(false);
   const [passwordsMatch, setPasswordsMatch] = useState(false);
 
-//  const [loading, setLoading] = useState(true);
+  //  const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -127,7 +128,7 @@ export default function EditProfile() {
       setNicknameValid(true);
       return;
     }
-  setNicknameValid(true);
+    setNicknameValid(true);
 
     try {
       const res = await axios.get("/api/auth/nickname-exist", {
@@ -205,39 +206,40 @@ export default function EditProfile() {
     (password === "" && confirmPassword === "") ||
     (passwordValid && passwordsMatch);
 
-const handleSubmit = async () => {
-  if (!canSubmit || saving) return;
-  setSaving(true);
+  const handleSubmit = async () => {
+    if (!canSubmit || saving) return;
+    setSaving(true);
 
-  try {
-    const payload: any = {
-      email,
-      nickname,
-      birthday: birthday ? adjustBirthdayForTimezone(birthday) : undefined,
-    };
+    try {
+      const payload: any = {
+        email,
+        nickname,
+        birthday: birthday ? adjustBirthdayForTimezone(birthday) : undefined,
+      };
 
-    if (password) payload.password = password;
-    if (profileImage) payload.profileImage = profileImage;
+      if (password) payload.password = password;
+      if (profileImage) payload.profileImage = profileImage;
 
-    await updateMe(payload);
-    alert("내 정보가 수정되었습니다.");
-    navigate("/myPage");
-} catch (e: any) {
-  const msg = e?.response?.data?.message || "수정 중 오류가 발생했습니다.";
+      await updateMe(payload);
+      alert("내 정보가 수정되었습니다.");
+      setActiveTab("마이페이지");
+      navigate("/myPage");
+    } catch (e: any) {
+      const msg = e?.response?.data?.message || "수정 중 오류가 발생했습니다.";
 
-  if (msg.includes("닉네임")) {
-    setNicknameMessage(`*${msg}`);
-    setNicknameValid(true);
-  } else if (msg.includes("이메일")) {
-    setEmailMessage(`*${msg}`);
-    setEmailValid(true);
-  } else {
-    alert(msg);
-  }
-} finally {
-    setSaving(false);
-  }
-};
+      if (msg.includes("닉네임")) {
+        setNicknameMessage(`*${msg}`);
+        setNicknameValid(true);
+      } else if (msg.includes("이메일")) {
+        setEmailMessage(`*${msg}`);
+        setEmailValid(true);
+      } else {
+        alert(msg);
+      }
+    } finally {
+      setSaving(false);
+    }
+  };
 
 
   return (

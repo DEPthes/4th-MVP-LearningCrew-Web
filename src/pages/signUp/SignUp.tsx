@@ -8,6 +8,7 @@ import BirthCalendar from "../../components/signUp/BirthCalendar"
 import Profile from "../../components/signUp/Profile"
 import Gender from "../../components/signUp/Gender"
 import { useNavigate } from "react-router-dom"
+import { useNavbar } from "../../hooks/NavbarContext"
 
 import axios from "axios"
 import { login as loginApi } from "../../apis/auth/auth"
@@ -20,6 +21,7 @@ function adjustBirthdayForTimezone(birthday: Date): string {
 }
 
 export default function SignUp() {
+  const { setActiveTab } = useNavbar();
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
@@ -155,6 +157,7 @@ export default function SignUp() {
       })
 
       await loginApi(email, password)
+      setActiveTab("홈");
       navigate("/welcome")
     } catch (error) {
       console.error("회원가입 실패:", error)
