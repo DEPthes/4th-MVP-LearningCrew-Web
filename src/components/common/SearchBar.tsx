@@ -13,7 +13,9 @@ export default function SearchBar({ placeholder = "그룹명 또는 카테고리
   const handleSearch = () => {
     const query = q.trim();
     onSearch(query);
-    setQ("");
+    requestAnimationFrame(() => {
+      setQ("");
+    });
   };
 
   return (
